@@ -247,7 +247,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/03/EventBus版本升级/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/02/Hugo方法耗时监控/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -269,8 +269,8 @@
             
               
                 
-                <a class="post-title-link" href="/2018/03/03/EventBus版本升级/" itemprop="url">
-                  未命名
+                <a class="post-title-link" href="/2018/03/02/Hugo方法耗时监控/" itemprop="url">
+                  Hugo方法耗时监控
                 </a>
               
             
@@ -286,8 +286,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-03T21:49:07+08:00">
-                2018-03-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-02T00:00:00+08:00">
+                2018-03-02
               </time>
             
 
@@ -296,6 +296,1541 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h1><ol>
+<li><p>在Android Project的build.gradle添加dependence： </p>
+<pre><code>buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath &apos;com.android.tools.build:gradle:2.3.3&apos;
+        classpath &apos;com.jakewharton.hugo:hugo-plugin:1.2.1&apos;//关键所在
+    }
+}
+</code></pre></li>
+<li><p>在Module的build.gradle文件中添加Hugo Plugin的应用</p>
+<pre><code>apply plugin:&apos;com.jakewharton.hugo&apos;//关键所在  
+</code></pre></li>
+<li><p>在相应的方法前，添加@DebugLog</p>
+<p> import hugo.weaving.DebugLog;</p>
+<p> ……</p>
+<p>  @DebugLog //关键所在<br> private int add(int a, int b){</p>
+<pre><code>return a+b;
+</code></pre><p> }</p>
+</li>
+</ol>
+<p>ps：调用Hugo后，Hugo自动生效。由于仅在Debug中生效，因此，可以不用关闭</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p>使用方法:<a href="http://blog.csdn.net/daihuimaozideren/article/details/78231983" target="_blank" rel="external">http://blog.csdn.net/daihuimaozideren/article/details/78231983</a><br>原理分析:<a href="http://blog.csdn.net/xxxzhi/article/details/53048476" target="_blank" rel="external">http://blog.csdn.net/xxxzhi/article/details/53048476</a>  </p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/01/数据库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/03/01/数据库/" itemprop="url">
+                  数据库踩坑和调试
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-01T00:00:00+08:00">
+                2018-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><h2 id="Android数据库设计"><a href="#Android数据库设计" class="headerlink" title="Android数据库设计"></a>Android数据库设计</h2><ol>
+<li>冗余字段设计，表设计要空出2到3个冗余字段  </li>
+<li>不要过多的关联查询，外键约束不要多了  </li>
+<li>设计要优先考虑易用性 ，容易升级，性能方面主要要通过应用层来掌控  </li>
+<li>适当的分库可以有效避免数据库被锁住。（sqlite的文件锁） </li>
+</ol>
+<h2 id="Android-DB操作技巧"><a href="#Android-DB操作技巧" class="headerlink" title="Android DB操作技巧"></a>Android DB操作技巧</h2><ol>
+<li>对于经常要使用的DB不需要关闭，一般全局保存一个静态的SQLiteDatabase（Writable的），而且是在Application oncreate 就初始化好.  </li>
+<li>由于Application  没有destroy的回调，这里我们一般会做一个ActivityStack，然后在Activity初始化和destory 时候入栈和出栈来控制界面的显示逻辑,当检测到栈为空的时候就可以认为要退出应用了。</li>
+<li>能一次取完数据，不要分次取（虽然可能取得数据量有一定优化，但是分次太耗时，尽量交给上层做）</li>
+<li>DataBase is locked，导致数据取不出来。 解决方向有以下几点：<br>第1点：在获取databse时候加一个锁<br>第2点：分库，对于相互关联若的数据进行分库处理<br>第3点：数据库不要关闭,并且尝试分开存writeable 和 readable两个静态的DB    <h2 id="数据库调试"><a href="#数据库调试" class="headerlink" title="数据库调试"></a>数据库调试</h2><h3 id="第一步通过AS自带的Android-monitor-把数据库导出来"><a href="#第一步通过AS自带的Android-monitor-把数据库导出来" class="headerlink" title="第一步通过AS自带的Android monitor  把数据库导出来"></a>第一步通过AS自带的Android monitor  把数据库导出来</h3><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9501.png?raw=true" alt="see"><h3 id="第二步通过Sqlite-professional"><a href="#第二步通过Sqlite-professional" class="headerlink" title="第二步通过Sqlite professional"></a>第二步通过Sqlite professional</h3>查看数据库的结构可以具体查看到每一张表的详细信息<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9502.png?raw=true" alt="see"><br>也可以通过query工具栏，执行基本的命令行操作。</li>
+</ol>
+<p>Sqlite基本命令：<a href="http://www.runoob.com/sqlite/sqlite-trigger.html" target="_blank" rel="external">http://www.runoob.com/sqlite/sqlite-trigger.html</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/26/公众号爬取/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/26/公众号爬取/" itemprop="url">
+                  公众号爬取
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-26T00:00:00+08:00">
+                2018-02-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h1><p>获取文章的h5链接,文章的title,文章的,文章的封面   </p>
+<h2 id="Attention："><a href="#Attention：" class="headerlink" title="Attention："></a>Attention：</h2><p>不要直接存储文章的内容，这样版权风险很大,<br>存文章的链接的话，我们可以直接显示文章的链接出处来声明来源</p>
+<h1 id="方案一"><a href="#方案一" class="headerlink" title="方案一"></a>方案一</h1><p>一个是通过 按键精灵加上proxy代理 拦截网络请求<br>也可以通过charles的auto save 功能（tools/Auto save）自动保存拦截到的数据，然后通过python的watchdog 监控目录下的数据变化（可以获得一个事件），解析每次网络请求的返回值了<br>参考资料:<br><a href="https://github.com/lijinma/wechat_spider" target="_blank" rel="external">https://github.com/lijinma/wechat_spider</a><br><a href="https://github.com/251321639/wechat_brain" target="_blank" rel="external">https://github.com/251321639/wechat_brain</a></p>
+<h1 id="方案二-：第三方的微信接口"><a href="#方案二-：第三方的微信接口" class="headerlink" title="方案二 ：第三方的微信接口"></a>方案二 ：第三方的微信接口</h1><ol>
+<li>搜狗微信搜索</li>
+<li>newsrank</li>
+<li>微小宝</li>
+</ol>
+<h2 id="2-1-搜狗搜索"><a href="#2-1-搜狗搜索" class="headerlink" title="2.1 搜狗搜索"></a>2.1 搜狗搜索</h2><p>问题： </p>
+<ol>
+<li>文章的链接是有时效性的<br><a href="https://mp.weixin.qq.com/s?src=11&amp;timestamp=1519960349&amp;ver=729&amp;signature=rR4FhNbqgqOhLeFrdvvRWr5cRF79uzrOuKGimM5FRK5xPMxF*28MHYaN*q9fawJIcGbdbK9qxiiOPfv7AY-dy4J6DYOg3Ub505vGoNC3uzt644CvvDiHTh7i*1Bgd0cU&amp;new=1" target="_blank" rel="external">https://mp.weixin.qq.com/s?src=11&amp;timestamp=1519960349&amp;ver=729&amp;signature=rR4FhNbqgqOhLeFrdvvRWr5cRF79uzrOuKGimM5FRK5xPMxF*28MHYaN*q9fawJIcGbdbK9qxiiOPfv7AY-dy4J6DYOg3Ub505vGoNC3uzt644CvvDiHTh7i*1Bgd0cU&amp;new=1</a><br>过了12h后就打不开了  </li>
+<li>无法确定获取的量，直接爬取分类的话量不足</li>
+</ol>
+<h2 id="2-2-新榜"><a href="#2-2-新榜" class="headerlink" title="2.2 新榜"></a>2.2 新榜</h2><p>公众号(可遍历)的量级：22*50<br>每个公众号可返回最新发布的10条<br>而每个公众号一天更新的量一般是5条，所以总量大约是2200，满足不了要求</p>
+<h2 id="2-3-微小宝"><a href="#2-3-微小宝" class="headerlink" title="2.3 微小宝"></a>2.3 微小宝</h2><p>其中韦小宝在公众号列表里面的22个分类，一共大约有1w个公众号，每个公众号的日更大约有5篇<br>所以一共大约有5w条记录</p>
+<p>微小宝爬虫需要注意的细节：  </p>
+<ol>
+<li>要登录  </li>
+<li><p>直接爬接口(接口请求时间间隔越短越容易被发现)，过一段时间就会告知是robot，这时候请求一下首页输入一下验证码</p>
+</li>
+<li><p>请求公众号的详情时候 注意加一下 refer字段，这样避免被屏蔽</p>
+</li>
+<li><p>验证码是和session 绑定的，所以请求验证码也需要添加session 和 refer，然后直接调用unlock接口。由于第一次无法获取验证码的图片，建议点击一下验证码，重新获取一下验证码（开发者模式查看具体url规则）</p>
+</li>
+</ol>
+<h1 id="温馨提示"><a href="#温馨提示" class="headerlink" title="温馨提示:"></a>温馨提示:</h1><p>法律上的规定是，抓取公共展示的信息不违法，允许抓取网站内容，对公众展示内容必须提供来源及源站地址，若有版权纠纷，必须配合版权方进行内容下架，否则可以到工信部投诉举报侵权网站，投诉多了有取消域名备案的风险。<br>涉及版权的经济损失，可以提起诉讼申请经济赔偿。</p>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>这个地方如果仅仅是爬到链接位置，有的链接不确定是否还可以访问，可以用 requests.head(url),请求一下判断resp.status_code 是不是200</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/16/图标跟随主题色方案/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/16/图标跟随主题色方案/" itemprop="url">
+                  图片跟随主题色变化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-16T00:00:00+08:00">
+                2018-02-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Icon图标"><a href="#Icon图标" class="headerlink" title="Icon图标"></a>Icon图标</h1><ol>
+<li>部分是网络图标</li>
+<li>通过已有的图片处理成变色图片，方案就是作图的时候控制显示内容的透明度，   </li>
+</ol>
+<p>第一步：</p>
+<pre><code>Bitmap mColorBitmap = Bitmap.createBitmap(mBitmap.getWidth(), mBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+Canvas mCanvas = new Canvas(mColorBitmap);
+Paint mPaint = new Paint();
+mPaint.setColor(mColor);  
+</code></pre><p>第二步：</p>
+<pre><code>//从原位图中提取只包含alpha的位图
+Bitmap alphaBitmap = mBitmap.extractAlpha();
+//在画布上通过透明度的部分控制显示颜色
+mCanvas.drawBitmap(alphaBitmap, 0, 0, mPaint);
+</code></pre><ol>
+<li>使用把图片做成字体<br>其实这和第二种的原理是相同的,只不过是UI和Android系统帮我们做了 </li>
+</ol>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h1 id="字体颜色"><a href="#字体颜色" class="headerlink" title="字体颜色"></a>字体颜色</h1><p>关于图片所占内存的大小  <a href="http://dev.qq.com/topic/591d61f56793d26660901b4e" target="_blank" rel="external">http://dev.qq.com/topic/591d61f56793d26660901b4e</a></p>
+<p>#ImageBitmap 和倍率的关系</p>
+<p>如果不设置Density  直接把一个bitmap 设置到ImageVIew上去 就是默认density。<br>但是可能图片都是三倍图，这时候如果设置到2倍分辩率的手机上就会出现缩小的情况，这时候就要设置图片的density。<br>bitmap.setDensity(480);<br>然后再设置到imageView上去</p>
+<p>关于图片的缩放系数：<a href="http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/" target="_blank" rel="external">http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/15/用户数据统计和行为分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/15/用户数据统计和行为分析/" itemprop="url">
+                  数据统计和分析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-15T00:00:00+08:00">
+                2018-02-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="1-Umeng高阶功能："><a href="#1-Umeng高阶功能：" class="headerlink" title="1. Umeng高阶功能："></a>1. Umeng高阶功能：</h1><h2 id="1-1-umeng-在线参数"><a href="#1-1-umeng-在线参数" class="headerlink" title="1.1 umeng 在线参数"></a>1.1 umeng 在线参数</h2><p>可以用于 初始化接口以及A/B测试<br>（现在已经更新为plus  原在线参数功能不再接入新的App   <a href="http://bbs.umeng.comthread-15553-1-1.html）" target="_blank" rel="external">http://bbs.umeng.comthread-15553-1-1.html）</a></p>
+<h2 id="1-2-Umeng-用户时长分析"><a href="#1-2-Umeng-用户时长分析" class="headerlink" title="1.2 Umeng 用户时长分析"></a>1.2 Umeng 用户时长分析</h2><p>用户参与度 &gt; 使用时长：<br>可以具体分析到某一天的ge个使用时长用户的占比  (可以选择一个月前同一天对比)<br>单次使用时长的过短就说明首页的分发，效果差。</p>
+<h2 id="1-3-用户活跃度"><a href="#1-3-用户活跃度" class="headerlink" title="1.3 用户活跃度"></a>1.3 用户活跃度</h2><p>留存分析 &gt; 用户活跃度:<br>具体看一天各个用户群体的占比情况<br>（看几天活跃用户）</p>
+<h2 id="1-4-功能使用"><a href="#1-4-功能使用" class="headerlink" title="1.4 功能使用"></a>1.4 功能使用</h2><p>页面访问路径：看到用户的访问路径<br>自定义事件</p>
+<h1 id="2-growingIO"><a href="#2-growingIO" class="headerlink" title="2. growingIO"></a>2. growingIO</h1><p>号称无埋点，但是要收费</p>
+<h2 id="2-1-热区"><a href="#2-1-热区" class="headerlink" title="2.1 热区"></a>2.1 热区</h2><p>可以具体看到一个界面的用户点击的热点区域</p>
+<h1 id="3-自定义pv统计"><a href="#3-自定义pv统计" class="headerlink" title="3. 自定义pv统计"></a>3. 自定义pv统计</h1><p>核心点在与统计用户看见了哪些东西</p>
+<h2 id="3-1-长容器统计"><a href="#3-1-长容器统计" class="headerlink" title="3.1 长容器统计"></a>3.1 长容器统计</h2><ol>
+<li><p>在容器停止滚动时候查看view的在屏幕的显示区域是在屏幕范围内  </p>
+<pre><code>view.getLocationOnScreen(locations);  
+</code></pre></li>
+</ol>
+<p>露出1/3即可算看见了</p>
+<ol>
+<li>滚动停止就统计一次（如果一直不滚动就始终算1一次pv），另外10s只统计一次（防止用户来回滚动）</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/14/沉浸式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/14/沉浸式/" itemprop="url">
+                  沉浸式的实现方案
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-14T00:00:00+08:00">
+                2018-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Step-1："><a href="#Step-1：" class="headerlink" title="Step 1："></a>Step 1：</h1><p>把状态栏设置为透明</p>
+<pre><code>    if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.LOLLIPOP&amp;&amp;!Build.BRAND.equalsIgnoreCase(&quot;huawei&quot;)){/**5.0及以上且不是华为,
+            因为华为5.0以上系统已经全屏但是状态栏黑色改不掉*/
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if(Build.VERSION.SDK_INT&gt;= Build.VERSION_CODES.M){
+            window.setStatusBarColor(Color.TRANSPARENT);
+            if(Build.MANUFACTURER.toLowerCase().contains(&quot;xiaomi&quot;)) {
+                setMiuiStatusBarDarkMode(true);
+            }
+        }else{
+            window.setStatusBarColor(Color.argb(0x80,0x00,0x00,0x00));
+        }
+
+    }else{/**5.0以下，4.0及以上*/
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        winParams.flags |= bits;
+        win.setAttributes(winParams);
+    }
+    /**由于MIUI 6修改过所以系统方法无法设置状态栏字体颜色无效，需要使用该方法设置
+    *ps:mui上设置状态栏字体颜色为深色
+    *
+    */
+    public void setMiuiStatusBarDarkMode(boolean isdarkmode) {
+    Class&lt;? extends Window&gt; clazz = this.getWindow().getClass();
+    try {
+        int darkModeFlag = 0;
+        Class&lt;?&gt; layoutParams = Class.forName(&quot;android.view.MiuiWindowManager$LayoutParams&quot;);
+        Field field = layoutParams.getField(&quot;EXTRA_FLAG_STATUS_BAR_DARK_MODE&quot;);
+        darkModeFlag = field.getInt(layoutParams);
+        Method extraFlagField = clazz.getMethod(&quot;setExtraFlags&quot;, int.class, int.class);
+        extraFlagField.invoke(this.getWindow(), isdarkmode ? darkModeFlag : 0, darkModeFlag);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+</code></pre><h2 id="Step-2："><a href="#Step-2：" class="headerlink" title="Step 2："></a>Step 2：</h2><p>设置绘制区域</p>
+<pre><code>rootView.setFitsSystemWindows(true);
+rootView.setClipToPadding(true);
+</code></pre><p>这样rootView就顶上头部去了，但是有个副作用就是界面显示区域也扩展下面的虚拟按键后面了，所以要对于alignparentbottom的功能栏，就不能直接放到rootView里面，必须放到与rootView外面。这样功能栏就不会被底部的虚拟按键盖住（这里不要考虑计算虚拟按键的高度，已经是否有虚拟按键，华为手机可以通过手势动态展开或者收起虚拟按键）</p>
+<h2 id="注意机型："><a href="#注意机型：" class="headerlink" title="注意机型："></a>注意机型：</h2><ol>
+<li>nexus固定死的虚拟按键</li>
+<li>华为和小米Mix可以使用手势控制的虚拟按键</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/13/首页崩溃解决方案/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/13/首页崩溃解决方案/" itemprop="url">
+                  首页Cache导致崩溃
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-13T20:10:33+08:00">
+                2018-02-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h1><p>由于首页cache错误导致Crash，然后每次启动都必crash（因为首先读取的是cache）  </p>
+<h1 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h1><h2 id="step1：全局crash-捕获"><a href="#step1：全局crash-捕获" class="headerlink" title="step1：全局crash 捕获"></a>step1：全局crash 捕获</h2><pre><code>实现UncaughtExceptionHandler
+
+
+mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
+Thread.setDefaultUncaughtExceptionHandler(this);
+</code></pre><p>参考资料: <a href="http://blog.csdn.net/luck_apple/article/details/7768064" target="_blank" rel="external">http://blog.csdn.net/luck_apple/article/details/7768064</a></p>
+<h2 id="step2-记录"><a href="#step2-记录" class="headerlink" title="step2: 记录"></a>step2: 记录</h2><p>记录crash 信息到本地（时间,连续次数）</p>
+<h2 id="step3-第一个界面判断"><a href="#step3-第一个界面判断" class="headerlink" title="step3: 第一个界面判断"></a>step3: 第一个界面判断</h2><p>如果判断连续次数达到一定数量，直接跳往BugFix界面，上传错误信息，同时服务器配合打热补丁<br>这个地方需要区别错误类型进行更细致的修复</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/生成分享图片/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/10/生成分享图片/" itemprop="url">
+                  生成分享图片
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-10T00:00:00+08:00">
+                2018-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h2><h3 id="1-1-截取Activity"><a href="#1-1-截取Activity" class="headerlink" title="1.1 截取Activity"></a>1.1 截取Activity</h3><pre><code>public static Bitmap takeScreenShot(Activity activity) {
+       View view = activity.getWindow().getDecorView();
+       if (view == null) {
+           return null;
+       }
+       view.setDrawingCacheEnabled(true);
+       view.buildDrawingCache();
+       Bitmap b1 = view.getDrawingCache();
+       if (b1 == null) {
+           return null;
+       }
+       // 获取状态栏高度
+       Rect frame = new Rect();
+       activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+       int statusBarHeight = frame.top;
+
+       // 获取屏幕长和高
+       int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+
+       Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, b1.getHeight() - statusBarHeight);
+       view.destroyDrawingCache();
+       b1.recycle();
+       return b;
+   }
+</code></pre><h3 id="1-3-截取ViewGroup"><a href="#1-3-截取ViewGroup" class="headerlink" title="1.3 截取ViewGroup"></a>1.3 截取ViewGroup</h3><pre><code>public static Bitmap takeScreenShotView(LinnerLayout viewGroup) {
+       Bitmap bitmap = null;
+       if (viewGroup != null) {
+           int h = 0;
+           for (int i = 0; i &lt; viewGroup.getChildCount(); i++) {
+               h += viewGroup.getChildAt(i).getHeight();
+           }
+           if (viewGroup.getHeight() &gt; h) {
+               h = viewGroup.getHeight();
+           }
+           bitmap = Bitmap.createBitmap(viewGroup.getWidth(), h, Config.ARGB_8888);
+           final Canvas c = new Canvas(bitmap);
+           c.drawColor(Color.WHITE);
+           viewGroup.draw(c);
+       }
+       return bitmap;
+   }
+</code></pre><h2 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h2><p>自己生成bitmap绘制，这个地方由于自己绘制的比较麻烦，一般就是在一张图片上绘制一些文字即可</p>
+<h2 id="方法3"><a href="#方法3" class="headerlink" title="方法3"></a>方法3</h2><p>生成未加载的布局文件的分享图片</p>
+<pre><code>View targetView = LayoutInflater.from(mActivity).inflate(R.layout.view_share, null);
+targetView.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),      View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY));
+targetView.layout(0, 0, width, height);
+bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Config.ARGB_8888);
+Canvas canvas = new Canvas(bitmap);
+canvas.drawColor(Color.WHITE);
+view.draw(canvas);
+</code></pre><p>核心是布局文件没有加载，也即没有measure和layout 就无法进行绘制（实际上一个view之所以能被绘制上去就是因为父容器measure和layout了它）才能进行绘制</p>
+<p>一个知识点： view 不是不可以在后台线程修改的，而是需只有原始创建这个视图层次(view hierachy)的线程才能修改它的视图(view)</p>
+<h2 id="扩展思维"><a href="#扩展思维" class="headerlink" title="扩展思维"></a>扩展思维</h2><p>如何生成listview和recycleView的截屏   </p>
+<h3 id="方案1"><a href="#方案1" class="headerlink" title="方案1"></a>方案1</h3><p>原理：我们可以知道第一个和最后一个view在屏幕上的位置，也可以获取获取整个屏幕的截图，所谓我们可以滑动一屏截取一屏(我们可以估算出一屏大约有多少元素，滚动固定长度即可)的内容，然后最后拼接出来  </p>
+<h3 id="方案2"><a href="#方案2" class="headerlink" title="方案2"></a>方案2</h3><p>原理：可以逐个生成itemView的bitmap（采用方法3），然后拼接出来</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/图片不同尺寸缓存的优化方案/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/10/图片不同尺寸缓存的优化方案/" itemprop="url">
+                  又拍云图片显示优化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-10T00:00:00+08:00">
+                2018-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-又拍云的图片尺寸问题"><a href="#1-又拍云的图片尺寸问题" class="headerlink" title="1. 又拍云的图片尺寸问题"></a>1. 又拍云的图片尺寸问题</h2><p>又拍云会对我们上传的图片进行处理。然后会生成多种尺寸：110,160,210,240,320,480,640,720,1200。<br>每种尺寸对应于不同的url。<br>eg：<br><a href="http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg!w480.jpg" target="_blank" rel="external">http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg!w480.jpg</a></p>
+<h2 id="2-简单的解决方案"><a href="#2-简单的解决方案" class="headerlink" title="2. 简单的解决方案"></a>2. 简单的解决方案</h2><p>为了利用又拍云自动帮我们处理出来的不同尺寸图片。在每次加载图片的时候根据当前显示View的尺寸加载合适的尺寸</p>
+<h3 id="2-1-这里有三个没解决的问题："><a href="#2-1-这里有三个没解决的问题：" class="headerlink" title="2.1 这里有三个没解决的问题："></a>2.1 这里有三个没解决的问题：</h3><ol>
+<li><p>不同尺寸的图片会在sd卡上存不同cache，比如由于我们先加载了640尺寸的图片，后面加载480尺寸还是无法公用640尺寸的图片cache,导致还得重新请求一次网络。实际上我们可以通过处理得到480尺寸的图片。</p>
+</li>
+<li><p>对于发带图片帖子的这种逻辑处理逻辑处理不方便。因为上传图片后，很有可能不知道图片的显示尺寸。无法把这张本地图片放置到对应位置的cache上去（虽然我们现在上传上去后，会直接显示的是本地图片，但这个有点治标不治本。第二次进来时候或者下拉刷新后 还是会从网上load这张图片）。</p>
+</li>
+<li><p>图片尺寸的获取，不是所有的ImageView在setImageUrl时候都可以获取尺寸，有的量不到尺寸，也就是在一个还没有渲染 并且也没有设置固定size的ImageVIew上设置Url（比Adapter里面的初次createView  然后立即设置Url就会出现量不到尺寸的问题）</p>
+</li>
+</ol>
+<p>总结一些：又拍云会帮我们处理出来不同尺寸的图片。在小的地方我们可以仅仅加载小尺寸的图片，提高了展示速度。但是对于同一张图片，在不同地方展示不同尺寸的逻辑处理不够完美。所以以前在wecal里面会发现一个问题：同一个头像，已经展示过了，在下一个页面里用另个尺寸展示的时候还是会有点慢。 </p>
+<h2 id="3-对于又拍云的图片完美解决方案"><a href="#3-对于又拍云的图片完美解决方案" class="headerlink" title="3. 对于又拍云的图片完美解决方案"></a>3. 对于又拍云的图片完美解决方案</h2><p>核心需要在内存和sd卡缓存逻辑能够识别出不同尺寸的不同图片。也就是要每一url对应于一组cache。</p>
+<p>代码实现上就是要把当前的url的cache对应到一组cache 上去。<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD01.png?raw=true" alt=""></p>
+<h3 id="3-1-Memery-cache逻辑"><a href="#3-1-Memery-cache逻辑" class="headerlink" title="3.1 Memery cache逻辑"></a>3.1 Memery cache逻辑</h3><p>对于内存cache 建议还是按照以前的逻辑走，但是可以加上对于一个尺寸的的图片可以使用相近已经缓存尺寸的图片。</p>
+<h3 id="3-2-Disk-cache逻辑"><a href="#3-2-Disk-cache逻辑" class="headerlink" title="3.2 Disk cache逻辑"></a>3.2 Disk cache逻辑</h3><p>对于Disk cache 。如果需要加载一个小尺寸的图片，但是发现只有大尺寸图片，我们可以直接使用大图压缩出小图，返回过去。<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD02.png?raw=true" alt=""></p>
+<h3 id="3-3-2G网络模式"><a href="#3-3-2G网络模式" class="headerlink" title="3.3 2G网络模式"></a>3.3 2G网络模式</h3><p>在低速网络情况下，对于disk cache，如果发现没有当前尺寸的图片的情况下，可以使用任意尺寸的缓存转化。</p>
+<h2 id="5-推荐一个图片压缩库"><a href="#5-推荐一个图片压缩库" class="headerlink" title="5. 推荐一个图片压缩库"></a>5. 推荐一个图片压缩库</h2><p>Luban：<a href="https://github.com/Curzibn/Luban" target="_blank" rel="external">https://github.com/Curzibn/Luban</a>      大小仅仅是15K</p>
+<p>根据我的测试一般可以在不明显影响图片展示效果的条件减少图片体积2/3。使用它后发图片备注速度飞快。（在wecal里面默认发送压缩后的图片，也提供发送原图的可选项）</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/EventBus版本升级/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/10/EventBus版本升级/" itemprop="url">
+                  EventBus3.0
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-10T00:00:00+08:00">
+                2018-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -415,1947 +1950,11 @@ public void helloEventBus(UserReLoginEvent  event){
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/AS导入工程配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/AS导入工程配置/" itemprop="url">
-                  AS工程导入
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="1-工程导入"><a href="#1-工程导入" class="headerlink" title="1.工程导入"></a>1.工程导入</h1><h2 id="1-1-普通eclipse-工程导入"><a href="#1-1-普通eclipse-工程导入" class="headerlink" title="1.1 普通eclipse  工程导入"></a>1.1 普通eclipse  工程导入</h2><p>直接import，AS会提示转成eclipse工程</p>
-<h2 id="1-2-github上的工程导入"><a href="#1-2-github上的工程导入" class="headerlink" title="1.2 github上的工程导入"></a>1.2 github上的工程导入</h2><p>用AS打开top level的settings.gradle选择进行配置导入<br>ps：如果这一步直接导入的话就会报   Could not find method android() for arguments   </p>
-<p>可能遇到的问题：  </p>
-<ol>
-<li><p>配置sdk位置（顶层build.gradle同级）<br>local.properties（建议从已有工程拷贝一个）<br>sdk.dir=/Users/lyc/codeTools/android-sdk  </p>
-</li>
-<li><p>配置模块的build.gradle的gradletoolVersion版本<br>buildToolsVersion ‘23.0.2’</p>
-</li>
-</ol>
-<p>建议从已有工程的里面找一个可用的版本填上去</p>
-<p>查看自己已经有哪些版本的buildTools的方法，</p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B01.png?raw=true" alt="see">  </p>
-<ol>
-<li>modle配置模块的工程compileSdkVersionversion<br>为一个已有版本的</li>
-</ol>
-<ol>
-<li>配置<br>dependencies中的com.android.support的版本，要求是于compileSdkVersionversion的版本一直<br>，但是这个不好处理</li>
-</ol>
-<p>compile ‘com.android.support:design:25.1.1’<br>compile ‘com.android.support:appcompat-v7:25.1.1’<br>compile ‘com.android.support:cardview-v7:25.1.1’</p>
-<p>英文有子序列号<br>建议按照以下方法写<br>compile ‘com.android.support:cardview-v7:25.+’<br>这样就会取本版本号下面最大的一个</p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B02.png?raw=true" alt="see">   </p>
-<p>5.配置本地Gradel版本<br>这个常见于直接从别人那里拷贝的工程（也就是带有gradle/wrapper/**）的工程</p>
-<pre><code>distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip 
-</code></pre><p>gradle会去找这个版本的gradle，如果找不到就会重新下载<br>gradle的默认下载目录在用户目录的.gradle/wrapper/dists文件夹中（隐藏的）  里面会有所有已经下载的gradle 版本，可以把它改成一个已经有的版本就行</p>
-<h2 id="1-3-本地工程导入"><a href="#1-3-本地工程导入" class="headerlink" title="1.3 本地工程导入"></a>1.3 本地工程导入</h2><p>直接import</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Gradle小结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/Gradle小结/" itemprop="url">
-                  Gradle配置中介
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>buildGradle配置分析<br>TopicLevel的gradle    </p>
-<pre><code>buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath &apos;com.android.tools.build:gradle:2.2.2&apos;
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-</code></pre><p>Mudule level的build.gradle  </p>
-<pre><code>apply plugin: &apos;com.android.application&apos;
-
-android {
-    compileSdkVersion 20
-    buildToolsVersion &quot;24.0.0&quot;
-
-
-    compileOptions{
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    defaultConfig {
-        applicationId &quot;com.lyc.study&quot;
-        minSdkVersion 15
-        targetSdkVersion 20
-        versionCode 1
-        versionName &quot;1.0&quot;
-        jackOptions{
-            enabled true
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;
-        }
-    }
-}
-
-dependencies {
-    compile fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)
-    compile &apos;com.android.support:support-v4:+&apos;
-    compile &apos;com.android.support:support-annotations:22.2.0&apos;
-    compile &apos;com.android.support:support-v13:20.1.1&apos;
-}
-</code></pre><p>以上是标准的打包方式,下面是常用的我们自定义的内容   </p>
-<pre><code>dependencies {
-    compile fileTree(include: &apos;*.jar&apos;, dir: &apos;libs&apos;)
-    compile project(&apos;:google_services&apos;)
-
-    // compile &apos;com.android.support:multidex:1.0.1&apos;
-    compile &apos;top.zibin:Luban:1.0.9&apos;
-    debugCompile &apos;com.bugtags.library:bugtags-lib:latest.integration&apos;
-
-    testCompile &apos;junit:junit:4.12&apos;
-
-}
-
-android {
-    compileSdkVersion 21
-    buildToolsVersion &apos;23.0.2&apos;
-
-    sourceSets {
-        main {
-            manifest.srcFile &apos;AndroidManifest.xml&apos;
-            java.srcDirs = [&apos;src&apos;]
-            resources.srcDirs = [&apos;src&apos;]
-            aidl.srcDirs = [&apos;src&apos;]
-            renderscript.srcDirs = [&apos;src&apos;]
-            res.srcDirs = [&apos;res&apos;]
-            assets.srcDirs = [&apos;assets&apos;]
-            jniLibs.srcDirs = [&apos;libs&apos;]
-        }
-
-        test.setRoot(&apos;test&apos;)
-
-        debug.setRoot(&apos;build-types/debug&apos;)
-        release.setRoot(&apos;build-types/release&apos;)
-    }
-
-    signingConfigs {
-        debug {
-            // 请配置好pub.key及其密码，或者改为使用debug.keystore
-            storeFile file(&apos;pub.key&apos;) // storeFile file(&apos;debug.keystore&apos;)
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
-        release {
-            storeFile file(&apos;pub.key&apos;)
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
-    }
-
-    buildTypes {
-        debug {
-            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
-            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
-            signingConfig signingConfigs.debug
-
-            ndk{
-                abiFilters &apos;armeabi&apos;, &apos;armeabi-v7a&apos;, &apos;x86&apos; //,&apos;arm64-v8a&apos;, &apos;x86_64&apos;, &apos;mips&apos;, &apos;mips64&apos;
-            }
-        }
-        release {
-            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;2016/12/22\&quot;&quot; // TODO 发布时修改为当天日期
-            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;false&quot; // 关闭开发者模式
-            proguardFiles &apos;proguard.cfg&apos;
-            minifyEnabled true
-            shrinkResources true
-            debuggable false
-            jniDebuggable false
-            signingConfig signingConfigs.release
-
-            applicationVariants.all { variant -&gt;
-                variant.outputs.each { output -&gt;
-                    def outputFile = output.outputFile
-                    if (outputFile != null &amp;&amp; outputFile.name.endsWith(&apos;.apk&apos;)) {
-                        // APK命名格式 Going-release.apk TODO 发布时使用
-                        def fileName = &quot;Going-v${defaultConfig.versionName}-${defaultConfig.versionCode}-release.apk&quot;
-//                         def fileName = &quot;Going.apk&quot;
-                        output.outputFile = new File(outputFile.parent, fileName)
-                    }
-                }
-            }
-        }
-    }
-
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
-        versionCode 5220
-        versionName &quot;5.2.2&quot;
-        //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
-        multiDexEnabled false
-        multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
-        resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; //暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
-    }
-
-    productFlavors {
-          own {}
-          googleMarket {}
-
-          tencent {}
-          baidu {}
-
-
-    }
-
-//    productFlavors.all { flavor -&gt;
-//        flavor.manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
-//    }
-
-    packagingOptions {
-        exclude &apos;META-INF/LICENSE.txt&apos;
-    }
-
-    // 可以适当的打开Lint，检查是否存在隐藏问题
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-
-    android.dexOptions {
-        jumboMode = true
-        javaMaxHeapSize &quot;2g&quot;
-        maxProcessCount 8
-    }
-
-}
-
-// 替换编码方式，否则编译可能有中文乱码
-tasks.withType(org.gradle.api.tasks.compile.JavaCompile) {
-    options.encoding = &quot;UTF-8&quot;
-}
-</code></pre><p>相对于标准的我们在 android Task中新增了sourceSets这个Task制定了一些文件夹的目录，如果工程目录是标注的就不需要设置了</p>
-<p>在build.gradle同级新建一个gradle.properties<br>里面可以用来存放build.gradle里面的一些参数<br>STORE_PASSWORD=nico<br>KEY_ALIAS=nick<br>KEY_PASSWORD=nico</p>
-<p>这个地方对应的脚本是signingConfigs》debug里面的参数 </p>
-<p> buildTypes 》debug 中的buildConfigField参数则会在编译时候  </p>
-<p> <img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/gradle%E5%88%86%E6%9E%9001.png?raw=true" alt="gradle01"></p>
-<pre><code>buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
-buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
-</code></pre><p>会在</p>
-<pre><code>public final class BuildConfig {
-  public static final boolean DEBUG = Boolean.parseBoolean(&quot;true&quot;);
-  public static final String APPLICATION_ID = &quot;im.ecloud.ecalendar&quot;;
-  public static final String BUILD_TYPE = &quot;debug&quot;;
-  public static final String FLAVOR = &quot;own&quot;;
-  public static final int VERSION_CODE = 5220;
-  public static final String VERSION_NAME = &quot;5.2.2&quot;;
-  // Fields from build type: debug
-  public static final boolean DEVELOP_MODE = true;
-  public static final String RELEASE_TIME = &quot;Not yet&quot;;
-}
-</code></pre><p>可以参考友盟的多渠道打包（github）</p>
-<p>一个介绍gradle比较好的网站<br><a href="http://stormzhang.com/posts/" target="_blank" rel="external">http://stormzhang.com/posts/</a></p>
-<p><a href="https://segmentfault.com/a/1190000006915937" target="_blank" rel="external">https://segmentfault.com/a/1190000006915937</a></p>
-<p>这两个网站都是一系列的教程，建议一个一个的看</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/" itemprop="url">
-                  AS和Xcode快捷键
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Xcode"><a href="#Xcode" class="headerlink" title="Xcode"></a>Xcode</h1><p>XCode   不能直接修改文件名，需要找到本文件对应的申明或者实现的名称，右键refactor&gt;rename  修改<br>（记得勾选 Rename related files）</p>
-<p>在 Xcode里面所有的窗口控制显示与否都可以通过右上角的来控制  </p>
-<p>定位类的位置  shift  commoand  j</p>
-<p>commond  6 </p>
-<p>option 然后点击方法位置</p>
-<p>commond   T</p>
-<p>shift  commoand  O</p>
-<p>shift  commoand  F</p>
-<p> commoand  F</p>
-<p>esc  查看方法参数   </p>
-<p>快捷键位置方法   XCode&gt;preferences&gt;Key Bindings</p>
-<p>显示主题颜色设置   XCode&gt;preferences&gt;Font &amp; Colors   从Default  改成   Dusk<br>窗口显示和隐藏的button（其中代码下面的debug和log窗口在他们的右下角又有单独的控制显示和隐藏的button）  </p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E8%AE%BE%E7%BD%AE.png?raw=true" alt="image"></p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E5%BF%AB%E6%8D%B7%E9%94%AE.jpg?raw=true" alt="image">  </p>
-<p>参考资料：<a href="http://www.cocoachina.com/ios/20141224/10752.html" target="_blank" rel="external">http://www.cocoachina.com/ios/20141224/10752.html</a></p>
-<h1 id="AndroidStudio"><a href="#AndroidStudio" class="headerlink" title="AndroidStudio"></a>AndroidStudio</h1><p>快捷键位置方法   AndroidStudio&gt;preferences&gt;Keymap  （把Mac  OS X 复制一份，然后修改）</p>
-<p>显示主题颜色设置   AndroidStudio&gt;preferences&gt;Editor&gt;Colors &amp; Font   从Default  改成   Darcula  (然后点击 save as  ，再把字体调大一点，不能直接修改) </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/deep_link_design/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/deep_link_design/" itemprop="url">
-                  Deeplink 设计
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>#deeplink指的是在第三方客户端/浏览器中，打开一个APP的H5页面时候，如果发现本地安装了这个APP，就会使用本地APP打开。<br>需要前端和客户端互相配合来实现本功能。</p>
-<p>#服务器端：</p>
-<pre><code>&lt;html&gt;
-&lt;head&gt;
-&lt;meta property=&quot;al:ios:url&quot; content=&quot;applinks://docs&quot; /&gt;
-&lt;meta property=&quot;al:ios:app_store_id&quot; content=&quot;12345&quot; /&gt;
-&lt;meta property=&quot;al:ios:app_name&quot; content=&quot;App Links&quot; /&gt;
-&lt;meta property=&quot;al:android:url&quot; content=&quot;applinks://docs&quot; /&gt;
-&lt;meta property=&quot;al:android:app_name&quot; content=&quot;App Links&quot; /&gt;
-&lt;meta property=&quot;al:android:package&quot; content=&quot;org.applinks&quot; /&gt;
-&lt;meta property=&quot;al:web:url&quot;
-content=&quot;http://applinks.org/documentation&quot; /&gt;
-&lt;/head&gt;
-&lt;body&gt;
-Hello, world!
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre><p>#客户端<br>客户端deeplink的实现需要依靠jump系统。ps:jump系统可以通过URI 实现在app中的定向跳转 ，比如我们的app叫“天上人间”（缩写tsrj）。 </p>
-<ol>
-<li>需要先在menifest中注册相应的scheme的filter。<br>ps:一般加载主页上面.</li>
-</ol>
-<pre><code>&lt;intent-filter&gt;
-&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
-&lt;!-- Accepts URIs that begin with &quot;tsrj://&quot; --&gt;
-&lt;data android:scheme=&quot;tsrj&quot;/&gt;
-&lt;/intent-filter&gt;
-&lt;intent-filter&gt;
-&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
-&lt;!-- Accepts URIs that begin with &quot;http://m.tsrj.com/&quot; --&gt;
-&lt;data
-android:host=&quot;m.tsrj.com&quot;
-android:pathPrefix=&quot;/&quot;
-android:scheme=&quot;http&quot;/&gt;
-&lt;data
-android:host=&quot;m.tsrj.com&quot;
-android:pathPrefix=&quot;/&quot;
-android:scheme=&quot;https&quot;/&gt;
-&lt;/intent-filter&gt;
-</code></pre><ol>
-<li>在MainActivity新增解析jump信息的方法</li>
-</ol>
-<pre><code>private void jump(Intent intent) {
-/** 根据传过来的参数 进行jump跳转 **/
-String action_url = intent.getDataString();
-MLog.i(&quot;启动Main_action_url:&quot; + action_url);
-if (!TextUtils.isEmpty(action_url)) {
-JumpManager.jump(this, action_url);
-} 
-}
-
-JumpManger就实现解析数据然后根据URI跳转的功能
-public static boolean jump(Context ctx, String action_url) {
-
-if (TextUtils.isEmpty(action_url)) {
-return false;
-}
-
-MLog.d(&quot;JumpManager  url:&quot; + action_url);
-
-Uri uri = null;
-
-/**如果不是一个标准的uri格式说明传入的数据无效的 可以直接忽视*/
-
-try {
-uri = Uri.parse(action_url);
-} catch (Exception e) {
-return false;
-}
-
-if (uri == null) {
-return false;
-}
-
-/**检测到是一个合法的uri 先判断是否是满足跳转需求的头部 如果是 开始进行跳转检测 如果不是 直接往内置浏览器跳*/
-
-if (!action_url.startsWith(JumpUriFactory.JUM_URL_HEAD) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_S) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_CUSTOM)) {
-
-return false;
-}
-
-Intent jumpintent = null;
-
-List&lt;String&gt; paths = uri.getPathSegments();
-
-/**只有头没有页面参数就返回*/
-if (paths == null || paths.size() &lt;= 0) {
-
-return false;
-}
-
-/**有path 但是path里面为空值 直接打开*/
-String action = paths.get(0);
-if (TextUtils.isEmpty(action)) {
-if (!isFromWebView) {
-jumpToInteriorPageActivity(ctx, uri);
-}
-return false;
-}
-
-/** 使用系统浏览器打开 */
-if (action.equals(&quot;web_system&quot;)) {
-jumpToSystemWebPage(ctx, uri);
-return true;
-}
-
-
-/*else if (action.equals(JumpPageSet.detail)) {
-goWaitress(ctx, action_url);
-return true;
-}*/
-
-/** city */
-else if (action.equals(JumpPageSet.city)) {
-goCity(ctx, action_url);
-return true;
-}
-
-/** usercenter */
-else if (action.equals(JumpPageSet.personal_info)) {
-goUserCenter(ctx, action_url);
-return true;
-}
-</code></pre><ol>
-<li>处理uri解析出里面的参数,放入intent，并跳往相应的主页</li>
-</ol>
-<pre><code>/**
- * 将url的数据进行解析 得到一个存放所有参数的集合
- */
-public static Set&lt;String&gt; getMyQueryParameterNames(Uri uri) {
-    String query = uri.getEncodedQuery();
-    if (query == null) {
-        return Collections.emptySet();
-    }
-    Set&lt;String&gt; names = new LinkedHashSet&lt;String&gt;();
-    int start = 0;
-    do {
-        int next = query.indexOf(&apos;&amp;&apos;, start);
-        int end = (next == -1) ? query.length() : next;
-        int separator = query.indexOf(&apos;=&apos;, start);
-        if (separator &gt; end || separator == -1) {
-            separator = end;
-        }
-        String name = query.substring(start, separator);
-        names.add(Uri.decode(name));
-        // Move start to end of name.
-        start = end + 1;
-    } while (start &lt; query.length());
-    return Collections.unmodifiableSet(names);
-}
-private static void goWaitress(final Context ctx, String actionUrl) {
-    MLog.i(&quot;actionUrl&quot;+actionUrl);
-    Uri  uri;
-    uri=Uri.parse(actionUrl);
-    Set&lt;String&gt;  parameters=JumpManager.getMyQueryParameterNames(uri);
-    Hashtable&lt;String,String&gt; params=new Hashtable&lt;&gt;();
-    if(parameters!=null&amp;&amp;parameters.size()&gt;0){
-        for(String key:parameters){
-            String value=uri.getQueryParameter(key);
-            if(!TextUtils.isEmpty(value)){
-                params.put(key,value);
-            }
-        }
-    }
-    Intent it= new Intent(act, WaitressPage.class);
-    Set&lt;String&gt;  keySet=params.keySet();
-    for (String k:keySet){
-        it.putExtra(k,params.get(k));
-    }
-    startActivity(it);
-    }
-</code></pre><p>#DeepLink里面的坑： </p>
-<ol>
-<li>由于有些页面有权限限制，所以要跳页面时候，要判断在当前账户当前版本是否可以打开</li>
-<li>如果从H5页面带过来的信息带有登录状态，而且当前app的账号信息和H5页面的不一致，可能需要一个账号切换工作</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/android模块化实践/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/android模块化实践/" itemprop="url">
-                  Android模块化
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="基于AAR的Android模块化实践"><a href="#基于AAR的Android模块化实践" class="headerlink" title="基于AAR的Android模块化实践"></a>基于AAR的Android模块化实践</h1><h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><p>1、首先 按照应用分层（common  view），注意每个module最好配置一下resourcePrefix “mc_”<br>2、上层再按照功能模块比如  信用卡和个人中心</p>
-<p>这样每个都会打出一个aar，府工程引入所有的aar就可以引入这个模块</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>但是这个距离一个可以发布出去的aar还有距离，有以下几个问题需要解决：  </p>
-<ol>
-<li>本地jar依赖（主工程很有可能也公用这个jar）；  </li>
-<li>混淆的问题；  </li>
-<li>多个aar合并；   </li>
-<li>兄弟模块互相调用，基模块调用父模块的方法；</li>
-</ol>
-<h3 id="问题1"><a href="#问题1" class="headerlink" title="问题1:"></a>问题1:</h3><p>Android dependency的几种方法：<br>eg：  </p>
-<pre><code>    testCompile &apos;junit:junit:4.12&apos;
-//compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])  
-provided fileTree(dir: &apos;libs&apos;,include: [&apos;*.jar&apos;])  
-compile &apos;com.android.support:support-v4:23.0.1&apos;  
-compile project(&apos;:Module_common&apos;)   
-</code></pre><ul>
-<li>testCompile ：  debug 会编译  正式打包不会编译</li>
-<li>compile ： 除去”compile jar”会编译进arr，其余的都不会编译进去</li>
-<li>provided：编译时候不会把jar编译进去</li>
-</ul>
-<p>传递依赖的问题<br>（例如 modle A 依赖 Module B，Module B 又依赖Module  C ）   jar  都放在C里面，Module A不引入jar 也能引用到jar。</p>
-<p>但是正式打包时候不需要这些jar，本地的jar必须以provided方式引入，这样aar里面就不会打进去这些jar了。</p>
-<p>这会引入另外一个问题：C改成provide 这些jar后，A和B找不到这些依赖的jar 会编译失败</p>
-<p>解决方案：<br>把jar单独成一个module D，写成provided<br>（也可在module A  和 B里面  把这些jar 都拷贝进去，然后统统写成provided）</p>
-<h3 id="问题2"><a href="#问题2" class="headerlink" title="问题2"></a>问题2</h3><p>首先要明白，我们要去混淆的是A和主工程的接口，而A和B以及C直接的调用都需要混淆，但是不能在B和C里面混淆，因为这样一混淆的话，A与B、C调用的接口也混淆了</p>
-<p>所以混淆只能在A里面打开，A和B都不能打开混淆</p>
-<h3 id="问题3"><a href="#问题3" class="headerlink" title="问题3"></a>问题3</h3><p>默认会打出三个aar，但是我们只能发布一个aar出去，所以必须使用到 <a href="https://github.com/adwiv/android-fat-aar" target="_blank" rel="external">https://github.com/adwiv/android-fat-aar</a> 写的合并aar的gradle</p>
-<p>方法：<br>1、拷贝 fat-aar.gradle到build.gradle 同级目录<br>2、module的build.gradle新增<br>apply from: ‘fat-aar.gradle’  ，</p>
-<p>compile project(‘:Module_common’)<br>改成<br>embedded project(‘:Module_common’)</p>
-<p>这样在打B的aar时候，会把基moduel的aar合并进来</p>
-<p>如果这个模块工程就一个工程，就只需要解决问题1，同时配置一下混淆就行</p>
-<h2 id="问题4"><a href="#问题4" class="headerlink" title="问题4"></a>问题4</h2><p>通过hook调用<br>基模块：</p>
-<pre><code>public class CommonModuleDataEngine {
-
-    private static CommonModuleDataEngine INSTANCE;
-
-    private AppInfo appInfo;//这个必须要父模块或者兄弟模块
-    public static CommonModuleDataEngine getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new CommonModuleDataEngine();
-        }
-        return INSTANCE;
-    }
-
-    private CommonModuleDataEngine() {
-    }
-
-    public String getAppInfo() {
-        return appInfo.getAppInfo();
-    }
-
-    public static class Builder {
-        private AppInfo appInfo;
-
-        public Builder setAppInfo(AppInfo appInfo) {
-            this.appInfo = appInfo;
-            return this;
-        }
-        public void build() {
-            CommonModuleDataEngine engin = CommonModuleDataEngine.getInstance();
-            engin.appInfo = this.appInfo;
-
-        }
-
-    }
-    public interface AppInfo {
-
-        String getAppInfo();
-
-    }
-
-}
-</code></pre><p>主工程  </p>
-<p>在Application初始化的时候初始几个基类CommonModuleDataEngine，</p>
-<p>ps：内部类的去混淆  </p>
-<pre><code>    -keepclasseswithmembers  class CommonModuleDataEngine {*;}
--keepclasseswithmembers  class CommonModuleDataEngine$* {*;}
-</code></pre><h3 id="其它注意事项"><a href="#其它注意事项" class="headerlink" title="其它注意事项"></a>其它注意事项</h3><p>1、主程序和Module里面的Manifest里面的一些配置同名。必须在manifest  中的相应的配置里面 添加  </p>
-<pre><code>tools:replace=&quot;android:icon,theme,label&quot;
-</code></pre><p>例如基module和主程序都包含了高德定位，manifest必然也有相同的配置信息</p>
-<pre><code>&lt;meta-data
-    tools:replace=&quot;android:value&quot;
-    android:name=&quot;com.amap.api.v2.apikey&quot;
-    android:value=&quot;*******&quot; /&gt;
-</code></pre><p>App组件化与业务拆分: <a href="http://www.jianshu.com/p/60c1b9ddd8ab" target="_blank" rel="external">http://www.jianshu.com/p/60c1b9ddd8ab</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/git_guide/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/git_guide/" itemprop="url">
-                  Github 教程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Github-教程"><a href="#Github-教程" class="headerlink" title="Github 教程"></a>Github 教程</h1><h2 id="推一个本地工程到github"><a href="#推一个本地工程到github" class="headerlink" title="推一个本地工程到github"></a>推一个本地工程到github</h2><ol>
-<li>首先在github上创建一个resp</li>
-<li>在本地工程里面引入 .gitignore<ul>
-<li>在androidstudio 安装一个ignore 插件，可以生成部分ignore</li>
-<li>对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore</li>
-<li>.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）<a href="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore" target="_blank" rel="external">原文件</a> </li>
-</ul>
-</li>
-</ol>
-<pre><code>.gradle
-/local.properties
-/gradle.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-bin
-gen
-.settings
-.idea
-target
-*.iml
-*.key
-</code></pre><ol>
-<li><p>touch README.md  》》生成 reamdme文件</p>
-</li>
-<li><p>git init当前工程 》》生成 git信息</p>
-</li>
-<li><p>git add -A 》》把当前工程除了ingore的添加到git里面</p>
-</li>
-<li><p>git commit 》》生成第一次的commit信息</p>
-</li>
-<li><p>git remote add origin git@github.com:liuyicheng3/NewRepo.git   》》设置当前git工程的远程分支</p>
-</li>
-<li><p>git push -u origin master 》》push 到github上去</p>
-</li>
-<li><p>Attention:一般android studio的默认ssh是 androidstudio自己的，所以这时候用android studio会提交不上去<br>需要在settiings&gt;vertion control&gt; git里面吧 SSH excutable 由built-in 改成 native</p>
-</li>
-</ol>
-<p>##维护git文档方法</p>
-<ul>
-<li>可以网页里面直接弄，就不要通本地修改再提交，太麻烦。</li>
-<li>涉及到外部链接的图片文件，git库里面建对应的文件夹统一维护。</li>
-<li>对于图片贴的地址一定要是raw的，不要那个github上显示的地址<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="string">原文件</span>](<span class="link">https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore</span>)</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>##一般的git工作流程</p>
-<p>###版本管理</p>
-<p>###按featrue 开发</p>
-<p>###codereview及合并</p>
-<h2 id="Markdown-快捷键"><a href="#Markdown-快捷键" class="headerlink" title="Markdown 快捷键"></a>Markdown 快捷键</h2><ol>
-<li>空两行，让后代码区域两个TAB</li>
-<li>shift tab  收回一个tab</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/gradle坑/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/gradle坑/" itemprop="url">
-                  AS 踩坑日记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>升级instant run时候的报错<br>Error:Access to the dex task is now impossible, starting with 1.4.0<br>1.4.0 introduces a new Transform API allowing manipulation of the .class files.<br>See more information: <a href="http://tools.android.com/tech-docs/new-build-system/transform-api" target="_blank" rel="external">http://tools.android.com/tech-docs/new-build-system/transform-api</a></p>
-<p>解决方案：</p>
-<p>buildscript {<br>    repositories {<br>        jcenter()<br>    }<br>    dependencies {<br>        classpath ‘com.android.tools.build:gradle:2.0.0’</p>
-<pre><code>}
-</code></pre><p>}</p>
-<p>改成1.3.0</p>
-<p>项目根目录的gradle的<br>grade.property</p>
-<p>distributionUrl=https\://services.gradle.org/distributions/gradle-2.2-all.zip</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Android分包/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/Android分包/" itemprop="url">
-                  Android分包
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="第一步：-gradle引入以及配置"><a href="#第一步：-gradle引入以及配置" class="headerlink" title="第一步：  gradle引入以及配置"></a>第一步：  gradle引入以及配置</h2><p>compile ‘com.android.support:multidex:1.0.1’</p>
-<p>defaultConfig {<br>    minSdkVersion 14<br>    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限<br>    versionCode 5210<br>    versionName “5.2.1”<br>    //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:”googleMarket” ]<br>    multiDexEnabled true<br>    multiDexKeepProguard file(‘multiDexKeep.pro’)<br>    // resConfigs “en”, “zh_CN”, “zh_TW” 暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制<br>}</p>
-<h2 id="第二步：修改Application"><a href="#第二步：修改Application" class="headerlink" title="第二步：修改Application"></a>第二步：修改Application</h2><p>@Override<br>protected void attachBaseContext(Context base) {<br>    super.attachBaseContext(base);<br>    MultiDex.install(base);<br>}</p>
-<h2 id="第三步：保证关键类在主dex中"><a href="#第三步：保证关键类在主dex中" class="headerlink" title="第三步：保证关键类在主dex中"></a>第三步：保证关键类在主dex中</h2><p> 就是通过multiDexKeep.pro文件控制的</p>
-<p>#确保个推 sdk 在主 dex 中<br>-dontwarn com.igexin.<strong><br>-keep class com.igexin.</strong>{*;}</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/ios学习笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/ios学习笔记/" itemprop="url">
-                  iOS入门
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="第一课：熟悉OC语法"><a href="#第一课：熟悉OC语法" class="headerlink" title="第一课：熟悉OC语法"></a>第一课：熟悉OC语法</h1><h1 id="第二课：storyboard和-手写View"><a href="#第二课：storyboard和-手写View" class="headerlink" title="第二课：storyboard和 手写View"></a>第二课：storyboard和 手写View</h1><p>storyboard;</p>
-<p>直接往上面拖放控件，然后按住ctr  把控件拖动到   @implementation，就相当于自动findview了，可以直接使用是这个控件了  </p>
-<p>   @property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;</p>
-<p>还有一种就是直接关联上点击事件<br>把控件直接拖动到这个申明方法上就可以了</p>
-<pre><code>- (IBAction)showAlert:(id)sender;
-</code></pre><p>这个的原理可以看看storyboard的文件内容就可以明白了，大致和android的类似</p>
-<p>图片资源文件两种放法</p>
-<ol>
-<li><p>在Supporting  Files 同级添加一个Resources的包，里面直接放图片进去（可以只放三倍图）   </p>
-<pre><code>UIImageView *imageView = [[UIImageView alloc] init];
-   imageView.image = [UIImage imageNamed:@&quot;home_banner.png&quot;];    // 正常显示的图片
-</code></pre></li>
-<li><p>在Assets.xcaseset里面右键新建New image set，然后手动把图片拖动到右边的一倍两倍三倍的框框中去 </p>
-</li>
-</ol>
-<p>storyboard  改成手写UI类型  </p>
-<ol>
-<li>第一步： </li>
-</ol>
-<ul>
-<li>删除storyboard文件  </li>
-<li>编辑Supporting Files目录下的 .plist文件,<br>删除Main storyboard  file name这一项</li>
-</ul>
-<ol>
-<li>第二步：<br> 编辑AppDelegate</li>
-</ol>
-<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    [self.window makeKeyAndVisible];
-
-    ViewController *__rootController = [[ViewController alloc] init];
-    UINavigationController *__navCtrler = [[UINavigationController alloc] initWithRootViewController:__rootController];
-    __navCtrler.navigationBarHidden = YES;
-    self.window.rootViewController = __navCtrler;
-  // Override point for customization after application launch.
-    return YES;
-}
-</code></pre><p>这个相当于Application的oncreate,在这里加载Entry activity</p>
-<p>在ViewController里面手动往根View里面添加控件</p>
-<pre><code>- (void)viewDidLoad {
-    [super viewDidLoad];
-
-    UILabel *firstLable=[[UILabel alloc]init];
-    firstLable.frame=CGRectMake(0, 0, 100, 100);
-    firstLable.backgroundColor = [UIColor whiteColor]; //设置lable背景颜色为黑色
-
-    firstLable.text=@&quot;第一级&quot;;
-    firstLable.userInteractionEnabled = YES;
-
-    [firstLable setTextColor:[UIColor greenColor]]; //设置文本字体颜色为白色
-
-    [self.view addSubview:firstLable];
-    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapLable:)];
-    [firstLable addGestureRecognizer:singleTap];
-
-    // Do any additional setup after loading the view, typically from a nib.
-}
-</code></pre><p>viewDidLoad 相当于Activity的oncreate，这里我们就是手写View，然后加到根View里面去 self.view<br>    [self.view addSubview:firstLable];</p>
-<h1 id="第三课：Viewcontroller-之间的跳转"><a href="#第三课：Viewcontroller-之间的跳转" class="headerlink" title="第三课：Viewcontroller  之间的跳转"></a>第三课：Viewcontroller  之间的跳转</h1><p>在ViewController从一个Viewcontroller跳到另外一个SecondViewController</p>
-<pre><code>-(void) tapLable:(UILabel *)sender{
-    NSLog(@&quot;进入第二级Controller&quot;);
-
-    SecondViewController *controller = [[SecondViewController alloc] init];
-    [self.navigationController pushViewController:controller animated:YES];
-}
-</code></pre><p>在SecondViewController也是一样的写法</p>
-<p> 返回第一个VIewCOntroller的方法</p>
-<pre><code>[self.navigationController popViewControllerAnimated:YES];
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2400,7 +1999,7 @@ target
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">30</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2422,7 +2021,7 @@ target
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>

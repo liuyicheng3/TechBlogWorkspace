@@ -1,4 +1,4 @@
-title: Gradle配置中介
+title: Gradle配置分析  
 date: 2015-11-01 20:10:33
 categories:
 - android
@@ -9,8 +9,6 @@ tags:
 ---
 
 
-
-buildGradle配置分析  
 TopicLevel的gradle    
 
     buildscript {
@@ -139,7 +137,7 @@ Mudule level的build.gradle
                     }
                 }
                 release {
-                    buildConfigField "String", "RELEASE_TIME", "\"2016/12/22\"" // TODO 发布时修改为当天日期
+                    buildConfigField "String", "RELEASE_TIME", "\"2017/1/1\"" //  发布时修改为当天日期
                     buildConfigField "boolean", "DEVELOP_MODE", "false" // 关闭开发者模式
                     proguardFiles 'proguard.cfg'
                     minifyEnabled true
@@ -165,8 +163,8 @@ Mudule level的build.gradle
             defaultConfig {
                 minSdkVersion 14
                 targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
-                versionCode 5220
-                versionName "5.2.2"
+                versionCode 1000
+                versionName "1.0.0"
                 //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:"googleMarket" ]
                 multiDexEnabled false
                 multiDexKeepProguard file('multiDexKeep.pro')
@@ -233,25 +231,27 @@ KEY_PASSWORD=nico
                 buildConfigField "String", "RELEASE_TIME", "\"Not yet\""
                 buildConfigField "boolean", "DEVELOP_MODE", "true"
 
-会在
+会在编译时候生成并存放在build/generated/source/buildConfig/...BuildConfig.java   
 
-        public final class BuildConfig {
-          public static final boolean DEBUG = Boolean.parseBoolean("true");
-          public static final String APPLICATION_ID = "im.ecloud.ecalendar";
-          public static final String BUILD_TYPE = "debug";
-          public static final String FLAVOR = "own";
-          public static final int VERSION_CODE = 5220;
-          public static final String VERSION_NAME = "5.2.2";
-          // Fields from build type: debug
-          public static final boolean DEVELOP_MODE = true;
-          public static final String RELEASE_TIME = "Not yet";
-        }
+
+
+            public final class BuildConfig {
+              public static final boolean DEBUG = Boolean.parseBoolean("true");
+              public static final String APPLICATION_ID = "com.lyc.study";
+              public static final String BUILD_TYPE = "debug";
+              public static final String FLAVOR = "own";
+              public static final int VERSION_CODE = 100;
+              public static final String VERSION_NAME = "1.0.0";
+              // Fields from build type: debug
+              public static final boolean DEVELOP_MODE = true;
+              public static final String RELEASE_TIME = "Not yet";
+            }
 
 
 可以参考友盟的多渠道打包（github）
 
 
-一个介绍gradle比较好的网站
+一个介绍gradle比较好的网站   
 http://stormzhang.com/posts/
 
 

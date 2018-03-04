@@ -87,19 +87,28 @@
 
 
 
-<meta name="description" content="第一步：  gradle引入以及配置compile ‘com.android.support:multidex:1.0.1’
-defaultConfig {    minSdkVersion 14    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限    versionCo">
+<meta name="description" content="第一步：  gradle引入以及配置compile &amp;apos;com.android.support:multidex:1.0.1&amp;apos;
+
+defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android分包">
 <meta property="og:url" content="http://yoursite.com/2015/11/01/Android分包/index.html">
 <meta property="og:site_name" content="Nico随笔">
-<meta property="og:description" content="第一步：  gradle引入以及配置compile ‘com.android.support:multidex:1.0.1’
-defaultConfig {    minSdkVersion 14    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限    versionCo">
-<meta property="og:updated_time" content="2017-03-17T13:26:00.000Z">
+<meta property="og:description" content="第一步：  gradle引入以及配置compile &amp;apos;com.android.support:multidex:1.0.1&amp;apos;
+
+defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限">
+<meta property="og:updated_time" content="2018-03-04T05:04:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android分包">
-<meta name="twitter:description" content="第一步：  gradle引入以及配置compile ‘com.android.support:multidex:1.0.1’
-defaultConfig {    minSdkVersion 14    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限    versionCo">
+<meta name="twitter:description" content="第一步：  gradle引入以及配置compile &amp;apos;com.android.support:multidex:1.0.1&amp;apos;
+
+defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限">
 
 
 
@@ -346,12 +355,27 @@ defaultConfig {    minSdkVersion 14    targetSdkVersion 22  // 请勿随意改�
       
 
       
-        <h2 id="第一步：-gradle引入以及配置"><a href="#第一步：-gradle引入以及配置" class="headerlink" title="第一步：  gradle引入以及配置"></a>第一步：  gradle引入以及配置</h2><p>compile ‘com.android.support:multidex:1.0.1’</p>
-<p>defaultConfig {<br>    minSdkVersion 14<br>    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限<br>    versionCode 5210<br>    versionName “5.2.1”<br>    //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:”googleMarket” ]<br>    multiDexEnabled true<br>    multiDexKeepProguard file(‘multiDexKeep.pro’)<br>    // resConfigs “en”, “zh_CN”, “zh_TW” 暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制<br>}</p>
-<h2 id="第二步：修改Application"><a href="#第二步：修改Application" class="headerlink" title="第二步：修改Application"></a>第二步：修改Application</h2><p>@Override<br>protected void attachBaseContext(Context base) {<br>    super.attachBaseContext(base);<br>    MultiDex.install(base);<br>}</p>
-<h2 id="第三步：保证关键类在主dex中"><a href="#第三步：保证关键类在主dex中" class="headerlink" title="第三步：保证关键类在主dex中"></a>第三步：保证关键类在主dex中</h2><p> 就是通过multiDexKeep.pro文件控制的</p>
-<p>#确保个推 sdk 在主 dex 中<br>-dontwarn com.igexin.<strong><br>-keep class com.igexin.</strong>{*;}</p>
+        <h2 id="第一步：-gradle引入以及配置"><a href="#第一步：-gradle引入以及配置" class="headerlink" title="第一步：  gradle引入以及配置"></a>第一步：  gradle引入以及配置</h2><pre><code>compile &apos;com.android.support:multidex:1.0.1&apos;
 
+defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
+    versionCode 5210
+    versionName &quot;5.2.1&quot;
+    //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
+    multiDexEnabled true
+    multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
+    // resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; 暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
+}
+</code></pre><h2 id="第二步：修改Application"><a href="#第二步：修改Application" class="headerlink" title="第二步：修改Application"></a>第二步：修改Application</h2><pre><code>@Override
+protected void attachBaseContext(Context base) {
+    super.attachBaseContext(base);
+    MultiDex.install(base);
+}
+</code></pre><h2 id="第三步：保证关键类在主dex中"><a href="#第三步：保证关键类在主dex中" class="headerlink" title="第三步：保证关键类在主dex中"></a>第三步：保证关键类在主dex中</h2><p> 就是通过multiDexKeep.pro文件控制的<br> 个推 sdk强制在主dex 中</p>
+<pre><code>-dontwarn com.igexin.**
+-keep class com.igexin.**{*;}
+</code></pre>
       
     </div>
 
@@ -395,8 +419,8 @@ defaultConfig {    minSdkVersion 14    targetSdkVersion 22  // 请勿随意改�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/01/ios学习笔记/" rel="next" title="iOS入门">
-                <i class="fa fa-chevron-left"></i> iOS入门
+              <a href="/2015/11/01/AS导入工程配置/" rel="next" title="AS工程导入">
+                <i class="fa fa-chevron-left"></i> AS工程导入
               </a>
             
           </div>
@@ -405,8 +429,8 @@ defaultConfig {    minSdkVersion 14    targetSdkVersion 22  // 请勿随意改�
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/11/01/gradle坑/" rel="prev" title="AS 踩坑日记">
-                AS 踩坑日记 <i class="fa fa-chevron-right"></i>
+              <a href="/2015/11/01/混淆写法/" rel="prev" title="混淆写法">
+                混淆写法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -479,7 +503,7 @@ defaultConfig {    minSdkVersion 14    targetSdkVersion 22  // 请勿随意改�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">30</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -501,7 +525,7 @@ defaultConfig {    minSdkVersion 14    targetSdkVersion 22  // 请勿随意改�
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>

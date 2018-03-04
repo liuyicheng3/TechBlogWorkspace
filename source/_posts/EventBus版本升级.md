@@ -1,3 +1,16 @@
+title: EventBus3.0
+date: 2018-2-10 
+categories:
+- Android
+tags:
+- Android
+- eventbus3.0
+- 注解
+- APT
+
+
+---
+
 # EventBus3.0 优点：
 
 EventBus 3由于使用了注解，比起使用反射来遍历方法的2.4版本逊色不少。但开挂之后(启用了索引)远远超出之前的版本。

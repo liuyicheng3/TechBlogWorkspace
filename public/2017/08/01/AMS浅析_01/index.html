@@ -1,0 +1,766 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,AMS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Activity启动理解PS：一定要下载官方对应版本SDK，然后应用的SDK版本也要对应建议配合GrepCode 查找类的位置，
+1. Android的CS模式Android启动是通过AtivityThread的main函数启动的，四大组件的生命周期都是通过AMS远程控制的，比如我们启动一个Acitivity,Service等都不是直接启动的，都是binder告诉AMS我们要启动四大组件，然后AM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AMS client端分析">
+<meta property="og:url" content="http://yoursite.com/2017/08/01/AMS浅析_01/index.html">
+<meta property="og:site_name" content="Nico随笔">
+<meta property="og:description" content="Activity启动理解PS：一定要下载官方对应版本SDK，然后应用的SDK版本也要对应建议配合GrepCode 查找类的位置，
+1. Android的CS模式Android启动是通过AtivityThread的main函数启动的，四大组件的生命周期都是通过AMS远程控制的，比如我们启动一个Acitivity,Service等都不是直接启动的，都是binder告诉AMS我们要启动四大组件，然后AM">
+<meta property="og:updated_time" content="2018-03-04T05:45:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AMS client端分析">
+<meta name="twitter:description" content="Activity启动理解PS：一定要下载官方对应版本SDK，然后应用的SDK版本也要对应建议配合GrepCode 查找类的位置，
+1. Android的CS模式Android启动是通过AtivityThread的main函数启动的，四大组件的生命周期都是通过AMS远程控制的，比如我们启动一个Acitivity,Service等都不是直接启动的，都是binder告诉AMS我们要启动四大组件，然后AM">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/01/AMS浅析_01/"/>
+
+
+
+
+
+  <title> AMS client端分析 | Nico随笔 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Nico随笔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/01/AMS浅析_01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                AMS client端分析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-01T00:00:00+08:00">
+                2017-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Activity启动理解"><a href="#Activity启动理解" class="headerlink" title="Activity启动理解"></a>Activity启动理解</h1><p>PS：<br>一定要下载官方对应版本SDK，然后应用的SDK版本也要对应<br>建议配合GrepCode 查找类的位置，</p>
+<h1 id="1-Android的CS模式"><a href="#1-Android的CS模式" class="headerlink" title="1. Android的CS模式"></a>1. Android的CS模式</h1><p>Android启动是通过AtivityThread的main函数启动的，<br>四大组件的生命周期都是通过AMS远程控制的，比如我们启动一个Acitivity,Service等都不是直接启动的，都是binder告诉AMS我们要启动四大组件，然后AMS通过binder处理（比如Activity A要启动Activity B，但是中途涉及到A的onpause  onStop和B 的oncreate，都是AMS依据ActivityRecord进行处理的）</p>
+<h1 id="2-三个核心部分"><a href="#2-三个核心部分" class="headerlink" title="2. 三个核心部分"></a>2. 三个核心部分</h1><h2 id="client端："><a href="#client端：" class="headerlink" title="client端："></a>client端：</h2><p>ActivityThread<br>ActivityMangerNative   和ActivityManagerProxy<br>ApplicationThread和ApplicationThreadNative  </p>
+<p>其实还涉及到：其它的比如 Instrumentation但是这个不是核心类</p>
+<h2 id="Server端"><a href="#Server端" class="headerlink" title="Server端"></a>Server端</h2><p>ApplicationThreadProxy<br>ActivityMangerService<br>ProcessRecord<br>ActivityStack<br>ActivityRecord  </p>
+<h2 id="跨进程通讯Binder"><a href="#跨进程通讯Binder" class="headerlink" title="跨进程通讯Binder"></a>跨进程通讯Binder</h2><p>Binder 和 Parcel</p>
+<h1 id="3-Activity-A-启动Activity-B的流程详解"><a href="#3-Activity-A-启动Activity-B的流程详解" class="headerlink" title="3. Activity A 启动Activity B的流程详解"></a>3. Activity A 启动Activity B的流程详解</h1><p>ps：<br>ActivityMangerNative是往AMS发送消息的<br>ApplicationThread是从AMS接受指令消息的</p>
+<h2 id="1、Client发送Intent"><a href="#1、Client发送Intent" class="headerlink" title="1、Client发送Intent"></a>1、Client发送Intent</h2><p>Activity#startActivity(Intent) &gt;&gt; Instrumentation#execStartActivity()  &gt;&gt;<br>ActivityManagerNative#startActivity() &gt;&gt;</p>
+<h2 id="2、AMS-查询栈，告诉要Pause"><a href="#2、AMS-查询栈，告诉要Pause" class="headerlink" title="2、AMS 查询栈，告诉要Pause"></a>2、AMS 查询栈，告诉要Pause</h2><p>ActivityMangerNative#onTransact() &gt;&gt;    </p>
+<p>ActivityMangerNative#schedulePauseActivity()这里是抽象的具体实现在<br>ActivityThread$ApplicationThread#schedulePauseActivity() &gt;&gt;   </p>
+<p>ActivityThread#sendMessage() 也就是通过H mH 发送Message&gt;&gt;<br>ActivityThread$H#handleMessage()&gt;&gt;<br>ActivityThread#handlePauseActivity这里先要取出当前Activity ActivityClientRecord r = mActivities.get(token) &gt;&gt;<br>ActivityThread#performPauseActivity()&gt;&gt;    </p>
+<p>Instrumentation#callActivityOnPause &gt;&gt;</p>
+<p> ActivityManagerNative#activityPaused(token) 这个是在上一步Instrumentation pause完Activity后顺序执行的<br> 这里也就是通过binder发送消息&gt;&gt;  </p>
+<p> PS:Activity切换要不要调用onstop 要看Theme，如果是android:style/Theme.Translucent就不会调用Onstop。所以我是不讲stop这个流程（实际上鄙人是有点懒。。。）</p>
+<h2 id="3、AMS正式启动-Activity-B"><a href="#3、AMS正式启动-Activity-B" class="headerlink" title="3、AMS正式启动 Activity B"></a>3、AMS正式启动 Activity B</h2><p> ActivityMangerNative#onTransact() &gt;&gt;    </p>
+<p>ActivityMangerNative#scheduleLaunchActivity()这里是抽象的具体实现在<br>ActivityThread$ApplicationThread#scheduleLaunchActivity() &gt;&gt;  </p>
+<p>经过H mH转到主线程里面<br>ActivityThread#handleLaunchActivity&gt;&gt; </p>
+<p>ActivityThread#performLaunchActivity<br>初始化Activity包括以下几步  </p>
+<ol>
+<li><p>生成Activity B ，这里仅仅是生成简单的java类 </p>
+<pre><code>java.lang.ClassLoader cl = r.packageInfo.getClassLoader();
+         activity = mInstrumentation.newActivity(
+                 cl, component.getClassName(), r.intent);  
+</code></pre></li>
+<li><p>附加给Activity 各种Android系统类型</p>
+<pre><code>attach(Context context, ActivityThread aThread,
+    Instrumentation instr, IBinder token, int ident,
+    Application application, Intent intent, ActivityInfo info,
+    CharSequence title, Activity parent, String id,
+    NonConfigurationInstances lastNonConfigurationInstances,
+    Configuration config, String referrer, IVoiceInteractor voiceInteractor) 
+</code></pre></li>
+<li><p>回调oncreate  注意这个地方不会通知AMS</p>
+<pre><code>mInstrumentation.callActivityOnCreate(activity, r.state);  
+</code></pre></li>
+</ol>
+<p>最终这个会调用到Activity的oncreate</p>
+<p>ps：ActivityThread.H 的Message可以看看，就可以知道有哪些操作需要和AMS打交道 </p>
+<blockquote>
+<blockquote>
+</blockquote>
+</blockquote>
+<p>ActivityThread#handleResumeActivity<br>这里会依次调用</p>
+<ol>
+<li>ActivityThread#performResumeActivity(token, clearHide)   </li>
+<li>ActivityManagerNative#willActivityBeVisible（）<br>告诉AMS Activity已经准备好了   </li>
+<li>ActivityManagerNative#activityResumed（）<br>告诉AMS Activity已经resumed</li>
+</ol>
+<p>在2、3步骤里面就是做Activity B的界面绘制工作:</p>
+<pre><code>r.window = r.activity.getWindow();
+View decor = r.window.getDecorView();
+decor.setVisibility(View.INVISIBLE);
+ViewManager wm = a.getWindowManager();
+a.mDecor = decor;
+l.type = WindowManager.LayoutParams.TYPE_BASE_APPLICATION;
+l.softInputMode |= forwardBit;
+if (a.mVisibleFromClient) {
+    a.mWindowAdded = true;
+    wm.addView(decor, l);
+    }
+</code></pre><p>具体流程参考ActivityThread#handleResumeActivity()流程</p>
+<p>涉及到window，DecroView等</p>
+<h2 id="AMS-通知显示Acitivity-B已经Onresume，"><a href="#AMS-通知显示Acitivity-B已经Onresume，" class="headerlink" title="AMS 通知显示Acitivity B已经Onresume，"></a>AMS 通知显示Acitivity B已经Onresume，</h2><p>然后就是和onpause一样的流程并且回调Activity的onResume</p>
+<h1 id="4-哪些是公用的，为hook做准备"><a href="#4-哪些是公用的，为hook做准备" class="headerlink" title="4. 哪些是公用的，为hook做准备"></a>4. 哪些是公用的，为hook做准备</h1>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/AMS/" rel="tag"># AMS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/01/iOS学习笔记/" rel="next" title="iOS入门">
+                <i class="fa fa-chevron-left"></i> iOS入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/03/AMS浅析_02/" rel="prev" title="AMS server端分析">
+                AMS server端分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true"
+               alt="Liuycheng" />
+          <p class="site-author-name" itemprop="name">Liuycheng</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Activity启动理解"><span class="nav-number">1.</span> <span class="nav-text">Activity启动理解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Android的CS模式"><span class="nav-number">2.</span> <span class="nav-text">1. Android的CS模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-三个核心部分"><span class="nav-number">3.</span> <span class="nav-text">2. 三个核心部分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#client端："><span class="nav-number">3.1.</span> <span class="nav-text">client端：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Server端"><span class="nav-number">3.2.</span> <span class="nav-text">Server端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跨进程通讯Binder"><span class="nav-number">3.3.</span> <span class="nav-text">跨进程通讯Binder</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Activity-A-启动Activity-B的流程详解"><span class="nav-number">4.</span> <span class="nav-text">3. Activity A 启动Activity B的流程详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、Client发送Intent"><span class="nav-number">4.1.</span> <span class="nav-text">1、Client发送Intent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、AMS-查询栈，告诉要Pause"><span class="nav-number">4.2.</span> <span class="nav-text">2、AMS 查询栈，告诉要Pause</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、AMS正式启动-Activity-B"><span class="nav-number">4.3.</span> <span class="nav-text">3、AMS正式启动 Activity B</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AMS-通知显示Acitivity-B已经Onresume，"><span class="nav-number">4.4.</span> <span class="nav-text">AMS 通知显示Acitivity B已经Onresume，</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-哪些是公用的，为hook做准备"><span class="nav-number">5.</span> <span class="nav-text">4. 哪些是公用的，为hook做准备</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liuycheng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

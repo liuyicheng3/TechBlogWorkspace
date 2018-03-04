@@ -1,0 +1,770 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,分享图片," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="方法11.1 截取Activitypublic static Bitmap takeScreenShot(Activity activity) {
+       View view = activity.getWindow().getDecorView();
+       if (view == null) {
+           return null;
+       }
+       vie">
+<meta property="og:type" content="article">
+<meta property="og:title" content="生成分享图片">
+<meta property="og:url" content="http://yoursite.com/2018/02/10/生成分享图片/index.html">
+<meta property="og:site_name" content="Nico随笔">
+<meta property="og:description" content="方法11.1 截取Activitypublic static Bitmap takeScreenShot(Activity activity) {
+       View view = activity.getWindow().getDecorView();
+       if (view == null) {
+           return null;
+       }
+       vie">
+<meta property="og:updated_time" content="2018-03-04T05:26:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="生成分享图片">
+<meta name="twitter:description" content="方法11.1 截取Activitypublic static Bitmap takeScreenShot(Activity activity) {
+       View view = activity.getWindow().getDecorView();
+       if (view == null) {
+           return null;
+       }
+       vie">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/10/生成分享图片/"/>
+
+
+
+
+
+  <title> 生成分享图片 | Nico随笔 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Nico随笔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/生成分享图片/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                生成分享图片
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-10T00:00:00+08:00">
+                2018-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h2><h3 id="1-1-截取Activity"><a href="#1-1-截取Activity" class="headerlink" title="1.1 截取Activity"></a>1.1 截取Activity</h3><pre><code>public static Bitmap takeScreenShot(Activity activity) {
+       View view = activity.getWindow().getDecorView();
+       if (view == null) {
+           return null;
+       }
+       view.setDrawingCacheEnabled(true);
+       view.buildDrawingCache();
+       Bitmap b1 = view.getDrawingCache();
+       if (b1 == null) {
+           return null;
+       }
+       // 获取状态栏高度
+       Rect frame = new Rect();
+       activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+       int statusBarHeight = frame.top;
+
+       // 获取屏幕长和高
+       int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+
+       Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, b1.getHeight() - statusBarHeight);
+       view.destroyDrawingCache();
+       b1.recycle();
+       return b;
+   }
+</code></pre><h3 id="1-3-截取ViewGroup"><a href="#1-3-截取ViewGroup" class="headerlink" title="1.3 截取ViewGroup"></a>1.3 截取ViewGroup</h3><pre><code>public static Bitmap takeScreenShotView(LinnerLayout viewGroup) {
+       Bitmap bitmap = null;
+       if (viewGroup != null) {
+           int h = 0;
+           for (int i = 0; i &lt; viewGroup.getChildCount(); i++) {
+               h += viewGroup.getChildAt(i).getHeight();
+           }
+           if (viewGroup.getHeight() &gt; h) {
+               h = viewGroup.getHeight();
+           }
+           bitmap = Bitmap.createBitmap(viewGroup.getWidth(), h, Config.ARGB_8888);
+           final Canvas c = new Canvas(bitmap);
+           c.drawColor(Color.WHITE);
+           viewGroup.draw(c);
+       }
+       return bitmap;
+   }
+</code></pre><h2 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h2><p>自己生成bitmap绘制，这个地方由于自己绘制的比较麻烦，一般就是在一张图片上绘制一些文字即可</p>
+<h2 id="方法3"><a href="#方法3" class="headerlink" title="方法3"></a>方法3</h2><p>生成未加载的布局文件的分享图片</p>
+<pre><code>View targetView = LayoutInflater.from(mActivity).inflate(R.layout.view_share, null);
+targetView.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),      View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY));
+targetView.layout(0, 0, width, height);
+bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Config.ARGB_8888);
+Canvas canvas = new Canvas(bitmap);
+canvas.drawColor(Color.WHITE);
+view.draw(canvas);
+</code></pre><p>核心是布局文件没有加载，也即没有measure和layout 就无法进行绘制（实际上一个view之所以能被绘制上去就是因为父容器measure和layout了它）才能进行绘制</p>
+<p>一个知识点： view 不是不可以在后台线程修改的，而是需只有原始创建这个视图层次(view hierachy)的线程才能修改它的视图(view)</p>
+<h2 id="扩展思维"><a href="#扩展思维" class="headerlink" title="扩展思维"></a>扩展思维</h2><p>如何生成listview和recycleView的截屏   </p>
+<h3 id="方案1"><a href="#方案1" class="headerlink" title="方案1"></a>方案1</h3><p>原理：我们可以知道第一个和最后一个view在屏幕上的位置，也可以获取获取整个屏幕的截图，所谓我们可以滑动一屏截取一屏(我们可以估算出一屏大约有多少元素，滚动固定长度即可)的内容，然后最后拼接出来  </p>
+<h3 id="方案2"><a href="#方案2" class="headerlink" title="方案2"></a>方案2</h3><p>原理：可以逐个生成itemView的bitmap（采用方法3），然后拼接出来</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/分享图片/" rel="tag"># 分享图片</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/10/图片不同尺寸缓存的优化方案/" rel="next" title="又拍云图片显示优化">
+                <i class="fa fa-chevron-left"></i> 又拍云图片显示优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/13/首页崩溃解决方案/" rel="prev" title="首页Cache导致崩溃">
+                首页Cache导致崩溃 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true"
+               alt="Liuycheng" />
+          <p class="site-author-name" itemprop="name">Liuycheng</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#方法1"><span class="nav-number">1.</span> <span class="nav-text">方法1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-截取Activity"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 截取Activity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-截取ViewGroup"><span class="nav-number">1.2.</span> <span class="nav-text">1.3 截取ViewGroup</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法2"><span class="nav-number">2.</span> <span class="nav-text">方法2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法3"><span class="nav-number">3.</span> <span class="nav-text">方法3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展思维"><span class="nav-number">4.</span> <span class="nav-text">扩展思维</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案1"><span class="nav-number">4.1.</span> <span class="nav-text">方案1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案2"><span class="nav-number">4.2.</span> <span class="nav-text">方案2</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liuycheng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
