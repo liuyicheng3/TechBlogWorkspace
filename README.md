@@ -1,3 +1,8 @@
+![page主页](https://github.com/liuyicheng3/learning-summary/blob/master/images/githubPage.png)   
+
+https://liuyicheng3.github.io/  
+
+
 # 1. 发布TechBolg方法
 ## 1.1 一键发布
 
@@ -9,7 +14,7 @@
 
 #### 后台做的事儿
 1. 删除source/_posts目录里面的文章
-2. 从learning-summary 中挑选出可以发布的markdown，拷贝进source/_posts
+2. 从learning-summary 中挑选出可以发布的markdown，拷贝进source/_posts。(前三行是以下格式的，才可以发布）
 
             title: 点赞爱心动画
             date: 2017-10-10 
@@ -18,7 +23,7 @@
 3. 自动化Step1 和 Step 2
 4. 同时把TechBlogWorkspace 同步更新到github中去
 
-## 1.2 手动
+## 1.2 手动发布
 ### Step1  
 1. 把要新加入的文章拷贝进source/_posts 目录  
 2. 同时在顶部添加分类信息，去掉Title   
