@@ -1592,6 +1592,378 @@ if (a.mVisibleFromClient) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/iOS学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/iOS学习笔记/" itemprop="url">
+                  iOS入门
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="第一课：熟悉OC语法"><a href="#第一课：熟悉OC语法" class="headerlink" title="第一课：熟悉OC语法"></a>第一课：熟悉OC语法</h1><h1 id="第二课：storyboard和-手写View"><a href="#第二课：storyboard和-手写View" class="headerlink" title="第二课：storyboard和 手写View"></a>第二课：storyboard和 手写View</h1><p>storyboard;</p>
+<p>直接往上面拖放控件，然后按住ctr  把控件拖动到   @implementation，就相当于自动findview了，可以直接使用是这个控件了  </p>
+<p>   @property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;</p>
+<p>还有一种就是直接关联上点击事件<br>把控件直接拖动到这个申明方法上就可以了</p>
+<pre><code>- (IBAction)showAlert:(id)sender;
+</code></pre><p>这个的原理可以看看storyboard的文件内容就可以明白了，大致和android的类似</p>
+<p>图片资源文件两种放法</p>
+<ol>
+<li><p>在Supporting  Files 同级添加一个Resources的包，里面直接放图片进去（可以只放三倍图）   </p>
+<pre><code>UIImageView *imageView = [[UIImageView alloc] init];
+   imageView.image = [UIImage imageNamed:@&quot;home_banner.png&quot;];    // 正常显示的图片
+</code></pre></li>
+<li><p>在Assets.xcaseset里面右键新建New image set，然后手动把图片拖动到右边的一倍两倍三倍的框框中去 </p>
+</li>
+</ol>
+<p>storyboard  改成手写UI类型  </p>
+<ol>
+<li>第一步： </li>
+</ol>
+<ul>
+<li>删除storyboard文件  </li>
+<li>编辑Supporting Files目录下的 .plist文件,<br>删除Main storyboard  file name这一项</li>
+</ul>
+<ol>
+<li>第二步：<br> 编辑AppDelegate</li>
+</ol>
+<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window makeKeyAndVisible];
+
+    ViewController *__rootController = [[ViewController alloc] init];
+    UINavigationController *__navCtrler = [[UINavigationController alloc] initWithRootViewController:__rootController];
+    __navCtrler.navigationBarHidden = YES;
+    self.window.rootViewController = __navCtrler;
+  // Override point for customization after application launch.
+    return YES;
+}
+</code></pre><p>这个相当于Application的oncreate,在这里加载Entry activity</p>
+<p>在ViewController里面手动往根View里面添加控件</p>
+<pre><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    UILabel *firstLable=[[UILabel alloc]init];
+    firstLable.frame=CGRectMake(0, 0, 100, 100);
+    firstLable.backgroundColor = [UIColor whiteColor]; //设置lable背景颜色为黑色
+
+    firstLable.text=@&quot;第一级&quot;;
+    firstLable.userInteractionEnabled = YES;
+
+    [firstLable setTextColor:[UIColor greenColor]]; //设置文本字体颜色为白色
+
+    [self.view addSubview:firstLable];
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapLable:)];
+    [firstLable addGestureRecognizer:singleTap];
+
+    // Do any additional setup after loading the view, typically from a nib.
+}
+</code></pre><p>viewDidLoad 相当于Activity的oncreate，这里我们就是手写View，然后加到根View里面去 self.view<br>    [self.view addSubview:firstLable];</p>
+<h1 id="第三课：Viewcontroller-之间的跳转"><a href="#第三课：Viewcontroller-之间的跳转" class="headerlink" title="第三课：Viewcontroller  之间的跳转"></a>第三课：Viewcontroller  之间的跳转</h1><p>在ViewController从一个Viewcontroller跳到另外一个SecondViewController</p>
+<pre><code>-(void) tapLable:(UILabel *)sender{
+    NSLog(@&quot;进入第二级Controller&quot;);
+
+    SecondViewController *controller = [[SecondViewController alloc] init];
+    [self.navigationController pushViewController:controller animated:YES];
+}
+</code></pre><p>在SecondViewController也是一样的写法</p>
+<p> 返回第一个VIewCOntroller的方法</p>
+<pre><code>[self.navigationController popViewControllerAnimated:YES];
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Android分包/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/Android分包/" itemprop="url">
+                  Android分包
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="第一步：-gradle引入以及配置"><a href="#第一步：-gradle引入以及配置" class="headerlink" title="第一步：  gradle引入以及配置"></a>第一步：  gradle引入以及配置</h2><pre><code>compile &apos;com.android.support:multidex:1.0.1&apos;
+
+defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
+    versionCode 5210
+    versionName &quot;5.2.1&quot;
+    //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
+    multiDexEnabled true
+    multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
+    // resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; 暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
+}
+</code></pre><h2 id="第二步：修改Application"><a href="#第二步：修改Application" class="headerlink" title="第二步：修改Application"></a>第二步：修改Application</h2><pre><code>@Override
+protected void attachBaseContext(Context base) {
+    super.attachBaseContext(base);
+    MultiDex.install(base);
+}
+</code></pre><h2 id="第三步：保证关键类在主dex中"><a href="#第三步：保证关键类在主dex中" class="headerlink" title="第三步：保证关键类在主dex中"></a>第三步：保证关键类在主dex中</h2><p> 就是通过multiDexKeep.pro文件控制的<br> 个推 sdk强制在主dex 中</p>
+<pre><code>-dontwarn com.igexin.**
+-keep class com.igexin.**{*;}
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Okhttp核心流程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1867,330 +2239,6 @@ return networkResponse;
 <li>通过上述值到服务器端检查，判断文件是否继续缓存；  </li>
 </ul>
 <h4 id="7-关于-Cache-Control-max-age-秒-和-Expires"><a href="#7-关于-Cache-Control-max-age-秒-和-Expires" class="headerlink" title="7.关于 Cache-Control: max-age=秒 和 Expires"></a>7.关于 Cache-Control: max-age=秒 和 Expires</h4><p>Expires = 时间，HTTP 1.0 版本，缓存的载止时间，允许客户端在这个时间之前不去检查（发请求）<br>max-age = 秒，HTTP 1.1版本，资源在本地缓存多少秒。<br>如果max-age和Expires同时存在，则被Cache-Control的max-age覆盖。<br>Expires 的一个缺点就是，返回的到期时间是服务器端的时间，这样存在一个问题，如果客户端的时间与服务器的时间相差很大，那么误差就很大，所以在HTTP 1.1版开始，使用Cache-Control: max-age=秒替代。<br>Expires =max-age +   “每次下载时的当前的request时间”<br>所以一旦重新下载的页面后，expires就重新计算一次，但last-modified不会变化   </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/" itemprop="url">
-                  AS和Xcode快捷键
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Xcode"><a href="#Xcode" class="headerlink" title="Xcode"></a>Xcode</h1><p>XCode   不能直接修改文件名，需要找到本文件对应的申明或者实现的名称，右键refactor&gt;rename  修改<br>（记得勾选 Rename related files）</p>
-<p>在 Xcode里面所有的窗口控制显示与否都可以通过右上角的来控制  </p>
-<p>定位类的位置  shift  commoand  j</p>
-<p>commond  6 </p>
-<p>option 然后点击方法位置</p>
-<p>commond   T</p>
-<p>shift  commoand  O</p>
-<p>shift  commoand  F</p>
-<p> commoand  F</p>
-<p>esc  查看方法参数   </p>
-<p>快捷键位置方法   XCode&gt;preferences&gt;Key Bindings</p>
-<p>显示主题颜色设置   XCode&gt;preferences&gt;Font &amp; Colors   从Default  改成   Dusk<br>窗口显示和隐藏的button（其中代码下面的debug和log窗口在他们的右下角又有单独的控制显示和隐藏的button）  </p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E8%AE%BE%E7%BD%AE.png?raw=true" alt="image"></p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E5%BF%AB%E6%8D%B7%E9%94%AE.jpg?raw=true" alt="image">  </p>
-<p>参考资料：<a href="http://www.cocoachina.com/ios/20141224/10752.html" target="_blank" rel="external">http://www.cocoachina.com/ios/20141224/10752.html</a></p>
-<h1 id="AndroidStudio"><a href="#AndroidStudio" class="headerlink" title="AndroidStudio"></a>AndroidStudio</h1><p>快捷键位置方法   AndroidStudio&gt;preferences&gt;Keymap  （把Mac  OS X 复制一份，然后修改）</p>
-<p>显示主题颜色设置   AndroidStudio&gt;preferences&gt;Editor&gt;Colors &amp; Font   从Default  改成   Darcula  (然后点击 save as  ，再把字体调大一点，不能直接修改) </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/分析UI流畅度/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/分析UI流畅度/" itemprop="url">
-                  Android 性能检测
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="手机端："><a href="#手机端：" class="headerlink" title="手机端："></a>手机端：</h1><h2 id="开发者选项"><a href="#开发者选项" class="headerlink" title="开发者选项"></a>开发者选项</h2><ol>
-<li><p>绘图》 显示布局边界</p>
-</li>
-<li><p>硬件加速渲染 》调试GPU过渡绘制  要打开</p>
-</li>
-</ol>
-<ol>
-<li><p>监控》启用严格模式</p>
-</li>
-<li><p>GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true" alt="image"></p>
-</li>
-</ol>
-<h1 id="电脑端："><a href="#电脑端：" class="headerlink" title="电脑端："></a>电脑端：</h1><ol>
-<li><p>查看MemoryMonitor  ，查看页面内存波动（对于listview ）</p>
-</li>
-<li><p>tools》android》android  device  monistor<br>（其实它就是把android sdk中tools下面的很多功能聚合起来；  如ddms，uiautomatorviewer，monitor等功能聚合起来，但是好像没有集成hierarchyviewer的功能）</p>
-</li>
-<li><p>查看录制页面变化时候的cpu耗时<br>开始录制》选中进程，点击红色方框左边的按钮，然后点击红色方框里右侧的按钮录制正式开始，需要结束时，再点击右侧按钮结束，就会有结果自动生成<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6.png?raw=true" alt="image"></p>
-<p>分析结果》录制实际上是一个采样的过程，可以看图中红色方框里面最耗时的几个方法，基本上可以定位到程序的问题<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6_2.png?raw=true" alt="image"></p>
-</li>
-<li>查看布局层次，以及每一层的绘制时间，目的是减小层次<br>入口是在：tools 下面 hierarchyviewer  查看每个层次的绘制时间（这个好像必须在模拟器上看）</li>
-</ol>
-<h1 id="分析卡的原因"><a href="#分析卡的原因" class="headerlink" title="分析卡的原因"></a>分析卡的原因</h1><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="http://www.cnblogs.com/krislight1105/p/5352500.html" target="_blank" rel="external">http://www.cnblogs.com/krislight1105/p/5352500.html</a><br><a href="http://blog.csdn.net/wangbaochu/article/details/50396512" target="_blank" rel="external">http://blog.csdn.net/wangbaochu/article/details/50396512</a></p>
 
           
         

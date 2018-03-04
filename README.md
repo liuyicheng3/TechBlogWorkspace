@@ -1,3 +1,18 @@
+# 一键发布
+
+        python HexoUtil.py 
+
+### 后台做的事儿
+1. 删除source/_posts目录里面的文章
+2. 从learning-summary 中挑选出可以发布的markdown，拷贝进去
+
+            title: 点赞爱心动画
+            date: 2017-10-10 
+            categories:
+
+3. 自动化Step1 和 Step 2
+4. 同时把TechBlogWorkspace 同步更新到github中去
+
 # 1. 使用方法
 ### Step1  
 1. 把要新加入的文章拷贝进source/_posts 目录  
