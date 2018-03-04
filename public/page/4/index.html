@@ -89,7 +89,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Nico随笔">
-<meta property="og:url" content="http://yoursite.com/archives/2018/page/2/index.html">
+<meta property="og:url" content="http://yoursite.com/page/4/index.html">
 <meta property="og:site_name" content="Nico随笔">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nico随笔">
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/2018/page/2/"/>
+  <link rel="canonical" href="http://yoursite.com/page/4/"/>
 
 
 
 
 
-  <title> 归档 | Nico随笔 </title>
+  <title> Nico随笔 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -151,7 +151,9 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  page-archive  ">
+  <div class="container one-collumn sidebar-position-left 
+   page-home 
+ ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -234,70 +236,224 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
+  <section id="posts" class="posts-expand">
+    
+      
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
+  
 
-    <span class="archive-page-counter">
-      
-      
-      
-        
-      
-      嗯..! 目前共计 30 篇日志。 继续努力。
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/iOS学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
     </span>
 
     
+      <header class="post-header">
 
-      
-      
-      
-
-      
         
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2018">2018</h2>
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/iOS学习笔记/" itemprop="url">
+                  iOS入门
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
         </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
       
       
 
       
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
         
-            <a class="post-title-link" href="/2018/01/03/xml处理/" itemprop="url">
-              
-                <span itemprop="name">生成分享图片</span>
-              
-            </a>
+          
+            <h1 id="第一课：熟悉OC语法"><a href="#第一课：熟悉OC语法" class="headerlink" title="第一课：熟悉OC语法"></a>第一课：熟悉OC语法</h1><h1 id="第二课：storyboard和-手写View"><a href="#第二课：storyboard和-手写View" class="headerlink" title="第二课：storyboard和 手写View"></a>第二课：storyboard和 手写View</h1><p>storyboard;</p>
+<p>直接往上面拖放控件，然后按住ctr  把控件拖动到   @implementation，就相当于自动findview了，可以直接使用是这个控件了  </p>
+<p>   @property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;</p>
+<p>还有一种就是直接关联上点击事件<br>把控件直接拖动到这个申明方法上就可以了</p>
+<pre><code>- (IBAction)showAlert:(id)sender;
+</code></pre><p>这个的原理可以看看storyboard的文件内容就可以明白了，大致和android的类似</p>
+<p>图片资源文件两种放法</p>
+<ol>
+<li><p>在Supporting  Files 同级添加一个Resources的包，里面直接放图片进去（可以只放三倍图）   </p>
+<pre><code>UIImageView *imageView = [[UIImageView alloc] init];
+   imageView.image = [UIImage imageNamed:@&quot;home_banner.png&quot;];    // 正常显示的图片
+</code></pre></li>
+<li><p>在Assets.xcaseset里面右键新建New image set，然后手动把图片拖动到右边的一倍两倍三倍的框框中去 </p>
+</li>
+</ol>
+<p>storyboard  改成手写UI类型  </p>
+<ol>
+<li>第一步： </li>
+</ol>
+<ul>
+<li>删除storyboard文件  </li>
+<li>编辑Supporting Files目录下的 .plist文件,<br>删除Main storyboard  file name这一项</li>
+</ul>
+<ol>
+<li>第二步：<br> 编辑AppDelegate</li>
+</ol>
+<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window makeKeyAndVisible];
+
+    ViewController *__rootController = [[ViewController alloc] init];
+    UINavigationController *__navCtrler = [[UINavigationController alloc] initWithRootViewController:__rootController];
+    __navCtrler.navigationBarHidden = YES;
+    self.window.rootViewController = __navCtrler;
+  // Override point for customization after application launch.
+    return YES;
+}
+</code></pre><p>这个相当于Application的oncreate,在这里加载Entry activity</p>
+<p>在ViewController里面手动往根View里面添加控件</p>
+<pre><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    UILabel *firstLable=[[UILabel alloc]init];
+    firstLable.frame=CGRectMake(0, 0, 100, 100);
+    firstLable.backgroundColor = [UIColor whiteColor]; //设置lable背景颜色为黑色
+
+    firstLable.text=@&quot;第一级&quot;;
+    firstLable.userInteractionEnabled = YES;
+
+    [firstLable setTextColor:[UIColor greenColor]]; //设置文本字体颜色为白色
+
+    [self.view addSubview:firstLable];
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapLable:)];
+    [firstLable addGestureRecognizer:singleTap];
+
+    // Do any additional setup after loading the view, typically from a nib.
+}
+</code></pre><p>viewDidLoad 相当于Activity的oncreate，这里我们就是手写View，然后加到根View里面去 self.view<br>    [self.view addSubview:firstLable];</p>
+<h1 id="第三课：Viewcontroller-之间的跳转"><a href="#第三课：Viewcontroller-之间的跳转" class="headerlink" title="第三课：Viewcontroller  之间的跳转"></a>第三课：Viewcontroller  之间的跳转</h1><p>在ViewController从一个Viewcontroller跳到另外一个SecondViewController</p>
+<pre><code>-(void) tapLable:(UILabel *)sender{
+    NSLog(@&quot;进入第二级Controller&quot;);
+
+    SecondViewController *controller = [[SecondViewController alloc] init];
+    [self.navigationController pushViewController:controller animated:YES];
+}
+</code></pre><p>在SecondViewController也是一样的写法</p>
+<p> 返回第一个VIewCOntroller的方法</p>
+<pre><code>[self.navigationController popViewControllerAnimated:YES];
+</code></pre>
+          
         
-      </h1>
+      
+    </div>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-01-03T00:00:00+08:00"
-              content="2018-01-03" >
-          01-03
-        </time>
-      </div>
+    <div>
+      
+    </div>
 
-    </header>
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </article>
 
 
-
     
-
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/2018/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/2018/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
   </nav>
-
 
 
           
@@ -341,7 +497,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">30</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -493,12 +649,6 @@
   
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
-
 
   
 
