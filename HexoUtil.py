@@ -23,14 +23,31 @@ class HexoUtil(object):
     def check_if_ready(self, file_path):
         if not file_path.lower().endswith('.md'):
             return False
+        match = False
+        need_modify = False
         with open(file_path,'rb') as mark_down_file :
-            lines = mark_down_file.readlines()
-            lines = map(lambda i:i.replace("\n", "").strip(),lines)
+            lines_origin = mark_down_file.readlines()
+            lines = map(lambda i:i.replace("\n", "").strip(),lines_origin)
             lines = filter(lambda i: len(i) > 0, lines)
             if len(lines) > 3 and lines[0].startswith('title: ') and lines[1].startswith('date: ') and lines[2].startswith('categories:') :
-                return True
-            else:
-                return False
+                for i in range(0,len(lines_origin)):
+                    if lines_origin[i].replace("\n", "").strip().endswith('---'):
+                        break
+                    else:
+                        if not lines_origin[i].endswith('  \n'):
+                            lines_origin[i] = lines_origin[i].replace("\n", '    \n')
+                            need_modify = True
+                        if 'tags:'in lines_origin[i]:
+                            lines_origin[i] = '   \ntags   \n'
+                            need_modify = True
+                match = True
+
+        if need_modify:
+            logger.info('%s的hexo 标签有问题，自动调整' % (os.path.basename(file_path)))
+            with open(file_path,'wb') as mark_down_file :
+                mark_down_file.writelines(lines_origin)
+
+        return match
 
 
     def find_all_post(self,path):
@@ -79,13 +96,13 @@ for item in ready_aar:
 if utils.move2hexo(ready_aar):
     os.chdir(utils.hexo_workspace_dir)
     logger.info(os.getcwd())
+    os.system('hexo clean')
+    os.system('hexo generate')
+    os.system('hexo deploy')
     os.system('git add -A')
     dt = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     os.system('git commit -m \'%s更新技术博客\''%dt)
     os.system('git push')
-    os.system('hexo clean')
-    os.system('hexo generate')
-    os.system('hexo deploy')
     os.system('hexo server -p 4000')
 logger.info('Done')
 
