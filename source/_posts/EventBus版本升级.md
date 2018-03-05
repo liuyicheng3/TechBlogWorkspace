@@ -1,15 +1,15 @@
-title: EventBus3.0    
-date: 2018-2-10     
-categories:    
-- Android    
+title: EventBus3.0
+date: 2018-2-10 
+categories:
+- Android
    
 tags   
-- Android    
-- eventbus3.0    
-- 注解    
-- APT    
-    
-    
+- Android
+- eventbus3.0
+- 注解
+- APT
+
+
 ---
 
 # EventBus3.0 优点：

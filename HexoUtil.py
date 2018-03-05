@@ -36,11 +36,11 @@ class HexoUtil(object):
                     if lines_origin[i].replace("\n", "").strip().endswith('---'):
                         break
                     else:
-                        if not lines_origin[i].endswith('  \n'):
-                            lines_origin[i] = lines_origin[i].replace("\n", '    \n')
+                        if lines_origin[i].endswith('  \n'):
+                            lines_origin[i] = lines_origin[i].replace('    \n', '\n')
                             need_modify = True
                         if 'tags:'in lines_origin[i]:
-                            lines_origin[i] = '   \ntags   \n'
+                            lines_origin[i] = '   \ntags:   \n'
                             need_modify = True
                 match = True
 

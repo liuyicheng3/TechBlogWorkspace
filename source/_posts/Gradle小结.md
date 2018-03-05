@@ -1,12 +1,12 @@
 title: Gradle配置分析  
-date: 2015-11-01 20:10:33    
-categories:    
-- android    
+date: 2015-11-01 20:10:33
+categories:
+- android
    
 tags   
-- 工具    
-- 打包    
-    
+- 工具
+- 打包
+
 ---
 
 

@@ -1,13 +1,13 @@
-title: App核心指标和广告计费方式    
-date: 2017-10-20     
-categories:    
-- Android    
+title: App核心指标和广告计费方式
+date: 2017-10-20 
+categories:
+- Android
    
 tags   
-- Android    
-- 指标    
-- 广告计费    
-    
+- Android
+- 指标
+- 广告计费
+
 ---
 
 # App核心指标

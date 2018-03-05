@@ -1,10 +1,10 @@
-title: Deeplink 设计    
-date: 2015-11-01 20:10:33    
-categories:    
-- Android    
+title: Deeplink 设计
+date: 2015-11-01 20:10:33
+categories:
+- Android
    
 tags   
-- Android    
+- Android
 ---
 
 

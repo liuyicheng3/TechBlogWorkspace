@@ -1,12 +1,12 @@
-title: AMS client端分析    
-date: 2017-8-1     
-categories:    
-- Android    
+title: AMS client端分析
+date: 2017-8-1 
+categories:
+- Android
    
 tags   
-- Android    
-- AMS    
-    
+- Android
+- AMS
+
 ---
 
 # Activity启动理解

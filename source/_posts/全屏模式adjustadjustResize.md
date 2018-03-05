@@ -1,13 +1,13 @@
-title: 全屏模式AdjustResize实现    
-date: 2017-9-15    
-categories:    
-- Android    
+title: 全屏模式AdjustResize实现
+date: 2017-9-15
+categories:
+- Android
    
 tags   
-- Android    
-- 全屏模式    
-- AdjustResize    
-    
+- Android
+- 全屏模式
+- AdjustResize
+
 ---
 
 ## 方案1 
