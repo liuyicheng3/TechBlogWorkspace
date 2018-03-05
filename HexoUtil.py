@@ -2,6 +2,8 @@
 import os,shutil,sys
 import logging
 import time
+import webbrowser
+
 
 # 通过下面的方式进行简单配置输出方式与日志级别
 logging.basicConfig(level=logging.INFO)
@@ -101,9 +103,10 @@ if utils.move2hexo(ready_aar):
     os.system('hexo deploy')
     os.system('git add -A')
     dt = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
-    os.system('git commit -m \'%s更新技术博客\''%dt)
+    os.system('git commit -m \'%s更新技术博客\'' % dt)
     os.system('git push')
-    os.system('hexo server -p 4000')
+    webbrowser.open('https://liuyicheng3.github.io/')
+    # os.system('hexo server -p 4000')
 logger.info('Done')
 
 
