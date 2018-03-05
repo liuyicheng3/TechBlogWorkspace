@@ -1,12 +1,13 @@
-title: App核心指标和广告计费方式
-date: 2017-10-20 
-categories:
-- Android
-tags:
-- Android
-- 指标
-- 广告计费
-
+title: App核心指标和广告计费方式    
+date: 2017-10-20     
+categories:    
+- Android    
+   
+tags   
+- Android    
+- 指标    
+- 广告计费    
+    
 ---
 
 # App核心指标
@@ -15,7 +16,10 @@ tags:
 3. ctr     
 4. 次日/7日留存/30日留存        
 一般目标是在40/20/10     
-参考文章：http://www.pmcaff.com/discuss/index/369885221299264?pmc_param=1
+参考文章：http://www.pmcaff.com/discuss/index/369885221299264?pmc_param=1  
+
+核心在分析哪些用户容易流失: 
+http://www.woshipm.com/pmd/155084.html
 
 5. dau  
 6. mau

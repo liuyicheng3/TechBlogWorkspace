@@ -1,10 +1,11 @@
-title: AS和Xcode快捷键
-date: 2015-11-01 20:10:33
-categories:
-- 工具
-tags:
-- 工具
-
+title: AS和Xcode快捷键    
+date: 2015-11-01 20:10:33    
+categories:    
+- 工具    
+   
+tags   
+- 工具    
+    
 ---
 
 # Xcode 

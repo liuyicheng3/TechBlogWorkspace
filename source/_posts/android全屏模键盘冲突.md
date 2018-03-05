@@ -1,12 +1,13 @@
-title: 全屏模式底部键盘冲突
-date: 2017-9-10 
-categories:
-- Android
-tags:
-- Android
-- 全屏模式
-- 键盘
-
+title: 全屏模式底部键盘冲突    
+date: 2017-9-10     
+categories:    
+- Android    
+   
+tags   
+- Android    
+- 全屏模式    
+- 键盘    
+    
 ---
 
 # 场景：全屏模式下activity的adjustResize 失效,弹键盘时候底部的输入框无法自动调整到键盘区域的上方 

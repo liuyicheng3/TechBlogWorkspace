@@ -1,10 +1,11 @@
-title: Android分包
-date: 2015-11-01 20:10:33
-categories:
-- Android
-tags:
-- Android
-- 打包
+title: Android分包    
+date: 2015-11-01 20:10:33    
+categories:    
+- Android    
+   
+tags   
+- Android    
+- 打包    
 ---
 
 ## 第一步：  gradle引入以及配置
