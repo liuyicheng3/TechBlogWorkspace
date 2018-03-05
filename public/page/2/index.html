@@ -1593,661 +1593,6 @@ if (a.mVisibleFromClient) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/deep_link设计方案/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/deep_link设计方案/" itemprop="url">
-                  Deeplink 设计
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>deeplink指的是在第三方客户端/浏览器中，打开一个APP的H5页面时候，如果发现本地安装了这个APP，就会使用本地APP打开。<br>需要前端和客户端互相配合来实现本功能。</p>
-<h1 id="服务器端："><a href="#服务器端：" class="headerlink" title="服务器端："></a>服务器端：</h1><pre><code>&lt;html&gt;
-&lt;head&gt;
-&lt;meta property=&quot;al:ios:url&quot; content=&quot;applinks://docs&quot; /&gt;
-&lt;meta property=&quot;al:ios:app_store_id&quot; content=&quot;12345&quot; /&gt;
-&lt;meta property=&quot;al:ios:app_name&quot; content=&quot;App Links&quot; /&gt;
-&lt;meta property=&quot;al:android:url&quot; content=&quot;applinks://docs&quot; /&gt;
-&lt;meta property=&quot;al:android:app_name&quot; content=&quot;App Links&quot; /&gt;
-&lt;meta property=&quot;al:android:package&quot; content=&quot;org.applinks&quot; /&gt;
-&lt;meta property=&quot;al:web:url&quot;
-content=&quot;http://applinks.org/documentation&quot; /&gt;
-&lt;/head&gt;
-&lt;body&gt;
-Hello, world!
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre><h1 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h1><p>客户端deeplink的实现需要依靠jump系统。ps:jump系统可以通过URI 实现在app中的定向跳转 ，比如我们的app叫“天上人间”（缩写tsrj）。 </p>
-<ol>
-<li>需要先在menifest中注册相应的scheme的filter。<br>ps:一般加载主页上面.</li>
-</ol>
-<pre><code>&lt;intent-filter&gt;
-&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
-&lt;!-- Accepts URIs that begin with &quot;tsrj://&quot; --&gt;
-&lt;data android:scheme=&quot;tsrj&quot;/&gt;
-&lt;/intent-filter&gt;
-&lt;intent-filter&gt;
-&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
-&lt;!-- Accepts URIs that begin with &quot;http://m.tsrj.com/&quot; --&gt;
-&lt;data
-android:host=&quot;m.tsrj.com&quot;
-android:pathPrefix=&quot;/&quot;
-android:scheme=&quot;http&quot;/&gt;
-&lt;data
-android:host=&quot;m.tsrj.com&quot;
-android:pathPrefix=&quot;/&quot;
-android:scheme=&quot;https&quot;/&gt;
-&lt;/intent-filter&gt;
-</code></pre><ol>
-<li>在MainActivity新增解析jump信息的方法</li>
-</ol>
-<pre><code>private void jump(Intent intent) {
-/** 根据传过来的参数 进行jump跳转 **/
-String action_url = intent.getDataString();
-MLog.i(&quot;启动Main_action_url:&quot; + action_url);
-if (!TextUtils.isEmpty(action_url)) {
-JumpManager.jump(this, action_url);
-} 
-}
-
-JumpManger就实现解析数据然后根据URI跳转的功能
-public static boolean jump(Context ctx, String action_url) {
-
-if (TextUtils.isEmpty(action_url)) {
-return false;
-}
-
-MLog.d(&quot;JumpManager  url:&quot; + action_url);
-
-Uri uri = null;
-
-/**如果不是一个标准的uri格式说明传入的数据无效的 可以直接忽视*/
-
-try {
-uri = Uri.parse(action_url);
-} catch (Exception e) {
-return false;
-}
-
-if (uri == null) {
-return false;
-}
-
-/**检测到是一个合法的uri 先判断是否是满足跳转需求的头部 如果是 开始进行跳转检测 如果不是 直接往内置浏览器跳*/
-
-if (!action_url.startsWith(JumpUriFactory.JUM_URL_HEAD) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_S) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_CUSTOM)) {
-
-return false;
-}
-
-Intent jumpintent = null;
-
-List&lt;String&gt; paths = uri.getPathSegments();
-
-/**只有头没有页面参数就返回*/
-if (paths == null || paths.size() &lt;= 0) {
-
-return false;
-}
-
-/**有path 但是path里面为空值 直接打开*/
-String action = paths.get(0);
-if (TextUtils.isEmpty(action)) {
-if (!isFromWebView) {
-jumpToInteriorPageActivity(ctx, uri);
-}
-return false;
-}
-
-/** 使用系统浏览器打开 */
-if (action.equals(&quot;web_system&quot;)) {
-jumpToSystemWebPage(ctx, uri);
-return true;
-}
-
-
-/*else if (action.equals(JumpPageSet.detail)) {
-goWaitress(ctx, action_url);
-return true;
-}*/
-
-/** city */
-else if (action.equals(JumpPageSet.city)) {
-goCity(ctx, action_url);
-return true;
-}
-
-/** usercenter */
-else if (action.equals(JumpPageSet.personal_info)) {
-goUserCenter(ctx, action_url);
-return true;
-}
-</code></pre><ol>
-<li>处理uri解析出里面的参数,放入intent，并跳往相应的主页</li>
-</ol>
-<pre><code>/**
- * 将url的数据进行解析 得到一个存放所有参数的集合
- */
-public static Set&lt;String&gt; getMyQueryParameterNames(Uri uri) {
-    String query = uri.getEncodedQuery();
-    if (query == null) {
-        return Collections.emptySet();
-    }
-    Set&lt;String&gt; names = new LinkedHashSet&lt;String&gt;();
-    int start = 0;
-    do {
-        int next = query.indexOf(&apos;&amp;&apos;, start);
-        int end = (next == -1) ? query.length() : next;
-        int separator = query.indexOf(&apos;=&apos;, start);
-        if (separator &gt; end || separator == -1) {
-            separator = end;
-        }
-        String name = query.substring(start, separator);
-        names.add(Uri.decode(name));
-        // Move start to end of name.
-        start = end + 1;
-    } while (start &lt; query.length());
-    return Collections.unmodifiableSet(names);
-}
-private static void goWaitress(final Context ctx, String actionUrl) {
-    MLog.i(&quot;actionUrl&quot;+actionUrl);
-    Uri  uri;
-    uri=Uri.parse(actionUrl);
-    Set&lt;String&gt;  parameters=JumpManager.getMyQueryParameterNames(uri);
-    Hashtable&lt;String,String&gt; params=new Hashtable&lt;&gt;();
-    if(parameters!=null&amp;&amp;parameters.size()&gt;0){
-        for(String key:parameters){
-            String value=uri.getQueryParameter(key);
-            if(!TextUtils.isEmpty(value)){
-                params.put(key,value);
-            }
-        }
-    }
-    Intent it= new Intent(act, WaitressPage.class);
-    Set&lt;String&gt;  keySet=params.keySet();
-    for (String k:keySet){
-        it.putExtra(k,params.get(k));
-    }
-    startActivity(it);
-    }
-</code></pre><h1 id="DeepLink的坑："><a href="#DeepLink的坑：" class="headerlink" title="DeepLink的坑："></a>DeepLink的坑：</h1><ol>
-<li>由于有些页面有权限限制，所以要跳页面时候，要判断在当前账户当前版本是否可以打开</li>
-<li>如果从H5页面带过来的信息带有登录状态，而且当前app的账号信息和H5页面的不一致，可能需要一个账号切换工作</li>
-</ol>
-<p>#微信里面的deeplink：<br>微信里面的主要就是二维码加上linkme，linkme和微信有合作可以直接把分享的内容通过里面的二维码倒回到app，不过这里要注意一个问题<br>微信里面的图片对size 是有要求的</p>
-<p>图片size越大被压的越厉害，，这个即使通过以下方式绕过微信sdk也无法避免被压缩</p>
-<pre><code>try {
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.setAction(Intent.ACTION_VIEW);
-    intent.addCategory(Intent.CATEGORY_DEFAULT);
-    ComponentName cmp = new ComponentName(&quot;com.tencent.mm&quot;, &quot;com.tencent.mm.ui.tools.ShareScreenImgUI&quot;);
-    intent.setComponent(cmp);
-    String path = localImgPath;
-    if (!TextUtils.isEmpty(path) &amp;&amp; !path.startsWith(&quot;file://&quot;)) {
-        path = &quot;file://&quot; + path;
-    }
-    intent.setDataAndType(Uri.parse(path), &quot;image/jpeg&quot;);
-    act.startActivity(intent);
-} catch (Exception e) {
-    ELog.e(&quot;wechat share failed&quot;);
-}
-</code></pre><p> 所以只有自己先压缩图片到一定的size，  再在这张压缩过的图片上绘制真正的二维码才行，（如果遇到好心的UI把二维码设计的很大就，可以跳过这个坑）</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Okhttp核心流程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/Okhttp核心流程/" itemprop="url">
-                  Okhttp核心流程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Interface：OkhttpClient（singleton）-Request-Response"><a href="#Interface：OkhttpClient（singleton）-Request-Response" class="headerlink" title="Interface：OkhttpClient（singleton）  Request  Response"></a>Interface：OkhttpClient（singleton）  Request  Response</h2><h2 id="主要由以下三部分-组成"><a href="#主要由以下三部分-组成" class="headerlink" title="主要由以下三部分 组成"></a>主要由以下三部分 组成</h2><h3 id="1-任务调度：-核心类disruptor（singleton）"><a href="#1-任务调度：-核心类disruptor（singleton）" class="headerlink" title="1. 任务调度： 核心类disruptor（singleton）"></a>1. 任务调度： 核心类disruptor（singleton）</h3><p>a. 线程池<br>b. 队列</p>
-<pre><code>/** Ready async calls in the order they&apos;ll be run. */
-private final Deque&lt;AsyncCall&gt; readyAsyncCalls = new ArrayDeque&lt;&gt;();
-
-/** Running asynchronous calls. Includes canceled calls that haven&apos;t finished yet. */
-private final Deque&lt;AsyncCall&gt; runningAsyncCalls = new ArrayDeque&lt;&gt;();
-
-/** Running synchronous calls. Includes canceled calls that haven&apos;t finished yet. */
- private final Deque&lt;RealCall&gt; runningSyncCalls = new ArrayDeque&lt;&gt;();
-</code></pre><p>(由于okhttp两种 运行模式   sync  和async）</p>
-<h3 id="2-网络请求"><a href="#2-网络请求" class="headerlink" title="2. 网络请求"></a>2. 网络请求</h3><ul>
-<li>核心类RealCall HttpEngine StreamAllocation   Interceptor (及其中的内部类  Chain） </li>
-<li>每个请求会生成一个Request  </li>
-<li>然后根据 request  和httpclieant  生成唯一的 RealCall(在real里面会构造出一个httpengine)  </li>
-</ul>
-<p>okhttp一个请求的完整流程图<br> <img src="http://blog.piasy.com/img/201607/okhttp_full_process.png" alt="image"></p>
-<p>在realcall的execute方法中会调用     </p>
-<pre><code>client.dispatcher().executed(this);//问题1  
-Response result = getResponseWithInterceptorChain(false);//问题2  
-</code></pre><p>获得请求结果.<br>现在看问题1  在这里面干了写什么<br>其实就是 dispatcher记录任务而已 ，没有任何执行方法<br>核心在问题2中<br>她会  </p>
-<pre><code>Interceptor.Chain chain = new ApplicationInterceptorChain(0, originalRequest, forWebSocket);
-return chain.proceed(originalRequest);
-</code></pre><p>也就是生成拦截器 ，并用这个拦截器启动这个请求<br>继续进入proceed 可以看到<br>进入了ApplicationInterceptorChain的getresponse方法<br>开始构造HttpEngine    </p>
-<pre><code>engine.sendRequest();//问题21
-engine.readResponse();//问题22
-</code></pre><p>在问题21中其实就是  Rfc 标准的一种 实现  </p>
-<pre><code>InternalCache responseCache = Internal.instance.internalCache(client);
-Response cacheCandidate = responseCache != null
-    ? responseCache.get(request)
-    : null;
-</code></pre><p>就是看当前是否配置了cache   如果有cache   则在responseCache.get找 当前request的cache<br>这个过程 就是根据 Util.md5Hex(request.url().toString())的从map中取值cacheCandidate的过程<br>当取到值后还要根据http cache的rfc标准  判断  是否合理能使用<br>new CacheStrategy.Factory(now, request, cacheCandidate).get();<br>在CacheStrategy中 这里会真正的判断和并处理当前的reponse cache和request（处理request是为了  当cache过期后还可以通过304  机制实现重用）；  </p>
-<p>这里需要判断  当前的  cacheCOntrol    Expires等  （尤其要处理一种情况就是当cache过期了  要根据 etag和Last-Modified  等等  要在request 中添加参数）</p>
-<pre><code>if (etag != null) {
-  conditionalRequestBuilder.header(&quot;If-None-Match&quot;, etag);
-} else if (lastModified != null) {
-  conditionalRequestBuilder.header(&quot;If-Modified-Since&quot;, lastModifiedString);
-} else if (servedDate != null) {
-  conditionalRequestBuilder.header(&quot;If-Modified-Since&quot;, servedDateString);
-}
-
-Request conditionalRequest = conditionalRequestBuilder.build();
-</code></pre><p>这是请求前的工作<br>现在开始发送请求</p>
-<pre><code>httpStream = connect();
-httpStream.setHttpEngine(this);
-</code></pre><p>这一部分的核心是StreamAllaction（辅助是ConnectionPool 和Route  RouteSelector）</p>
-<pre><code>streamAllocation.newStream(client.connectTimeoutMillis(),
-client.readTimeoutMillis(), client.writeTimeoutMillis(),
-client.retryOnConnectionFailure(), doExtensiveHealthChecks);
-</code></pre><p>解决的问题 是socket连接重用和  route<br>先是从连接池中找</p>
-<pre><code>// Attempt to get a connection from the pool.
- RealConnection pooledConnection = Internal.instance.get(connectionPool, address, this);
- if (pooledConnection != null) {
-   this.connection = pooledConnection;
-   return pooledConnection;
- }
-</code></pre><p>如果没有的话就看route可以重用嘛</p>
-<pre><code> if (selectedRoute == null) {
-  selectedRoute = routeSelector.next();
-  synchronized (connectionPool) {
-    route = selectedRoute;
-  }
-}
-RealConnection newConnection = new RealConnection(selectedRoute);
-acquire(newConnection);
-</code></pre><p>（这其实和一个dns解析 有关系也就是 一个域名对应多个ip  而且不一定所有的ip都是通的  建立连接的时候会尝试 所有的  直到通了为止</p>
-<pre><code>RouteDatabase里的Set&lt;Route&gt; failedRoutes = new LinkedHashSet&lt;&gt;()）
-</code></pre><p>弄完之后就是放如   </p>
-<pre><code>Internal.instance.put(connectionPool, newConnection);
-</code></pre><p>连接池中  方便下次继续使用<br>下一步 就是建立socket连接的过程</p>
-<pre><code> newConnection.connect(connectTimeout, readTimeout, writeTimeout, address.connectionSpecs(),
-    connectionRetryEnabled);
-routeDatabase().connected(newConnection.route());
-</code></pre><p>跟进去 就是</p>
-<pre><code>connectSocket(connectTimeout, readTimeout, writeTimeout, connectionSpecSelector);
-</code></pre><p>继续</p>
-<pre><code> try {
-  Platform.get().connectSocket(rawSocket, route.socketAddress(), connectTimeout);
-} catch (ConnectException e) {
-  throw new ConnectException(&quot;Failed to connect to &quot; + route.socketAddress());
-}
-source = Okio.buffer(Okio.source(rawSocket));
-sink = Okio.buffer(Okio.sink(rawSocket));
-</code></pre><p>连接socket（返回连接 是以Http1xStream Http2xStream）形式返回回来的<br>然后才是真正发送这个请求的过程</p>
-<pre><code>httpStream.writeRequestHeaders(networkRequest);
-requestBodyOut = httpStream.createRequestBody(networkRequest, contentLength);
-</code></pre><p>继续跟进</p>
-<pre><code> httpEngine.writingRequestHeaders();
-  String requestLine = RequestLine.get(
-    request, httpEngine.getConnection().route().proxy().type());
-writeRequest(request.headers(), requestLine);
-</code></pre><p>》》</p>
-<pre><code>** Returns bytes of a request header for sending on an HTTP transport. */
-public void writeRequest(Headers headers, String requestLine) throws IOException {
-if (state != STATE_IDLE) throw new IllegalStateException(&quot;state: &quot; + state);
-sink.writeUtf8(requestLine).writeUtf8(&quot;\r\n&quot;);
-for (int i = 0, size = headers.size(); i &lt; size; i++) {
-  sink.writeUtf8(headers.name(i))
-      .writeUtf8(&quot;: &quot;)
-      .writeUtf8(headers.value(i))
-      .writeUtf8(&quot;\r\n&quot;);
-}
-sink.writeUtf8(&quot;\r\n&quot;);
-state = STATE_OPEN_REQUEST_BODY;
-}
-</code></pre><p>读过程<br>就是通过这个stream构造出 newChunkedSink 或者newFixedLengthSink</p>
-<p>到此 请求reponse的工作做完了<br>现在 如果是需要真正发送网络请求就也就是问题22</p>
-<pre><code>networkResponse = new NetworkInterceptorChain(0, networkRequest).proceed(networkRequest);
-</code></pre><p>》》</p>
-<pre><code>engin.readResponse
-</code></pre><p>》》</p>
-<pre><code>// Write the request body to the socket.
-if (requestBodyOut != null) {
-  if (bufferedRequestBody != null) {
-    // This also closes the wrapped requestBodyOut.
-    bufferedRequestBody.close();
-  } else {
-    requestBodyOut.close();
-  }
-  if (requestBodyOut instanceof RetryableSink) {
-    httpStream.writeRequestBody((RetryableSink) requestBodyOut);
-  }
-}
-
-networkResponse = readNetworkResponse();
-</code></pre><p>》》</p>
-<pre><code>Response readNetworkResponse() throws IOException {
-httpStream.finishRequest();
-
-Response networkResponse = httpStream.readResponseHeaders()
-    .request(networkRequest)
-    .handshake(streamAllocation.connection().handshake())
-    .header(OkHeaders.SENT_MILLIS, Long.toString(sentRequestMillis))
-    .header(OkHeaders.RECEIVED_MILLIS, Long.toString(System.currentTimeMillis()))
-    .build();
-
-if (!forWebSocket) {
-  networkResponse = networkResponse.newBuilder()
-      .body(httpStream.openResponseBody(networkResponse))
-      .build();
-}
-
-if (&quot;close&quot;.equalsIgnoreCase(networkResponse.request().header(&quot;Connection&quot;))
-    || &quot;close&quot;.equalsIgnoreCase(networkResponse.header(&quot;Connection&quot;))) {
-  streamAllocation.noNewStreams();
-}
-
-return networkResponse;
-</code></pre><p>  }</p>
-<p>解析和返回</p>
-<pre><code> Response response = engine.getResponse();
-
-
-//tobe continue（已经 cache过程 请求重试过程）
- Request followUp = engine.followUpRequest();
-</code></pre><h3 id="3-cache管理"><a href="#3-cache管理" class="headerlink" title="3. cache管理"></a>3. cache管理</h3><p>最后附上 相关的http请求cache的rfc内容<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/http_cache.jpg" alt="image"></p>
-<h3 id="每个状态的详细说明如下："><a href="#每个状态的详细说明如下：" class="headerlink" title="每个状态的详细说明如下："></a>每个状态的详细说明如下：</h3><h4 id="1-Last-Modified"><a href="#1-Last-Modified" class="headerlink" title="1. Last-Modified"></a>1. Last-Modified</h4><p>在浏览器第一次请求某一个URL时，服务器端的返回状态会是200，内容是你请求的资源，同时有一个Last-Modified的属性标记(HttpReponse Header)此文件在服务期端最后被修改的时间，格式类似这样：<br>Last-Modified:Tue, 24 Feb 2009 08:01:04 GMT<br>客户端第二次请求此URL时，根据HTTP协议的规定，浏览器会向服务器传送If-Modified-Since报头(HttpRequest Header)，询问该时间之后文件是否有被修改过：<br>If-Modified-Since:Tue, 24 Feb 2009 08:01:04 GMT<br>如果服务器端的资源没有变化，则自动返回HTTP304（NotChanged.）状态码，内容为空，这样就节省了传输数据量。当服务器端代码发生改变或者重启服务器时，则重新发出资源，返回和第一次请求时类似。从而保证不向客户端重复发出资源，也保证当服务器有变化时，客户端能够得到最新的资源。<br>注：如果If-Modified-Since的时间比服务器当前时间(当前的请求时间request_time)还晚，会认为是个非法请求  </p>
-<h4 id="2-Etag工作原理"><a href="#2-Etag工作原理" class="headerlink" title="2. Etag工作原理"></a>2. Etag工作原理</h4><p>HTTP协议规格说明定义ETag为“被请求变量的实体标记”（参见14.19）。简单点即服务器响应时给请求URL标记，并在HTTP响应头中将其传送到客户端，类似服务器端返回的格式：<br>Etag:“5d8c72a5edda8d6a:3239″<br>客户端的查询更新格式是这样的：<br>If-None-Match:“5d8c72a5edda8d6a:3239″<br>如果ETag没改变，则返回状态304。<br>即:在客户端发出请求后，HttpReponse Header中包含Etag:“5d8c72a5edda8d6a:3239″<br>标识，等于告诉Client端，你拿到的这个的资源有表示ID：5d8c72a5edda8d6a:3239。当下次需要发Request索要同一个URI的时候，浏览器同时发出一个If-None-Match报头(Http RequestHeader)此时包头中信息包含上次访问得到的Etag:“5d8c72a5edda8d6a:3239″标识。<br>If-None-Match:“5d8c72a5edda8d6a:3239“<br>,这样，Client端等于Cache了两份，服务器端就会比对2者的etag。如果If-None-Match为False，不返回200，返回304(Not Modified) Response。  </p>
-<h4 id="3-Expires"><a href="#3-Expires" class="headerlink" title="3. Expires"></a>3. Expires</h4><p>给出的日期/时间后，被响应认为是过时。如Expires:Thu, 02 Apr 2009 05:14:08 GMT<br>需和Last-Modified结合使用。用于控制请求文件的有效时间，当请求数据在有效期内时客户端浏览器从缓存请求数据而不是服务器端.当缓存中数据失效或过期，才决定从服务器更新数据。  </p>
-<h4 id="4-Last-Modified和Expires"><a href="#4-Last-Modified和Expires" class="headerlink" title="4. Last-Modified和Expires"></a>4. Last-Modified和Expires</h4><p>Last-Modified标识能够节省一点带宽，但是还是逃不掉发一个HTTP请求出去，而且要和Expires一起用。而Expires标识却使得浏览器干脆连HTTP请求都不用发，比如当用户F5或者点击Refresh按钮的时候就算对于有Expires的URI，一样也会发一个HTTP请求出去，所以，Last-Modified还是要用的，而且要和Expires一起用。  </p>
-<h4 id="5-Etag和Expires"><a href="#5-Etag和Expires" class="headerlink" title="5. Etag和Expires"></a>5. Etag和Expires</h4><p>如果服务器端同时设置了Etag和Expires时，Etag原理同样，即与Last-Modified/Etag对应的HttpRequestHeader:If-Modified-Since和If-None-Match。我们可以看到这两个Header的值和WebServer发出的Last-Modified,Etag值完全一样；在完全匹配If-Modified-Since和If-None-Match即检查完修改时间和Etag之后，服务器才能返回304.  </p>
-<h4 id="6-Last-Modified和Etag"><a href="#6-Last-Modified和Etag" class="headerlink" title="6. Last-Modified和Etag"></a>6. Last-Modified和Etag</h4><p>分布式系统里多台机器间文件的last-modified必须保持一致，以免负载均衡到不同机器导致比对失败<br>分布式系统尽量关闭掉Etag(每台机器生成的etag都会不一样)<br>Last-Modified和ETags请求的http报头一起使用，服务器首先产生Last-Modified/Etag标记，服务器可在稍后使用它来判断页面是否已经被修改，来决定文件是否继续缓存<br>过程如下:  </p>
-<ul>
-<li>客户端请求一个页面（A）。  </li>
-<li>服务器返回页面A，并在给A加上一个Last-Modified/ETag。  </li>
-<li>客户端展现该页面，并将页面连同Last-Modified/ETag一起缓存。  </li>
-<li>客户再次请求页面A，并将上次请求时服务器返回的Last-Modified/ETag一起传递给服务器。  </li>
-<li>服务器检查该Last-Modified或ETag，并判断出该页面自上次客户端请求之后还未被修改，直接返回响应304和一个空的响应体。  </li>
-</ul>
-<p>备注：   </p>
-<ul>
-<li>Last-Modified和Etag头都是由WebServer发出的HttpReponse Header，WebServer应该同时支持这两种头。  </li>
-<li>WebServer发送完Last-Modified/Etag头给客户端后，客户端会缓存这些头；  </li>
-<li>客户端再次发起相同页面的请求时，将分别发送与Last-Modified/Etag对应的HttpRequestHeader:If-Modified-Since和If-None-Match。我们可以看到这两个Header的值和WebServer发出的Last-Modified,Etag值完全一样；  </li>
-<li>通过上述值到服务器端检查，判断文件是否继续缓存；  </li>
-</ul>
-<h4 id="7-关于-Cache-Control-max-age-秒-和-Expires"><a href="#7-关于-Cache-Control-max-age-秒-和-Expires" class="headerlink" title="7.关于 Cache-Control: max-age=秒 和 Expires"></a>7.关于 Cache-Control: max-age=秒 和 Expires</h4><p>Expires = 时间，HTTP 1.0 版本，缓存的载止时间，允许客户端在这个时间之前不去检查（发请求）<br>max-age = 秒，HTTP 1.1版本，资源在本地缓存多少秒。<br>如果max-age和Expires同时存在，则被Cache-Control的max-age覆盖。<br>Expires 的一个缺点就是，返回的到期时间是服务器端的时间，这样存在一个问题，如果客户端的时间与服务器的时间相差很大，那么误差就很大，所以在HTTP 1.1版开始，使用Cache-Control: max-age=秒替代。<br>Expires =max-age +   “每次下载时的当前的request时间”<br>所以一旦重新下载的页面后，expires就重新计算一次，但last-modified不会变化   </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Gradle小结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2559,6 +1904,508 @@ buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
 <p>一个介绍gradle比较好的网站<br><a href="http://stormzhang.com/posts/" target="_blank" rel="external">http://stormzhang.com/posts/</a></p>
 <p><a href="https://segmentfault.com/a/1190000006915937" target="_blank" rel="external">https://segmentfault.com/a/1190000006915937</a></p>
 <p>这两个网站都是一系列的教程，建议一个一个的看</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/分析UI流畅度/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/分析UI流畅度/" itemprop="url">
+                  Android 性能检测
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="手机端："><a href="#手机端：" class="headerlink" title="手机端："></a>手机端：</h1><h2 id="开发者选项"><a href="#开发者选项" class="headerlink" title="开发者选项"></a>开发者选项</h2><ol>
+<li><p>绘图》 显示布局边界</p>
+</li>
+<li><p>硬件加速渲染 》调试GPU过渡绘制  要打开</p>
+</li>
+</ol>
+<ol>
+<li><p>监控》启用严格模式</p>
+</li>
+<li><p>GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true" alt="image"></p>
+</li>
+</ol>
+<h1 id="电脑端："><a href="#电脑端：" class="headerlink" title="电脑端："></a>电脑端：</h1><ol>
+<li><p>查看MemoryMonitor  ，查看页面内存波动（对于listview ）</p>
+</li>
+<li><p>tools》android》android  device  monistor<br>（其实它就是把android sdk中tools下面的很多功能聚合起来；  如ddms，uiautomatorviewer，monitor等功能聚合起来，但是好像没有集成hierarchyviewer的功能）</p>
+</li>
+<li><p>查看录制页面变化时候的cpu耗时<br>开始录制》选中进程，点击红色方框左边的按钮，然后点击红色方框里右侧的按钮录制正式开始，需要结束时，再点击右侧按钮结束，就会有结果自动生成<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6.png?raw=true" alt="image"></p>
+<p>分析结果》录制实际上是一个采样的过程，可以看图中红色方框里面最耗时的几个方法，基本上可以定位到程序的问题<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6_2.png?raw=true" alt="image"></p>
+</li>
+<li>查看布局层次，以及每一层的绘制时间，目的是减小层次<br>入口是在：tools 下面 hierarchyviewer  查看每个层次的绘制时间（这个好像必须在模拟器上看）</li>
+</ol>
+<h1 id="分析卡的原因"><a href="#分析卡的原因" class="headerlink" title="分析卡的原因"></a>分析卡的原因</h1><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="http://www.cnblogs.com/krislight1105/p/5352500.html" target="_blank" rel="external">http://www.cnblogs.com/krislight1105/p/5352500.html</a><br><a href="http://blog.csdn.net/wangbaochu/article/details/50396512" target="_blank" rel="external">http://blog.csdn.net/wangbaochu/article/details/50396512</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/deep_link设计方案/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/deep_link设计方案/" itemprop="url">
+                  Deeplink 设计
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>deeplink指的是在第三方客户端/浏览器中，打开一个APP的H5页面时候，如果发现本地安装了这个APP，就会使用本地APP打开。<br>需要前端和客户端互相配合来实现本功能。</p>
+<h1 id="服务器端："><a href="#服务器端：" class="headerlink" title="服务器端："></a>服务器端：</h1><pre><code>&lt;html&gt;
+&lt;head&gt;
+&lt;meta property=&quot;al:ios:url&quot; content=&quot;applinks://docs&quot; /&gt;
+&lt;meta property=&quot;al:ios:app_store_id&quot; content=&quot;12345&quot; /&gt;
+&lt;meta property=&quot;al:ios:app_name&quot; content=&quot;App Links&quot; /&gt;
+&lt;meta property=&quot;al:android:url&quot; content=&quot;applinks://docs&quot; /&gt;
+&lt;meta property=&quot;al:android:app_name&quot; content=&quot;App Links&quot; /&gt;
+&lt;meta property=&quot;al:android:package&quot; content=&quot;org.applinks&quot; /&gt;
+&lt;meta property=&quot;al:web:url&quot;
+content=&quot;http://applinks.org/documentation&quot; /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+Hello, world!
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h1 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h1><p>客户端deeplink的实现需要依靠jump系统。ps:jump系统可以通过URI 实现在app中的定向跳转 ，比如我们的app叫“天上人间”（缩写tsrj）。 </p>
+<ol>
+<li>需要先在menifest中注册相应的scheme的filter。<br>ps:一般加载主页上面.</li>
+</ol>
+<pre><code>&lt;intent-filter&gt;
+&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
+&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
+&lt;!-- Accepts URIs that begin with &quot;tsrj://&quot; --&gt;
+&lt;data android:scheme=&quot;tsrj&quot;/&gt;
+&lt;/intent-filter&gt;
+&lt;intent-filter&gt;
+&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
+&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
+&lt;!-- Accepts URIs that begin with &quot;http://m.tsrj.com/&quot; --&gt;
+&lt;data
+android:host=&quot;m.tsrj.com&quot;
+android:pathPrefix=&quot;/&quot;
+android:scheme=&quot;http&quot;/&gt;
+&lt;data
+android:host=&quot;m.tsrj.com&quot;
+android:pathPrefix=&quot;/&quot;
+android:scheme=&quot;https&quot;/&gt;
+&lt;/intent-filter&gt;
+</code></pre><ol>
+<li>在MainActivity新增解析jump信息的方法</li>
+</ol>
+<pre><code>private void jump(Intent intent) {
+/** 根据传过来的参数 进行jump跳转 **/
+String action_url = intent.getDataString();
+MLog.i(&quot;启动Main_action_url:&quot; + action_url);
+if (!TextUtils.isEmpty(action_url)) {
+JumpManager.jump(this, action_url);
+} 
+}
+
+JumpManger就实现解析数据然后根据URI跳转的功能
+public static boolean jump(Context ctx, String action_url) {
+
+if (TextUtils.isEmpty(action_url)) {
+return false;
+}
+
+MLog.d(&quot;JumpManager  url:&quot; + action_url);
+
+Uri uri = null;
+
+/**如果不是一个标准的uri格式说明传入的数据无效的 可以直接忽视*/
+
+try {
+uri = Uri.parse(action_url);
+} catch (Exception e) {
+return false;
+}
+
+if (uri == null) {
+return false;
+}
+
+/**检测到是一个合法的uri 先判断是否是满足跳转需求的头部 如果是 开始进行跳转检测 如果不是 直接往内置浏览器跳*/
+
+if (!action_url.startsWith(JumpUriFactory.JUM_URL_HEAD) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_S) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_CUSTOM)) {
+
+return false;
+}
+
+Intent jumpintent = null;
+
+List&lt;String&gt; paths = uri.getPathSegments();
+
+/**只有头没有页面参数就返回*/
+if (paths == null || paths.size() &lt;= 0) {
+
+return false;
+}
+
+/**有path 但是path里面为空值 直接打开*/
+String action = paths.get(0);
+if (TextUtils.isEmpty(action)) {
+if (!isFromWebView) {
+jumpToInteriorPageActivity(ctx, uri);
+}
+return false;
+}
+
+/** 使用系统浏览器打开 */
+if (action.equals(&quot;web_system&quot;)) {
+jumpToSystemWebPage(ctx, uri);
+return true;
+}
+
+
+/*else if (action.equals(JumpPageSet.detail)) {
+goWaitress(ctx, action_url);
+return true;
+}*/
+
+/** city */
+else if (action.equals(JumpPageSet.city)) {
+goCity(ctx, action_url);
+return true;
+}
+
+/** usercenter */
+else if (action.equals(JumpPageSet.personal_info)) {
+goUserCenter(ctx, action_url);
+return true;
+}
+</code></pre><ol>
+<li>处理uri解析出里面的参数,放入intent，并跳往相应的主页</li>
+</ol>
+<pre><code>/**
+ * 将url的数据进行解析 得到一个存放所有参数的集合
+ */
+public static Set&lt;String&gt; getMyQueryParameterNames(Uri uri) {
+    String query = uri.getEncodedQuery();
+    if (query == null) {
+        return Collections.emptySet();
+    }
+    Set&lt;String&gt; names = new LinkedHashSet&lt;String&gt;();
+    int start = 0;
+    do {
+        int next = query.indexOf(&apos;&amp;&apos;, start);
+        int end = (next == -1) ? query.length() : next;
+        int separator = query.indexOf(&apos;=&apos;, start);
+        if (separator &gt; end || separator == -1) {
+            separator = end;
+        }
+        String name = query.substring(start, separator);
+        names.add(Uri.decode(name));
+        // Move start to end of name.
+        start = end + 1;
+    } while (start &lt; query.length());
+    return Collections.unmodifiableSet(names);
+}
+private static void goWaitress(final Context ctx, String actionUrl) {
+    MLog.i(&quot;actionUrl&quot;+actionUrl);
+    Uri  uri;
+    uri=Uri.parse(actionUrl);
+    Set&lt;String&gt;  parameters=JumpManager.getMyQueryParameterNames(uri);
+    Hashtable&lt;String,String&gt; params=new Hashtable&lt;&gt;();
+    if(parameters!=null&amp;&amp;parameters.size()&gt;0){
+        for(String key:parameters){
+            String value=uri.getQueryParameter(key);
+            if(!TextUtils.isEmpty(value)){
+                params.put(key,value);
+            }
+        }
+    }
+    Intent it= new Intent(act, WaitressPage.class);
+    Set&lt;String&gt;  keySet=params.keySet();
+    for (String k:keySet){
+        it.putExtra(k,params.get(k));
+    }
+    startActivity(it);
+    }
+</code></pre><h1 id="DeepLink的坑："><a href="#DeepLink的坑：" class="headerlink" title="DeepLink的坑："></a>DeepLink的坑：</h1><ol>
+<li>由于有些页面有权限限制，所以要跳页面时候，要判断在当前账户当前版本是否可以打开</li>
+<li>如果从H5页面带过来的信息带有登录状态，而且当前app的账号信息和H5页面的不一致，可能需要一个账号切换工作</li>
+</ol>
+<p>#微信里面的deeplink：<br>微信里面的主要就是二维码加上linkme，linkme和微信有合作可以直接把分享的内容通过里面的二维码倒回到app，不过这里要注意一个问题<br>微信里面的图片对size 是有要求的</p>
+<p>图片size越大被压的越厉害，，这个即使通过以下方式绕过微信sdk也无法避免被压缩</p>
+<pre><code>try {
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setAction(Intent.ACTION_VIEW);
+    intent.addCategory(Intent.CATEGORY_DEFAULT);
+    ComponentName cmp = new ComponentName(&quot;com.tencent.mm&quot;, &quot;com.tencent.mm.ui.tools.ShareScreenImgUI&quot;);
+    intent.setComponent(cmp);
+    String path = localImgPath;
+    if (!TextUtils.isEmpty(path) &amp;&amp; !path.startsWith(&quot;file://&quot;)) {
+        path = &quot;file://&quot; + path;
+    }
+    intent.setDataAndType(Uri.parse(path), &quot;image/jpeg&quot;);
+    act.startActivity(intent);
+} catch (Exception e) {
+    ELog.e(&quot;wechat share failed&quot;);
+}
+</code></pre><p> 所以只有自己先压缩图片到一定的size，  再在这张压缩过的图片上绘制真正的二维码才行，（如果遇到好心的UI把二维码设计的很大就，可以跳过这个坑）</p>
 
           
         

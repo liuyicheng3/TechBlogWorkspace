@@ -1,13 +1,13 @@
-title: Android模块化方案
-date: 2015-11-01 20:10:33
-categories:
-- Android
-   
-   
-   
-tags:   
-- Android
-- 模块化
+title: Android模块化方案    
+date: 2015-11-01 20:10:33    
+categories:    
+- Android    
+       
+       
+       
+tags:       
+- Android    
+- 模块化    
 ---
 
 ## AAR模块化方案  

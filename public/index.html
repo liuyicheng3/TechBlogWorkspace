@@ -1309,7 +1309,7 @@ Thread.setDefaultUncaughtExceptionHandler(this);
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/生成分享图片/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/EventBus版本升级/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -1331,8 +1331,8 @@ Thread.setDefaultUncaughtExceptionHandler(this);
             
               
                 
-                <a class="post-title-link" href="/2018/02/10/生成分享图片/" itemprop="url">
-                  生成分享图片
+                <a class="post-title-link" href="/2018/02/10/EventBus版本升级/" itemprop="url">
+                  EventBus3.0
                 </a>
               
             
@@ -1408,61 +1408,63 @@ Thread.setDefaultUncaughtExceptionHandler(this);
       
         
           
-            <h2 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h2><h3 id="1-1-截取Activity"><a href="#1-1-截取Activity" class="headerlink" title="1.1 截取Activity"></a>1.1 截取Activity</h3><pre><code>public static Bitmap takeScreenShot(Activity activity) {
-       View view = activity.getWindow().getDecorView();
-       if (view == null) {
-           return null;
-       }
-       view.setDrawingCacheEnabled(true);
-       view.buildDrawingCache();
-       Bitmap b1 = view.getDrawingCache();
-       if (b1 == null) {
-           return null;
-       }
-       // 获取状态栏高度
-       Rect frame = new Rect();
-       activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-       int statusBarHeight = frame.top;
+            <h1 id="EventBus3-0-优点："><a href="#EventBus3-0-优点：" class="headerlink" title="EventBus3.0 优点："></a>EventBus3.0 优点：</h1><p>EventBus 3由于使用了注解，比起使用反射来遍历方法的2.4版本逊色不少。但开挂之后(启用了索引)远远超出之前的版本。</p>
+<p><img src="http://i.imgur.com/5evKXOx.png" alt="性能对比"></p>
+<p>参考资料：<a href="https://www.cnblogs.com/bugly/p/5475034.html" target="_blank" rel="external">https://www.cnblogs.com/bugly/p/5475034.html</a></p>
+<h2 id="开挂方法："><a href="#开挂方法：" class="headerlink" title="开挂方法："></a>开挂方法：</h2><ol>
+<li><p>在当前moudle的gradle 添加    </p>
+<pre><code>apply plugin: &apos;com.neenbedankt.android-apt&apos;   
+</code></pre></li>
+<li><p>在dependencies里面添加   </p>
+<pre><code>dependencies 
+compile &apos;org.greenrobot:eventbus:3.0.0&apos;
+apt &apos;org.greenrobot:eventbus-annotation-processor:3.0.1&apos;   
+</code></pre></li>
+</ol>
+<ol>
+<li><p>在使用时候   </p>
+<pre><code>@Subscribe
+public void helloEventBus(UserReLoginEvent  event){
+    // TODO: 17/6/27  这是是为了测试而使用的
+    UtilsManager.toast(mContext,&quot;这是eventbus 3.0 可以支持的&quot;);
+}
+</code></pre></li>
+</ol>
+<h2 id="事件源定位："><a href="#事件源定位：" class="headerlink" title="事件源定位："></a>事件源定位：</h2><p>为了防止事件环路对EventBus加一个Wrapper，每次发送Event时候打印一下路径   </p>
+<pre><code>private static void printWrapPath(String tagStr, Object... objects) {
 
-       // 获取屏幕长和高
-       int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+   StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+   final StackTraceElement ste = stackTrace[5];
 
-       Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, b1.getHeight() - statusBarHeight);
-       view.destroyDrawingCache();
-       b1.recycle();
-       return b;
+   StringBuilder stringBuilder = new StringBuilder();
+   String className = ste.getFileName();
+   if (!TextUtils.isEmpty(className)) {
+       String methodName = ste.getMethodName();
+       int lineNumber = ste.getLineNumber();
+       stringBuilder.append(&quot;(&quot;).append(className).append(&quot;:&quot;).append(lineNumber).append(&quot;) #&quot;).append(methodName).append(&quot; : &quot;);
+   } else {
+       stringBuilder.append(&quot; &quot;);
    }
-</code></pre><h3 id="1-3-截取ViewGroup"><a href="#1-3-截取ViewGroup" class="headerlink" title="1.3 截取ViewGroup"></a>1.3 截取ViewGroup</h3><pre><code>public static Bitmap takeScreenShotView(LinnerLayout viewGroup) {
-       Bitmap bitmap = null;
-       if (viewGroup != null) {
-           int h = 0;
-           for (int i = 0; i &lt; viewGroup.getChildCount(); i++) {
-               h += viewGroup.getChildAt(i).getHeight();
-           }
-           if (viewGroup.getHeight() &gt; h) {
-               h = viewGroup.getHeight();
-           }
-           bitmap = Bitmap.createBitmap(viewGroup.getWidth(), h, Config.ARGB_8888);
-           final Canvas c = new Canvas(bitmap);
-           c.drawColor(Color.WHITE);
-           viewGroup.draw(c);
-       }
-       return bitmap;
-   }
-</code></pre><h2 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h2><p>自己生成bitmap绘制，这个地方由于自己绘制的比较麻烦，一般就是在一张图片上绘制一些文字即可</p>
-<h2 id="方法3"><a href="#方法3" class="headerlink" title="方法3"></a>方法3</h2><p>生成未加载的布局文件的分享图片</p>
-<pre><code>View targetView = LayoutInflater.from(mActivity).inflate(R.layout.view_share, null);
-targetView.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),      View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY));
-targetView.layout(0, 0, width, height);
-bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Config.ARGB_8888);
-Canvas canvas = new Canvas(bitmap);
-canvas.drawColor(Color.WHITE);
-view.draw(canvas);
-</code></pre><p>核心是布局文件没有加载，也即没有measure和layout 就无法进行绘制（实际上一个view之所以能被绘制上去就是因为父容器measure和layout了它）才能进行绘制</p>
-<p>一个知识点： view 不是不可以在后台线程修改的，而是需只有原始创建这个视图层次(view hierachy)的线程才能修改它的视图(view)</p>
-<h2 id="扩展思维"><a href="#扩展思维" class="headerlink" title="扩展思维"></a>扩展思维</h2><p>如何生成listview和recycleView的截屏   </p>
-<h3 id="方案1"><a href="#方案1" class="headerlink" title="方案1"></a>方案1</h3><p>原理：我们可以知道第一个和最后一个view在屏幕上的位置，也可以获取获取整个屏幕的截图，所谓我们可以滑动一屏截取一屏(我们可以估算出一屏大约有多少元素，滚动固定长度即可)的内容，然后最后拼接出来  </p>
-<h3 id="方案2"><a href="#方案2" class="headerlink" title="方案2"></a>方案2</h3><p>原理：可以逐个生成itemView的bitmap（采用方法3），然后拼接出来</p>
+
+   String tag = (tagStr == null ? LOG_DEFAULT_TAG : tagStr);
+   String msg = (objects == null) ? &quot;null&quot; : getObjectsString(objects);
+   String headString = stringBuilder.toString();
+
+    Log.println(type, tagStr, headString + msg);
+
+}
+</code></pre><h2 id="混淆问题-："><a href="#混淆问题-：" class="headerlink" title="混淆问题  ："></a>混淆问题  ：</h2><p>混淆作为版本发布必备的流程，经常会闹出很多奇奇怪怪的问题，且不方便定位，尤其是EventBus这种依赖反射技术的库。通常情况下都会把相关的类和回调方法都keep住，但这样其实会留下被人反编译后破解的后顾之忧，所以我们的目标是keep最少的代码。</p>
+<p>首先，因为EventBus 3弃用了反射的方式去寻找回调方法，改用注解的方式。作者的意思是在混淆时就不用再keep住相应的类和方法。但是我们在运行时，却会报java.lang.NoSuchFieldError: No static field POSTING。网上给出的解决办法是keep住所有eventbus相关的代码：</p>
+<pre><code>-keep class de.greenrobot.** {*;}  
+</code></pre><p>其实我们仔细分析，可以看到是因为在SubscriberMethodFinder的findUsingReflection方法中，在调用Method.getAnnotation()时获取ThreadMode这个enum失败了，所以我们只需要keep住这个enum就可以了（如下）。</p>
+<pre><code>-keep public enum org.greenrobot.eventbus.ThreadMode { public static *; }   
+</code></pre><p>这样就能正常编译通过了，但如果使用了索引加速，是不会有上面这个问题的。因为在找方法时，调用的不是findUsingReflection，而是findUsingInfo。但是使用了索引加速后，编译后却会报新的错误：Could not find subscriber method in XXX Class. Maybe a missing ProGuard rule?</p>
+<p>这就很好理解了，因为生成索引GeneratedSubscriberIndex是在代码混淆之前进行的，混淆之后类名和方法名都不一样了（上面这个错误是方法无法找到），得keep住所有被Subscribe注解标注的方法：</p>
+<pre><code>-keepclassmembers class * {
+    @de.greenrobot.event.Subscribe &lt;methods&gt;;
+}
+</code></pre><p>所以又倒退回了EventBus2.4时不能混淆onEvent开头的方法一样的处境了。所以这里就得权衡一下利弊：使用了注解不用索引加速，则只需要keep住EventBus相关的代码，现有的代码可以正常的进行混淆。而使用了索引加速的话，则需要keep住相关的方法和类。</p>
+<h2 id="Android-APT"><a href="#Android-APT" class="headerlink" title="Android APT"></a>Android APT</h2><p>  参考资料：<a href="https://segmentfault.com/a/1190000005100468" target="_blank" rel="external">https://segmentfault.com/a/1190000005100468</a></p>
 
           
         
@@ -1666,7 +1668,7 @@ view.draw(canvas);
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/EventBus版本升级/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/生成分享图片/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -1688,8 +1690,8 @@ view.draw(canvas);
             
               
                 
-                <a class="post-title-link" href="/2018/02/10/EventBus版本升级/" itemprop="url">
-                  EventBus3.0
+                <a class="post-title-link" href="/2018/02/10/生成分享图片/" itemprop="url">
+                  生成分享图片
                 </a>
               
             
@@ -1765,63 +1767,61 @@ view.draw(canvas);
       
         
           
-            <h1 id="EventBus3-0-优点："><a href="#EventBus3-0-优点：" class="headerlink" title="EventBus3.0 优点："></a>EventBus3.0 优点：</h1><p>EventBus 3由于使用了注解，比起使用反射来遍历方法的2.4版本逊色不少。但开挂之后(启用了索引)远远超出之前的版本。</p>
-<p><img src="http://i.imgur.com/5evKXOx.png" alt="性能对比"></p>
-<p>参考资料：<a href="https://www.cnblogs.com/bugly/p/5475034.html" target="_blank" rel="external">https://www.cnblogs.com/bugly/p/5475034.html</a></p>
-<h2 id="开挂方法："><a href="#开挂方法：" class="headerlink" title="开挂方法："></a>开挂方法：</h2><ol>
-<li><p>在当前moudle的gradle 添加    </p>
-<pre><code>apply plugin: &apos;com.neenbedankt.android-apt&apos;   
-</code></pre></li>
-<li><p>在dependencies里面添加   </p>
-<pre><code>dependencies 
-compile &apos;org.greenrobot:eventbus:3.0.0&apos;
-apt &apos;org.greenrobot:eventbus-annotation-processor:3.0.1&apos;   
-</code></pre></li>
-</ol>
-<ol>
-<li><p>在使用时候   </p>
-<pre><code>@Subscribe
-public void helloEventBus(UserReLoginEvent  event){
-    // TODO: 17/6/27  这是是为了测试而使用的
-    UtilsManager.toast(mContext,&quot;这是eventbus 3.0 可以支持的&quot;);
-}
-</code></pre></li>
-</ol>
-<h2 id="事件源定位："><a href="#事件源定位：" class="headerlink" title="事件源定位："></a>事件源定位：</h2><p>为了防止事件环路对EventBus加一个Wrapper，每次发送Event时候打印一下路径   </p>
-<pre><code>private static void printWrapPath(String tagStr, Object... objects) {
+            <h2 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h2><h3 id="1-1-截取Activity"><a href="#1-1-截取Activity" class="headerlink" title="1.1 截取Activity"></a>1.1 截取Activity</h3><pre><code>public static Bitmap takeScreenShot(Activity activity) {
+       View view = activity.getWindow().getDecorView();
+       if (view == null) {
+           return null;
+       }
+       view.setDrawingCacheEnabled(true);
+       view.buildDrawingCache();
+       Bitmap b1 = view.getDrawingCache();
+       if (b1 == null) {
+           return null;
+       }
+       // 获取状态栏高度
+       Rect frame = new Rect();
+       activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+       int statusBarHeight = frame.top;
 
-   StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-   final StackTraceElement ste = stackTrace[5];
+       // 获取屏幕长和高
+       int width = activity.getWindowManager().getDefaultDisplay().getWidth();
 
-   StringBuilder stringBuilder = new StringBuilder();
-   String className = ste.getFileName();
-   if (!TextUtils.isEmpty(className)) {
-       String methodName = ste.getMethodName();
-       int lineNumber = ste.getLineNumber();
-       stringBuilder.append(&quot;(&quot;).append(className).append(&quot;:&quot;).append(lineNumber).append(&quot;) #&quot;).append(methodName).append(&quot; : &quot;);
-   } else {
-       stringBuilder.append(&quot; &quot;);
+       Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, b1.getHeight() - statusBarHeight);
+       view.destroyDrawingCache();
+       b1.recycle();
+       return b;
    }
-
-   String tag = (tagStr == null ? LOG_DEFAULT_TAG : tagStr);
-   String msg = (objects == null) ? &quot;null&quot; : getObjectsString(objects);
-   String headString = stringBuilder.toString();
-
-    Log.println(type, tagStr, headString + msg);
-
-}
-</code></pre><h2 id="混淆问题-："><a href="#混淆问题-：" class="headerlink" title="混淆问题  ："></a>混淆问题  ：</h2><p>混淆作为版本发布必备的流程，经常会闹出很多奇奇怪怪的问题，且不方便定位，尤其是EventBus这种依赖反射技术的库。通常情况下都会把相关的类和回调方法都keep住，但这样其实会留下被人反编译后破解的后顾之忧，所以我们的目标是keep最少的代码。</p>
-<p>首先，因为EventBus 3弃用了反射的方式去寻找回调方法，改用注解的方式。作者的意思是在混淆时就不用再keep住相应的类和方法。但是我们在运行时，却会报java.lang.NoSuchFieldError: No static field POSTING。网上给出的解决办法是keep住所有eventbus相关的代码：</p>
-<pre><code>-keep class de.greenrobot.** {*;}  
-</code></pre><p>其实我们仔细分析，可以看到是因为在SubscriberMethodFinder的findUsingReflection方法中，在调用Method.getAnnotation()时获取ThreadMode这个enum失败了，所以我们只需要keep住这个enum就可以了（如下）。</p>
-<pre><code>-keep public enum org.greenrobot.eventbus.ThreadMode { public static *; }   
-</code></pre><p>这样就能正常编译通过了，但如果使用了索引加速，是不会有上面这个问题的。因为在找方法时，调用的不是findUsingReflection，而是findUsingInfo。但是使用了索引加速后，编译后却会报新的错误：Could not find subscriber method in XXX Class. Maybe a missing ProGuard rule?</p>
-<p>这就很好理解了，因为生成索引GeneratedSubscriberIndex是在代码混淆之前进行的，混淆之后类名和方法名都不一样了（上面这个错误是方法无法找到），得keep住所有被Subscribe注解标注的方法：</p>
-<pre><code>-keepclassmembers class * {
-    @de.greenrobot.event.Subscribe &lt;methods&gt;;
-}
-</code></pre><p>所以又倒退回了EventBus2.4时不能混淆onEvent开头的方法一样的处境了。所以这里就得权衡一下利弊：使用了注解不用索引加速，则只需要keep住EventBus相关的代码，现有的代码可以正常的进行混淆。而使用了索引加速的话，则需要keep住相关的方法和类。</p>
-<h2 id="Android-APT"><a href="#Android-APT" class="headerlink" title="Android APT"></a>Android APT</h2><p>  参考资料：<a href="https://segmentfault.com/a/1190000005100468" target="_blank" rel="external">https://segmentfault.com/a/1190000005100468</a></p>
+</code></pre><h3 id="1-3-截取ViewGroup"><a href="#1-3-截取ViewGroup" class="headerlink" title="1.3 截取ViewGroup"></a>1.3 截取ViewGroup</h3><pre><code>public static Bitmap takeScreenShotView(LinnerLayout viewGroup) {
+       Bitmap bitmap = null;
+       if (viewGroup != null) {
+           int h = 0;
+           for (int i = 0; i &lt; viewGroup.getChildCount(); i++) {
+               h += viewGroup.getChildAt(i).getHeight();
+           }
+           if (viewGroup.getHeight() &gt; h) {
+               h = viewGroup.getHeight();
+           }
+           bitmap = Bitmap.createBitmap(viewGroup.getWidth(), h, Config.ARGB_8888);
+           final Canvas c = new Canvas(bitmap);
+           c.drawColor(Color.WHITE);
+           viewGroup.draw(c);
+       }
+       return bitmap;
+   }
+</code></pre><h2 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h2><p>自己生成bitmap绘制，这个地方由于自己绘制的比较麻烦，一般就是在一张图片上绘制一些文字即可</p>
+<h2 id="方法3"><a href="#方法3" class="headerlink" title="方法3"></a>方法3</h2><p>生成未加载的布局文件的分享图片</p>
+<pre><code>View targetView = LayoutInflater.from(mActivity).inflate(R.layout.view_share, null);
+targetView.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),      View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY));
+targetView.layout(0, 0, width, height);
+bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Config.ARGB_8888);
+Canvas canvas = new Canvas(bitmap);
+canvas.drawColor(Color.WHITE);
+view.draw(canvas);
+</code></pre><p>核心是布局文件没有加载，也即没有measure和layout 就无法进行绘制（实际上一个view之所以能被绘制上去就是因为父容器measure和layout了它）才能进行绘制</p>
+<p>一个知识点： view 不是不可以在后台线程修改的，而是需只有原始创建这个视图层次(view hierachy)的线程才能修改它的视图(view)</p>
+<h2 id="扩展思维"><a href="#扩展思维" class="headerlink" title="扩展思维"></a>扩展思维</h2><p>如何生成listview和recycleView的截屏   </p>
+<h3 id="方案1"><a href="#方案1" class="headerlink" title="方案1"></a>方案1</h3><p>原理：我们可以知道第一个和最后一个view在屏幕上的位置，也可以获取获取整个屏幕的截图，所谓我们可以滑动一屏截取一屏(我们可以估算出一屏大约有多少元素，滚动固定长度即可)的内容，然后最后拼接出来  </p>
+<h3 id="方案2"><a href="#方案2" class="headerlink" title="方案2"></a>方案2</h3><p>原理：可以逐个生成itemView的bitmap（采用方法3），然后拼接出来</p>
 
           
         
