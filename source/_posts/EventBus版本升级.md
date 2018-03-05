@@ -3,7 +3,8 @@ date: 2018-2-10
 categories:
 - Android
    
-tags   
+   
+tags:   
 - Android
 - eventbus3.0
 - 注解

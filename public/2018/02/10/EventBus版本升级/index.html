@@ -1,0 +1,778 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,eventbus3.0,注解,APT," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="EventBus3.0 优点：EventBus 3由于使用了注解，比起使用反射来遍历方法的2.4版本逊色不少。但开挂之后(启用了索引)远远超出之前的版本。
+
+参考资料：https://www.cnblogs.com/bugly/p/5475034.html
+开挂方法：
+在当前moudle的gradle 添加    
+apply plugin: &amp;apos;com.neenbedankt.andro">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EventBus3.0">
+<meta property="og:url" content="http://yoursite.com/2018/02/10/EventBus版本升级/index.html">
+<meta property="og:site_name" content="Nico随笔">
+<meta property="og:description" content="EventBus3.0 优点：EventBus 3由于使用了注解，比起使用反射来遍历方法的2.4版本逊色不少。但开挂之后(启用了索引)远远超出之前的版本。
+
+参考资料：https://www.cnblogs.com/bugly/p/5475034.html
+开挂方法：
+在当前moudle的gradle 添加    
+apply plugin: &amp;apos;com.neenbedankt.andro">
+<meta property="og:image" content="http://i.imgur.com/5evKXOx.png">
+<meta property="og:updated_time" content="2018-03-05T17:24:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="EventBus3.0">
+<meta name="twitter:description" content="EventBus3.0 优点：EventBus 3由于使用了注解，比起使用反射来遍历方法的2.4版本逊色不少。但开挂之后(启用了索引)远远超出之前的版本。
+
+参考资料：https://www.cnblogs.com/bugly/p/5475034.html
+开挂方法：
+在当前moudle的gradle 添加    
+apply plugin: &amp;apos;com.neenbedankt.andro">
+<meta name="twitter:image" content="http://i.imgur.com/5evKXOx.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/10/EventBus版本升级/"/>
+
+
+
+
+
+  <title> EventBus3.0 | Nico随笔 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Nico随笔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/EventBus版本升级/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                EventBus3.0
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-10T00:00:00+08:00">
+                2018-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="EventBus3-0-优点："><a href="#EventBus3-0-优点：" class="headerlink" title="EventBus3.0 优点："></a>EventBus3.0 优点：</h1><p>EventBus 3由于使用了注解，比起使用反射来遍历方法的2.4版本逊色不少。但开挂之后(启用了索引)远远超出之前的版本。</p>
+<p><img src="http://i.imgur.com/5evKXOx.png" alt="性能对比"></p>
+<p>参考资料：<a href="https://www.cnblogs.com/bugly/p/5475034.html" target="_blank" rel="external">https://www.cnblogs.com/bugly/p/5475034.html</a></p>
+<h2 id="开挂方法："><a href="#开挂方法：" class="headerlink" title="开挂方法："></a>开挂方法：</h2><ol>
+<li><p>在当前moudle的gradle 添加    </p>
+<pre><code>apply plugin: &apos;com.neenbedankt.android-apt&apos;   
+</code></pre></li>
+<li><p>在dependencies里面添加   </p>
+<pre><code>dependencies 
+compile &apos;org.greenrobot:eventbus:3.0.0&apos;
+apt &apos;org.greenrobot:eventbus-annotation-processor:3.0.1&apos;   
+</code></pre></li>
+</ol>
+<ol>
+<li><p>在使用时候   </p>
+<pre><code>@Subscribe
+public void helloEventBus(UserReLoginEvent  event){
+    // TODO: 17/6/27  这是是为了测试而使用的
+    UtilsManager.toast(mContext,&quot;这是eventbus 3.0 可以支持的&quot;);
+}
+</code></pre></li>
+</ol>
+<h2 id="事件源定位："><a href="#事件源定位：" class="headerlink" title="事件源定位："></a>事件源定位：</h2><p>为了防止事件环路对EventBus加一个Wrapper，每次发送Event时候打印一下路径   </p>
+<pre><code>private static void printWrapPath(String tagStr, Object... objects) {
+
+   StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+   final StackTraceElement ste = stackTrace[5];
+
+   StringBuilder stringBuilder = new StringBuilder();
+   String className = ste.getFileName();
+   if (!TextUtils.isEmpty(className)) {
+       String methodName = ste.getMethodName();
+       int lineNumber = ste.getLineNumber();
+       stringBuilder.append(&quot;(&quot;).append(className).append(&quot;:&quot;).append(lineNumber).append(&quot;) #&quot;).append(methodName).append(&quot; : &quot;);
+   } else {
+       stringBuilder.append(&quot; &quot;);
+   }
+
+   String tag = (tagStr == null ? LOG_DEFAULT_TAG : tagStr);
+   String msg = (objects == null) ? &quot;null&quot; : getObjectsString(objects);
+   String headString = stringBuilder.toString();
+
+    Log.println(type, tagStr, headString + msg);
+
+}
+</code></pre><h2 id="混淆问题-："><a href="#混淆问题-：" class="headerlink" title="混淆问题  ："></a>混淆问题  ：</h2><p>混淆作为版本发布必备的流程，经常会闹出很多奇奇怪怪的问题，且不方便定位，尤其是EventBus这种依赖反射技术的库。通常情况下都会把相关的类和回调方法都keep住，但这样其实会留下被人反编译后破解的后顾之忧，所以我们的目标是keep最少的代码。</p>
+<p>首先，因为EventBus 3弃用了反射的方式去寻找回调方法，改用注解的方式。作者的意思是在混淆时就不用再keep住相应的类和方法。但是我们在运行时，却会报java.lang.NoSuchFieldError: No static field POSTING。网上给出的解决办法是keep住所有eventbus相关的代码：</p>
+<pre><code>-keep class de.greenrobot.** {*;}  
+</code></pre><p>其实我们仔细分析，可以看到是因为在SubscriberMethodFinder的findUsingReflection方法中，在调用Method.getAnnotation()时获取ThreadMode这个enum失败了，所以我们只需要keep住这个enum就可以了（如下）。</p>
+<pre><code>-keep public enum org.greenrobot.eventbus.ThreadMode { public static *; }   
+</code></pre><p>这样就能正常编译通过了，但如果使用了索引加速，是不会有上面这个问题的。因为在找方法时，调用的不是findUsingReflection，而是findUsingInfo。但是使用了索引加速后，编译后却会报新的错误：Could not find subscriber method in XXX Class. Maybe a missing ProGuard rule?</p>
+<p>这就很好理解了，因为生成索引GeneratedSubscriberIndex是在代码混淆之前进行的，混淆之后类名和方法名都不一样了（上面这个错误是方法无法找到），得keep住所有被Subscribe注解标注的方法：</p>
+<pre><code>-keepclassmembers class * {
+    @de.greenrobot.event.Subscribe &lt;methods&gt;;
+}
+</code></pre><p>所以又倒退回了EventBus2.4时不能混淆onEvent开头的方法一样的处境了。所以这里就得权衡一下利弊：使用了注解不用索引加速，则只需要keep住EventBus相关的代码，现有的代码可以正常的进行混淆。而使用了索引加速的话，则需要keep住相关的方法和类。</p>
+<h2 id="Android-APT"><a href="#Android-APT" class="headerlink" title="Android APT"></a>Android APT</h2><p>  参考资料：<a href="https://segmentfault.com/a/1190000005100468" target="_blank" rel="external">https://segmentfault.com/a/1190000005100468</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/eventbus3-0/" rel="tag"># eventbus3.0</a>
+          
+            <a href="/tags/注解/" rel="tag"># 注解</a>
+          
+            <a href="/tags/APT/" rel="tag"># APT</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/10/图片不同尺寸缓存的优化方案/" rel="next" title="又拍云图片显示优化">
+                <i class="fa fa-chevron-left"></i> 又拍云图片显示优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/13/首页崩溃解决方案/" rel="prev" title="首页Cache导致崩溃">
+                首页Cache导致崩溃 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true"
+               alt="Liuycheng" />
+          <p class="site-author-name" itemprop="name">Liuycheng</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EventBus3-0-优点："><span class="nav-number">1.</span> <span class="nav-text">EventBus3.0 优点：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#开挂方法："><span class="nav-number">1.1.</span> <span class="nav-text">开挂方法：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件源定位："><span class="nav-number">1.2.</span> <span class="nav-text">事件源定位：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#混淆问题-："><span class="nav-number">1.3.</span> <span class="nav-text">混淆问题  ：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-APT"><span class="nav-number">1.4.</span> <span class="nav-text">Android APT</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liuycheng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>

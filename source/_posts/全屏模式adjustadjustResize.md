@@ -3,7 +3,8 @@ date: 2017-9-15
 categories:
 - Android
    
-tags   
+   
+tags:   
 - Android
 - 全屏模式
 - AdjustResize
