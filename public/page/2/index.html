@@ -1593,7 +1593,7 @@ if (a.mVisibleFromClient) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Gradle小结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/github_guide/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -1615,8 +1615,8 @@ if (a.mVisibleFromClient) {
             
               
                 
-                <a class="post-title-link" href="/2015/11/01/Gradle小结/" itemprop="url">
-                  Gradle配置分析
+                <a class="post-title-link" href="/2015/11/01/github_guide/" itemprop="url">
+                  Github 教程
                 </a>
               
             
@@ -1655,8 +1655,8 @@ if (a.mVisibleFromClient) {
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
                   </a>
                 </span>
 
@@ -1692,383 +1692,59 @@ if (a.mVisibleFromClient) {
       
         
           
-            <p>TopicLevel的gradle    </p>
-<pre><code>buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath &apos;com.android.tools.build:gradle:2.2.2&apos;
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-</code></pre><p>Mudule level的build.gradle  </p>
-<pre><code>apply plugin: &apos;com.android.application&apos;
-
-android {
-    compileSdkVersion 20
-    buildToolsVersion &quot;24.0.0&quot;
-
-
-    compileOptions{
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    defaultConfig {
-        applicationId &quot;com.lyc.study&quot;
-        minSdkVersion 15
-        targetSdkVersion 20
-        versionCode 1
-        versionName &quot;1.0&quot;
-        jackOptions{
-            enabled true
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;
-        }
-    }
-}
-
-dependencies {
-    compile fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)
-    compile &apos;com.android.support:support-v4:+&apos;
-    compile &apos;com.android.support:support-annotations:22.2.0&apos;
-    compile &apos;com.android.support:support-v13:20.1.1&apos;
-}
-</code></pre><p>以上是标准的打包方式,下面是常用的我们自定义的内容   </p>
-<pre><code>dependencies {
-    compile fileTree(include: &apos;*.jar&apos;, dir: &apos;libs&apos;)
-    compile project(&apos;:google_services&apos;)
-
-    // compile &apos;com.android.support:multidex:1.0.1&apos;
-    compile &apos;top.zibin:Luban:1.0.9&apos;
-    debugCompile &apos;com.bugtags.library:bugtags-lib:latest.integration&apos;
-
-    testCompile &apos;junit:junit:4.12&apos;
-
-}
-
-android {
-    compileSdkVersion 21
-    buildToolsVersion &apos;23.0.2&apos;
-
-    sourceSets {
-        main {
-            manifest.srcFile &apos;AndroidManifest.xml&apos;
-            java.srcDirs = [&apos;src&apos;]
-            resources.srcDirs = [&apos;src&apos;]
-            aidl.srcDirs = [&apos;src&apos;]
-            renderscript.srcDirs = [&apos;src&apos;]
-            res.srcDirs = [&apos;res&apos;]
-            assets.srcDirs = [&apos;assets&apos;]
-            jniLibs.srcDirs = [&apos;libs&apos;]
-        }
-
-        test.setRoot(&apos;test&apos;)
-
-        debug.setRoot(&apos;build-types/debug&apos;)
-        release.setRoot(&apos;build-types/release&apos;)
-    }
-
-    signingConfigs {
-        debug {
-            // 请配置好pub.key及其密码，或者改为使用debug.keystore
-            storeFile file(&apos;pub.key&apos;) // storeFile file(&apos;debug.keystore&apos;)
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
-        release {
-            storeFile file(&apos;pub.key&apos;)
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
-    }
-
-    buildTypes {
-        debug {
-            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
-            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
-            signingConfig signingConfigs.debug
-
-            ndk{
-                abiFilters &apos;armeabi&apos;, &apos;armeabi-v7a&apos;, &apos;x86&apos; //,&apos;arm64-v8a&apos;, &apos;x86_64&apos;, &apos;mips&apos;, &apos;mips64&apos;
-            }
-        }
-        release {
-            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;2017/1/1\&quot;&quot; //  发布时修改为当天日期
-            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;false&quot; // 关闭开发者模式
-            proguardFiles &apos;proguard.cfg&apos;
-            minifyEnabled true
-            shrinkResources true
-            debuggable false
-            jniDebuggable false
-            signingConfig signingConfigs.release
-
-            applicationVariants.all { variant -&gt;
-                variant.outputs.each { output -&gt;
-                    def outputFile = output.outputFile
-                    if (outputFile != null &amp;&amp; outputFile.name.endsWith(&apos;.apk&apos;)) {
-                        // APK命名格式 Going-release.apk TODO 发布时使用
-                        def fileName = &quot;Going-v${defaultConfig.versionName}-${defaultConfig.versionCode}-release.apk&quot;
-//                         def fileName = &quot;Going.apk&quot;
-                        output.outputFile = new File(outputFile.parent, fileName)
-                    }
-                }
-            }
-        }
-    }
-
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
-        versionCode 1000
-        versionName &quot;1.0.0&quot;
-        //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
-        multiDexEnabled false
-        multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
-        resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; //暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
-    }
-
-    productFlavors {
-          own {}
-          googleMarket {}
-
-          tencent {}
-          baidu {}
-
-
-    }
-
-//    productFlavors.all { flavor -&gt;
-//        flavor.manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
-//    }
-
-    packagingOptions {
-        exclude &apos;META-INF/LICENSE.txt&apos;
-    }
-
-    // 可以适当的打开Lint，检查是否存在隐藏问题
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-
-    android.dexOptions {
-        jumboMode = true
-        javaMaxHeapSize &quot;2g&quot;
-        maxProcessCount 8
-    }
-
-}
-
-// 替换编码方式，否则编译可能有中文乱码
-tasks.withType(org.gradle.api.tasks.compile.JavaCompile) {
-    options.encoding = &quot;UTF-8&quot;
-}
-</code></pre><p>相对于标准的我们在 android Task中新增了sourceSets这个Task制定了一些文件夹的目录，如果工程目录是标注的就不需要设置了</p>
-<p>在build.gradle同级新建一个gradle.properties<br>里面可以用来存放build.gradle里面的一些参数<br>STORE_PASSWORD=nico<br>KEY_ALIAS=nick<br>KEY_PASSWORD=nico</p>
-<p>这个地方对应的脚本是signingConfigs》debug里面的参数 </p>
-<p> buildTypes 》debug 中的buildConfigField参数则会在编译时候  </p>
-<p> <img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/gradle%E5%88%86%E6%9E%9001.png?raw=true" alt="gradle01"></p>
-<pre><code>buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
-buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
-</code></pre><p>会在编译时候生成并存放在build/generated/source/buildConfig/…BuildConfig.java   </p>
-<pre><code>public final class BuildConfig {
-  public static final boolean DEBUG = Boolean.parseBoolean(&quot;true&quot;);
-  public static final String APPLICATION_ID = &quot;com.lyc.study&quot;;
-  public static final String BUILD_TYPE = &quot;debug&quot;;
-  public static final String FLAVOR = &quot;own&quot;;
-  public static final int VERSION_CODE = 100;
-  public static final String VERSION_NAME = &quot;1.0.0&quot;;
-  // Fields from build type: debug
-  public static final boolean DEVELOP_MODE = true;
-  public static final String RELEASE_TIME = &quot;Not yet&quot;;
-}
-</code></pre><p>可以参考友盟的多渠道打包（github）</p>
-<p>一个介绍gradle比较好的网站<br><a href="http://stormzhang.com/posts/" target="_blank" rel="external">http://stormzhang.com/posts/</a></p>
-<p><a href="https://segmentfault.com/a/1190000006915937" target="_blank" rel="external">https://segmentfault.com/a/1190000006915937</a></p>
-<p>这两个网站都是一系列的教程，建议一个一个的看</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/分析UI流畅度/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/分析UI流畅度/" itemprop="url">
-                  Android 性能检测
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="手机端："><a href="#手机端：" class="headerlink" title="手机端："></a>手机端：</h1><h2 id="开发者选项"><a href="#开发者选项" class="headerlink" title="开发者选项"></a>开发者选项</h2><ol>
-<li><p>绘图》 显示布局边界</p>
-</li>
-<li><p>硬件加速渲染 》调试GPU过渡绘制  要打开</p>
+            <h2 id="本地工程上传github"><a href="#本地工程上传github" class="headerlink" title="本地工程上传github"></a>本地工程上传github</h2><ol>
+<li>首先在github上创建一个resp</li>
+<li>在本地工程里面引入 .gitignore<ul>
+<li>在androidstudio 安装一个ignore 插件，可以生成部分ignore</li>
+<li>对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore</li>
+<li>.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）<a href="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore" target="_blank" rel="external">原文件</a> </li>
+</ul>
 </li>
 </ol>
-<ol>
-<li><p>监控》启用严格模式</p>
+<pre><code>.gradle
+/local.properties
+/gradle.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+bin
+gen
+.settings
+.idea
+target
+*.iml
+*.key
+</code></pre><ol>
+<li><p>touch README.md  》》生成 reamdme文件</p>
 </li>
-<li><p>GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true" alt="image"></p>
+<li><p>git init当前工程 》》生成 git信息</p>
+</li>
+<li><p>git add -A 》》把当前工程除了ingore的添加到git里面</p>
+</li>
+<li><p>git commit 》》生成第一次的commit信息</p>
+</li>
+<li><p>git remote add origin git@github.com:liuyicheng3/NewRepo.git   》》设置当前git工程的远程分支</p>
+</li>
+<li><p>git push -u origin master 》》push 到github上去</p>
+</li>
+<li><p>Attention:一般android studio的默认ssh是 androidstudio自己的，所以这时候用android studio会提交不上去<br>需要在settiings&gt;vertion control&gt; git里面吧 SSH excutable 由built-in 改成 native</p>
 </li>
 </ol>
-<h1 id="电脑端："><a href="#电脑端：" class="headerlink" title="电脑端："></a>电脑端：</h1><ol>
-<li><p>查看MemoryMonitor  ，查看页面内存波动（对于listview ）</p>
+<p>##维护git文档方法</p>
+<ul>
+<li>可以网页里面直接弄，就不要通本地修改再提交，太麻烦。</li>
+<li>涉及到外部链接的图片文件，git库里面建对应的文件夹统一维护。</li>
+<li>对于图片贴的地址一定要是raw的，不要那个github上显示的地址<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="string">原文件</span>](<span class="link">https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore</span>)</div></pre></td></tr></table></figure>
 </li>
-<li><p>tools》android》android  device  monistor<br>（其实它就是把android sdk中tools下面的很多功能聚合起来；  如ddms，uiautomatorviewer，monitor等功能聚合起来，但是好像没有集成hierarchyviewer的功能）</p>
-</li>
-<li><p>查看录制页面变化时候的cpu耗时<br>开始录制》选中进程，点击红色方框左边的按钮，然后点击红色方框里右侧的按钮录制正式开始，需要结束时，再点击右侧按钮结束，就会有结果自动生成<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6.png?raw=true" alt="image"></p>
-<p>分析结果》录制实际上是一个采样的过程，可以看图中红色方框里面最耗时的几个方法，基本上可以定位到程序的问题<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6_2.png?raw=true" alt="image"></p>
-</li>
-<li>查看布局层次，以及每一层的绘制时间，目的是减小层次<br>入口是在：tools 下面 hierarchyviewer  查看每个层次的绘制时间（这个好像必须在模拟器上看）</li>
+</ul>
+<h2 id="一般的git工作流程"><a href="#一般的git工作流程" class="headerlink" title="一般的git工作流程"></a>一般的git工作流程</h2><h3 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h3><h3 id="按featrue-开发"><a href="#按featrue-开发" class="headerlink" title="按featrue 开发"></a>按featrue 开发</h3><h3 id="codereview及合并"><a href="#codereview及合并" class="headerlink" title="codereview及合并"></a>codereview及合并</h3><h2 id="Markdown-快捷键"><a href="#Markdown-快捷键" class="headerlink" title="Markdown 快捷键"></a>Markdown 快捷键</h2><ol>
+<li>空两行，让后代码区域两个TAB</li>
+<li>shift tab  收回一个tab</li>
 </ol>
-<h1 id="分析卡的原因"><a href="#分析卡的原因" class="headerlink" title="分析卡的原因"></a>分析卡的原因</h1><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="http://www.cnblogs.com/krislight1105/p/5352500.html" target="_blank" rel="external">http://www.cnblogs.com/krislight1105/p/5352500.html</a><br><a href="http://blog.csdn.net/wangbaochu/article/details/50396512" target="_blank" rel="external">http://blog.csdn.net/wangbaochu/article/details/50396512</a></p>
+<h2 id="Git-必须踩的坑"><a href="#Git-必须踩的坑" class="headerlink" title="Git 必须踩的坑"></a>Git 必须踩的坑</h2><h3 id="1、不小心提交错了分支，把修改直接提交到master里面了"><a href="#1、不小心提交错了分支，把修改直接提交到master里面了" class="headerlink" title="1、不小心提交错了分支，把修改直接提交到master里面了"></a>1、不小心提交错了分支，把修改直接提交到master里面了</h3><pre><code>git push --force
+</code></pre><h3 id="2、git-reset-git-revert"><a href="#2、git-reset-git-revert" class="headerlink" title="2、git  reset   git revert"></a>2、git  reset   git revert</h3><p><a href="http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html" target="_blank" rel="external">http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html</a></p>
 
           
         
@@ -2406,6 +2082,171 @@ private static void goWaitress(final Context ctx, String actionUrl) {
     ELog.e(&quot;wechat share failed&quot;);
 }
 </code></pre><p> 所以只有自己先压缩图片到一定的size，  再在这张压缩过的图片上绘制真正的二维码才行，（如果遇到好心的UI把二维码设计的很大就，可以跳过这个坑）</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/分析UI流畅度/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/分析UI流畅度/" itemprop="url">
+                  Android 性能检测
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="手机端："><a href="#手机端：" class="headerlink" title="手机端："></a>手机端：</h1><h2 id="开发者选项"><a href="#开发者选项" class="headerlink" title="开发者选项"></a>开发者选项</h2><ol>
+<li><p>绘图》 显示布局边界</p>
+</li>
+<li><p>硬件加速渲染 》调试GPU过渡绘制  要打开</p>
+</li>
+</ol>
+<ol>
+<li><p>监控》启用严格模式</p>
+</li>
+<li><p>GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true" alt="image"></p>
+</li>
+</ol>
+<h1 id="电脑端："><a href="#电脑端：" class="headerlink" title="电脑端："></a>电脑端：</h1><ol>
+<li><p>查看MemoryMonitor  ，查看页面内存波动（对于listview ）</p>
+</li>
+<li><p>tools》android》android  device  monistor<br>（其实它就是把android sdk中tools下面的很多功能聚合起来；  如ddms，uiautomatorviewer，monitor等功能聚合起来，但是好像没有集成hierarchyviewer的功能）</p>
+</li>
+<li><p>查看录制页面变化时候的cpu耗时<br>开始录制》选中进程，点击红色方框左边的按钮，然后点击红色方框里右侧的按钮录制正式开始，需要结束时，再点击右侧按钮结束，就会有结果自动生成<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6.png?raw=true" alt="image"></p>
+<p>分析结果》录制实际上是一个采样的过程，可以看图中红色方框里面最耗时的几个方法，基本上可以定位到程序的问题<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6_2.png?raw=true" alt="image"></p>
+</li>
+<li>查看布局层次，以及每一层的绘制时间，目的是减小层次<br>入口是在：tools 下面 hierarchyviewer  查看每个层次的绘制时间（这个好像必须在模拟器上看）</li>
+</ol>
+<h1 id="分析卡的原因"><a href="#分析卡的原因" class="headerlink" title="分析卡的原因"></a>分析卡的原因</h1><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="http://www.cnblogs.com/krislight1105/p/5352500.html" target="_blank" rel="external">http://www.cnblogs.com/krislight1105/p/5352500.html</a><br><a href="http://blog.csdn.net/wangbaochu/article/details/50396512" target="_blank" rel="external">http://blog.csdn.net/wangbaochu/article/details/50396512</a></p>
 
           
         
