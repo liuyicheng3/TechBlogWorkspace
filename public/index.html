@@ -644,169 +644,6 @@ public @interface StringDef {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/16/图标跟随主题色方案/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/02/16/图标跟随主题色方案/" itemprop="url">
-                  图片跟随主题色变化
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-16T00:00:00+08:00">
-                2018-02-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Icon图标"><a href="#Icon图标" class="headerlink" title="Icon图标"></a>Icon图标</h1><ol>
-<li>部分是网络图标</li>
-<li>通过已有的图片处理成变色图片，方案就是作图的时候控制显示内容的透明度，   </li>
-</ol>
-<p>第一步：</p>
-<pre><code>Bitmap mColorBitmap = Bitmap.createBitmap(mBitmap.getWidth(), mBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-Canvas mCanvas = new Canvas(mColorBitmap);
-Paint mPaint = new Paint();
-mPaint.setColor(mColor);  
-</code></pre><p>第二步：</p>
-<pre><code>//从原位图中提取只包含alpha的位图
-Bitmap alphaBitmap = mBitmap.extractAlpha();
-//在画布上通过透明度的部分控制显示颜色
-mCanvas.drawBitmap(alphaBitmap, 0, 0, mPaint);
-</code></pre><ol>
-<li>使用把图片做成字体<br>其实这和第二种的原理是相同的,只不过是UI和Android系统帮我们做了 </li>
-</ol>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h1 id="字体颜色"><a href="#字体颜色" class="headerlink" title="字体颜色"></a>字体颜色</h1><p>关于图片所占内存的大小  <a href="http://dev.qq.com/topic/591d61f56793d26660901b4e" target="_blank" rel="external">http://dev.qq.com/topic/591d61f56793d26660901b4e</a></p>
-<p>#ImageBitmap 和倍率的关系</p>
-<p>如果不设置Density  直接把一个bitmap 设置到ImageVIew上去 就是默认density。<br>但是可能图片都是三倍图，这时候如果设置到2倍分辩率的手机上就会出现缩小的情况，这时候就要设置图片的density。<br>bitmap.setDensity(480);<br>然后再设置到imageView上去</p>
-<p>关于图片的缩放系数：<a href="http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/" target="_blank" rel="external">http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/15/用户数据统计和行为分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -965,199 +802,6 @@ mCanvas.drawBitmap(alphaBitmap, 0, 0, mPaint);
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/14/沉浸式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/02/14/沉浸式/" itemprop="url">
-                  沉浸式的实现方案
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-14T00:00:00+08:00">
-                2018-02-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Step-1："><a href="#Step-1：" class="headerlink" title="Step 1："></a>Step 1：</h1><p>把状态栏设置为透明</p>
-<pre><code>    if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.LOLLIPOP&amp;&amp;!Build.BRAND.equalsIgnoreCase(&quot;huawei&quot;)){/**5.0及以上且不是华为,
-            因为华为5.0以上系统已经全屏但是状态栏黑色改不掉*/
-        Window window = getWindow();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        if(Build.VERSION.SDK_INT&gt;= Build.VERSION_CODES.M){
-            window.setStatusBarColor(Color.TRANSPARENT);
-            if(Build.MANUFACTURER.toLowerCase().contains(&quot;xiaomi&quot;)) {
-                setMiuiStatusBarDarkMode(true);
-            }
-        }else{
-            window.setStatusBarColor(Color.argb(0x80,0x00,0x00,0x00));
-        }
-
-    }else{/**5.0以下，4.0及以上*/
-        Window win = getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-        winParams.flags |= bits;
-        win.setAttributes(winParams);
-    }
-    /**由于MIUI 6修改过所以系统方法无法设置状态栏字体颜色无效，需要使用该方法设置
-    *ps:mui上设置状态栏字体颜色为深色
-    *
-    */
-    public void setMiuiStatusBarDarkMode(boolean isdarkmode) {
-    Class&lt;? extends Window&gt; clazz = this.getWindow().getClass();
-    try {
-        int darkModeFlag = 0;
-        Class&lt;?&gt; layoutParams = Class.forName(&quot;android.view.MiuiWindowManager$LayoutParams&quot;);
-        Field field = layoutParams.getField(&quot;EXTRA_FLAG_STATUS_BAR_DARK_MODE&quot;);
-        darkModeFlag = field.getInt(layoutParams);
-        Method extraFlagField = clazz.getMethod(&quot;setExtraFlags&quot;, int.class, int.class);
-        extraFlagField.invoke(this.getWindow(), isdarkmode ? darkModeFlag : 0, darkModeFlag);
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-</code></pre><h2 id="Step-2："><a href="#Step-2：" class="headerlink" title="Step 2："></a>Step 2：</h2><p>设置绘制区域</p>
-<pre><code>rootView.setFitsSystemWindows(true);
-rootView.setClipToPadding(true);
-</code></pre><p>这样rootView就顶上头部去了，但是有个副作用就是界面显示区域也扩展下面的虚拟按键后面了，所以要对于alignparentbottom的功能栏，就不能直接放到rootView里面，必须放到与rootView外面。这样功能栏就不会被底部的虚拟按键盖住（这里不要考虑计算虚拟按键的高度，已经是否有虚拟按键，华为手机可以通过手势动态展开或者收起虚拟按键）</p>
-<h2 id="注意机型："><a href="#注意机型：" class="headerlink" title="注意机型："></a>注意机型：</h2><ol>
-<li>nexus固定死的虚拟按键</li>
-<li>华为和小米Mix可以使用手势控制的虚拟按键</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/13/首页崩溃解决方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1266,6 +910,203 @@ Thread.setDefaultUncaughtExceptionHandler(this);
 </code></pre><p>参考资料: <a href="http://blog.csdn.net/luck_apple/article/details/7768064" target="_blank" rel="external">http://blog.csdn.net/luck_apple/article/details/7768064</a></p>
 <h2 id="step2-记录"><a href="#step2-记录" class="headerlink" title="step2: 记录"></a>step2: 记录</h2><p>记录crash 信息到本地（时间,连续次数）</p>
 <h2 id="step3-第一个界面判断"><a href="#step3-第一个界面判断" class="headerlink" title="step3: 第一个界面判断"></a>step3: 第一个界面判断</h2><p>如果判断连续次数达到一定数量，直接跳往BugFix界面，上传错误信息，同时服务器配合打热补丁<br>这个地方需要区别错误类型进行更细致的修复</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/生成分享图片/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/10/生成分享图片/" itemprop="url">
+                  生成分享图片
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-10T00:00:00+08:00">
+                2018-02-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h2><h3 id="1-1-截取Activity"><a href="#1-1-截取Activity" class="headerlink" title="1.1 截取Activity"></a>1.1 截取Activity</h3><pre><code>public static Bitmap takeScreenShot(Activity activity) {
+       View view = activity.getWindow().getDecorView();
+       if (view == null) {
+           return null;
+       }
+       view.setDrawingCacheEnabled(true);
+       view.buildDrawingCache();
+       Bitmap b1 = view.getDrawingCache();
+       if (b1 == null) {
+           return null;
+       }
+       // 获取状态栏高度
+       Rect frame = new Rect();
+       activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+       int statusBarHeight = frame.top;
+
+       // 获取屏幕长和高
+       int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+
+       Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, b1.getHeight() - statusBarHeight);
+       view.destroyDrawingCache();
+       b1.recycle();
+       return b;
+   }
+</code></pre><h3 id="1-3-截取ViewGroup"><a href="#1-3-截取ViewGroup" class="headerlink" title="1.3 截取ViewGroup"></a>1.3 截取ViewGroup</h3><pre><code>public static Bitmap takeScreenShotView(LinnerLayout viewGroup) {
+       Bitmap bitmap = null;
+       if (viewGroup != null) {
+           int h = 0;
+           for (int i = 0; i &lt; viewGroup.getChildCount(); i++) {
+               h += viewGroup.getChildAt(i).getHeight();
+           }
+           if (viewGroup.getHeight() &gt; h) {
+               h = viewGroup.getHeight();
+           }
+           bitmap = Bitmap.createBitmap(viewGroup.getWidth(), h, Config.ARGB_8888);
+           final Canvas c = new Canvas(bitmap);
+           c.drawColor(Color.WHITE);
+           viewGroup.draw(c);
+       }
+       return bitmap;
+   }
+</code></pre><h2 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h2><p>自己生成bitmap绘制，这个地方由于自己绘制的比较麻烦，一般就是在一张图片上绘制一些文字即可</p>
+<h2 id="方法3"><a href="#方法3" class="headerlink" title="方法3"></a>方法3</h2><p>生成未加载的布局文件的分享图片</p>
+<pre><code>View targetView = LayoutInflater.from(mActivity).inflate(R.layout.view_share, null);
+targetView.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),      View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY));
+targetView.layout(0, 0, width, height);
+bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Config.ARGB_8888);
+Canvas canvas = new Canvas(bitmap);
+canvas.drawColor(Color.WHITE);
+view.draw(canvas);
+</code></pre><p>核心是布局文件没有加载，也即没有measure和layout 就无法进行绘制（实际上一个view之所以能被绘制上去就是因为父容器measure和layout了它）才能进行绘制</p>
+<p>一个知识点： view 不是不可以在后台线程修改的，而是需只有原始创建这个视图层次(view hierachy)的线程才能修改它的视图(view)</p>
+<h2 id="扩展思维"><a href="#扩展思维" class="headerlink" title="扩展思维"></a>扩展思维</h2><p>如何生成listview和recycleView的截屏   </p>
+<h3 id="方案1"><a href="#方案1" class="headerlink" title="方案1"></a>方案1</h3><p>原理：我们可以知道第一个和最后一个view在屏幕上的位置，也可以获取获取整个屏幕的截图，所谓我们可以滑动一屏截取一屏(我们可以估算出一屏大约有多少元素，滚动固定长度即可)的内容，然后最后拼接出来  </p>
+<h3 id="方案2"><a href="#方案2" class="headerlink" title="方案2"></a>方案2</h3><p>原理：可以逐个生成itemView的bitmap（采用方法3），然后拼接出来</p>
 
           
         
@@ -1508,363 +1349,6 @@ public void helloEventBus(UserReLoginEvent  event){
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/生成分享图片/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/02/10/生成分享图片/" itemprop="url">
-                  生成分享图片
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-10T00:00:00+08:00">
-                2018-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h2><h3 id="1-1-截取Activity"><a href="#1-1-截取Activity" class="headerlink" title="1.1 截取Activity"></a>1.1 截取Activity</h3><pre><code>public static Bitmap takeScreenShot(Activity activity) {
-       View view = activity.getWindow().getDecorView();
-       if (view == null) {
-           return null;
-       }
-       view.setDrawingCacheEnabled(true);
-       view.buildDrawingCache();
-       Bitmap b1 = view.getDrawingCache();
-       if (b1 == null) {
-           return null;
-       }
-       // 获取状态栏高度
-       Rect frame = new Rect();
-       activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-       int statusBarHeight = frame.top;
-
-       // 获取屏幕长和高
-       int width = activity.getWindowManager().getDefaultDisplay().getWidth();
-
-       Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, b1.getHeight() - statusBarHeight);
-       view.destroyDrawingCache();
-       b1.recycle();
-       return b;
-   }
-</code></pre><h3 id="1-3-截取ViewGroup"><a href="#1-3-截取ViewGroup" class="headerlink" title="1.3 截取ViewGroup"></a>1.3 截取ViewGroup</h3><pre><code>public static Bitmap takeScreenShotView(LinnerLayout viewGroup) {
-       Bitmap bitmap = null;
-       if (viewGroup != null) {
-           int h = 0;
-           for (int i = 0; i &lt; viewGroup.getChildCount(); i++) {
-               h += viewGroup.getChildAt(i).getHeight();
-           }
-           if (viewGroup.getHeight() &gt; h) {
-               h = viewGroup.getHeight();
-           }
-           bitmap = Bitmap.createBitmap(viewGroup.getWidth(), h, Config.ARGB_8888);
-           final Canvas c = new Canvas(bitmap);
-           c.drawColor(Color.WHITE);
-           viewGroup.draw(c);
-       }
-       return bitmap;
-   }
-</code></pre><h2 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h2><p>自己生成bitmap绘制，这个地方由于自己绘制的比较麻烦，一般就是在一张图片上绘制一些文字即可</p>
-<h2 id="方法3"><a href="#方法3" class="headerlink" title="方法3"></a>方法3</h2><p>生成未加载的布局文件的分享图片</p>
-<pre><code>View targetView = LayoutInflater.from(mActivity).inflate(R.layout.view_share, null);
-targetView.measure(View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),      View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY));
-targetView.layout(0, 0, width, height);
-bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Config.ARGB_8888);
-Canvas canvas = new Canvas(bitmap);
-canvas.drawColor(Color.WHITE);
-view.draw(canvas);
-</code></pre><p>核心是布局文件没有加载，也即没有measure和layout 就无法进行绘制（实际上一个view之所以能被绘制上去就是因为父容器measure和layout了它）才能进行绘制</p>
-<p>一个知识点： view 不是不可以在后台线程修改的，而是需只有原始创建这个视图层次(view hierachy)的线程才能修改它的视图(view)</p>
-<h2 id="扩展思维"><a href="#扩展思维" class="headerlink" title="扩展思维"></a>扩展思维</h2><p>如何生成listview和recycleView的截屏   </p>
-<h3 id="方案1"><a href="#方案1" class="headerlink" title="方案1"></a>方案1</h3><p>原理：我们可以知道第一个和最后一个view在屏幕上的位置，也可以获取获取整个屏幕的截图，所谓我们可以滑动一屏截取一屏(我们可以估算出一屏大约有多少元素，滚动固定长度即可)的内容，然后最后拼接出来  </p>
-<h3 id="方案2"><a href="#方案2" class="headerlink" title="方案2"></a>方案2</h3><p>原理：可以逐个生成itemView的bitmap（采用方法3），然后拼接出来</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/图片不同尺寸缓存的优化方案/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/02/10/图片不同尺寸缓存的优化方案/" itemprop="url">
-                  又拍云图片显示优化
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-10T00:00:00+08:00">
-                2018-02-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="1-又拍云的图片尺寸问题"><a href="#1-又拍云的图片尺寸问题" class="headerlink" title="1. 又拍云的图片尺寸问题"></a>1. 又拍云的图片尺寸问题</h2><p>又拍云会对我们上传的图片进行处理。然后会生成多种尺寸：110,160,210,240,320,480,640,720,1200。<br>每种尺寸对应于不同的url。<br>eg：<br><a href="http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg!w480.jpg" target="_blank" rel="external">http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg!w480.jpg</a></p>
-<h2 id="2-简单的解决方案"><a href="#2-简单的解决方案" class="headerlink" title="2. 简单的解决方案"></a>2. 简单的解决方案</h2><p>为了利用又拍云自动帮我们处理出来的不同尺寸图片。在每次加载图片的时候根据当前显示View的尺寸加载合适的尺寸</p>
-<h3 id="2-1-这里有三个没解决的问题："><a href="#2-1-这里有三个没解决的问题：" class="headerlink" title="2.1 这里有三个没解决的问题："></a>2.1 这里有三个没解决的问题：</h3><ol>
-<li><p>不同尺寸的图片会在sd卡上存不同cache，比如由于我们先加载了640尺寸的图片，后面加载480尺寸还是无法公用640尺寸的图片cache,导致还得重新请求一次网络。实际上我们可以通过处理得到480尺寸的图片。</p>
-</li>
-<li><p>对于发带图片帖子的这种逻辑处理逻辑处理不方便。因为上传图片后，很有可能不知道图片的显示尺寸。无法把这张本地图片放置到对应位置的cache上去（虽然我们现在上传上去后，会直接显示的是本地图片，但这个有点治标不治本。第二次进来时候或者下拉刷新后 还是会从网上load这张图片）。</p>
-</li>
-<li><p>图片尺寸的获取，不是所有的ImageView在setImageUrl时候都可以获取尺寸，有的量不到尺寸，也就是在一个还没有渲染 并且也没有设置固定size的ImageVIew上设置Url（比Adapter里面的初次createView  然后立即设置Url就会出现量不到尺寸的问题）</p>
-</li>
-</ol>
-<p>总结一些：又拍云会帮我们处理出来不同尺寸的图片。在小的地方我们可以仅仅加载小尺寸的图片，提高了展示速度。但是对于同一张图片，在不同地方展示不同尺寸的逻辑处理不够完美。所以以前在wecal里面会发现一个问题：同一个头像，已经展示过了，在下一个页面里用另个尺寸展示的时候还是会有点慢。 </p>
-<h2 id="3-对于又拍云的图片完美解决方案"><a href="#3-对于又拍云的图片完美解决方案" class="headerlink" title="3. 对于又拍云的图片完美解决方案"></a>3. 对于又拍云的图片完美解决方案</h2><p>核心需要在内存和sd卡缓存逻辑能够识别出不同尺寸的不同图片。也就是要每一url对应于一组cache。</p>
-<p>代码实现上就是要把当前的url的cache对应到一组cache 上去。<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD01.png?raw=true" alt=""></p>
-<h3 id="3-1-Memery-cache逻辑"><a href="#3-1-Memery-cache逻辑" class="headerlink" title="3.1 Memery cache逻辑"></a>3.1 Memery cache逻辑</h3><p>对于内存cache 建议还是按照以前的逻辑走，但是可以加上对于一个尺寸的的图片可以使用相近已经缓存尺寸的图片。</p>
-<h3 id="3-2-Disk-cache逻辑"><a href="#3-2-Disk-cache逻辑" class="headerlink" title="3.2 Disk cache逻辑"></a>3.2 Disk cache逻辑</h3><p>对于Disk cache 。如果需要加载一个小尺寸的图片，但是发现只有大尺寸图片，我们可以直接使用大图压缩出小图，返回过去。<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD02.png?raw=true" alt=""></p>
-<h3 id="3-3-2G网络模式"><a href="#3-3-2G网络模式" class="headerlink" title="3.3 2G网络模式"></a>3.3 2G网络模式</h3><p>在低速网络情况下，对于disk cache，如果发现没有当前尺寸的图片的情况下，可以使用任意尺寸的缓存转化。</p>
-<h2 id="5-推荐一个图片压缩库"><a href="#5-推荐一个图片压缩库" class="headerlink" title="5. 推荐一个图片压缩库"></a>5. 推荐一个图片压缩库</h2><p>Luban：<a href="https://github.com/Curzibn/Luban" target="_blank" rel="external">https://github.com/Curzibn/Luban</a>      大小仅仅是15K</p>
-<p>根据我的测试一般可以在不明显影响图片展示效果的条件减少图片体积2/3。使用它后发图片备注速度飞快。（在wecal里面默认发送压缩后的图片，也提供发送原图的可选项）</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/03/xml处理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2011,6 +1495,581 @@ for pos,treeItem in enumerate(allItems):
 <pre><code>import re  
 names = re.findall(r&quot;&lt;!\[CDATA\[(.*?)\]\]&quot;,data)
 </code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/20/App核心指标/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/10/20/App核心指标/" itemprop="url">
+                  App核心指标和广告计费方式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-20T00:00:00+08:00">
+                2017-10-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="App核心指标"><a href="#App核心指标" class="headerlink" title="App核心指标"></a>App核心指标</h1><ol>
+<li>pv     </li>
+<li>uv     </li>
+<li>ctr     </li>
+<li>次日/7日留存/30日留存<br>一般目标是在40/20/10<br>参考文章：<a href="http://www.pmcaff.com/discuss/index/369885221299264?pmc_param=1" target="_blank" rel="external">http://www.pmcaff.com/discuss/index/369885221299264?pmc_param=1</a>  </li>
+</ol>
+<p>核心在分析哪些用户容易流失:<br><a href="http://www.woshipm.com/pmd/155084.html" target="_blank" rel="external">http://www.woshipm.com/pmd/155084.html</a></p>
+<ol>
+<li>dau  </li>
+<li>mau</li>
+<li>时长</li>
+</ol>
+<h1 id="广告计费方式："><a href="#广告计费方式：" class="headerlink" title="广告计费方式："></a>广告计费方式：</h1><ol>
+<li>CPC</li>
+</ol>
+<p>按点击付费，原英文为Cost Per Click 每点击成本，网络广告每次点击的费用。是做为网络广告投放效果的重要参考数据。CPC是网络广告界一种常见的定价形式。例如，关键词广告等依据效果付费的广告形式，一般采用这种定价模式。</p>
+<ol>
+<li>CPM</li>
+</ol>
+<p>按千次展示付费，其原始英文为Cost Per Mille，简称CPM。现在也有人将其译成cost per one thousand impressions 或cost per thousand。前者中文名为每千人印象成本。后者称谓相同，但简称为CPT。所指内涵与CPM相同。其计算公式为：<br>千人成本=（广告费用/到达人数）×1000。</p>
+<ol>
+<li>CPA</li>
+</ol>
+<p>按行为付费，其原始英文为 Cost Per Activity(Action)，每次动作成本，即根据每个访问者对网络广告所采取的行动收费的定价模式。对于用户行动有特别的定义，包括形成一次交易、获得一个注册用户、或者对网络广告的一次点击等。</p>
+<ol>
+<li>CPD</li>
+</ol>
+<p>按天收费，其原始英文为 Cost per day是广告合作的一种常见方式，相比当前比较流行的CPS（按销售付费 Cost per sales），优势在于对合作的基础条件没有过高要求，容易促成双方合作；劣势在于其在长期合作中，不如CPS形式实时有效。</p>
+<ol>
+<li>CPS</li>
+</ol>
+<p>按实际销售产品的提成来换算广告刊登金额，其原始英文为Cost Per Sales，CPS广告同CPA广告一样广告主为规避广告费用风险，按照广告点击之后产生的实际销售的提成付给广告站点销售提成费用。</p>
+<ol>
+<li>dCPM</li>
+</ol>
+<p>DSP普遍采用dCPM作为结算体系，dCPM指的是dynamic CPM，与目前网络广告市场长讲的CPM方式（此CPM相应的成为flat CPM）区别。dCPM基于RTB技术诞生，指的是每一次的impression出价是变化的。其每次出价均依据广告主广告投放的效果(一般是CPS）来实时计算，以得出对广告主最有利的价格，从而保证了广告主的利益。同时又因为以impression与媒体结算，也确保了媒体的收益。</p>
+<p><a href="https://www.umeng.com/reports.html" target="_blank" rel="external">https://www.umeng.com/reports.html</a><br>中国移动互联网发展报告 会有说明行业普遍的留存情况</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/16/图标跟随主题色方案/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/10/16/图标跟随主题色方案/" itemprop="url">
+                  图片跟随主题色变化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">
+                2017-10-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Icon图标"><a href="#Icon图标" class="headerlink" title="Icon图标"></a>Icon图标</h1><ol>
+<li>部分是网络图标</li>
+<li>通过已有的图片处理成变色图片，方案就是作图的时候控制显示内容的透明度，   </li>
+</ol>
+<p>第一步：</p>
+<pre><code>Bitmap mColorBitmap = Bitmap.createBitmap(mBitmap.getWidth(), mBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+Canvas mCanvas = new Canvas(mColorBitmap);
+Paint mPaint = new Paint();
+mPaint.setColor(mColor);  
+</code></pre><p>第二步：</p>
+<pre><code>//从原位图中提取只包含alpha的位图
+Bitmap alphaBitmap = mBitmap.extractAlpha();
+//在画布上通过透明度的部分控制显示颜色
+mCanvas.drawBitmap(alphaBitmap, 0, 0, mPaint);
+</code></pre><ol>
+<li>使用把图片做成字体<br>其实这和第二种的原理是相同的,只不过是UI和Android系统帮我们做了 </li>
+</ol>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h1 id="字体颜色"><a href="#字体颜色" class="headerlink" title="字体颜色"></a>字体颜色</h1><p>关于图片所占内存的大小  <a href="http://dev.qq.com/topic/591d61f56793d26660901b4e" target="_blank" rel="external">http://dev.qq.com/topic/591d61f56793d26660901b4e</a></p>
+<p>#ImageBitmap 和倍率的关系</p>
+<p>如果不设置Density  直接把一个bitmap 设置到ImageVIew上去 就是默认density。<br>但是可能图片都是三倍图，这时候如果设置到2倍分辩率的手机上就会出现缩小的情况，这时候就要设置图片的density。<br>bitmap.setDensity(480);<br>然后再设置到imageView上去</p>
+<p>关于图片的缩放系数：<a href="http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/" target="_blank" rel="external">http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/10/点赞爱心动画/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/10/10/点赞爱心动画/" itemprop="url">
+                  点赞爱心动画
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-10T00:00:00+08:00">
+                2017-10-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h1><p> 实现直播房间点赞爱心动画（不是送礼物的动画）<br> 难点：流畅的飘爱心</p>
+<h1 id="1-方案1"><a href="#1-方案1" class="headerlink" title="1. 方案1"></a>1. 方案1</h1><p>直接使用animator做动画<br>参考资料： <a href="https://github.com/Yasic/QQBubbleView" target="_blank" rel="external">https://github.com/Yasic/QQBubbleView</a>  </p>
+<h3 id="1-1-优化方向："><a href="#1-1-优化方向：" class="headerlink" title="1.1. 优化方向："></a>1.1. 优化方向：</h3><ol>
+<li>削峰</li>
+<li>不要每次都inflate layout，尝试模拟listview的recycleBin 对用跑完动画的View 重新赋值初始化</li>
+</ol>
+<h2 id="2-方案2："><a href="#2-方案2：" class="headerlink" title="2. 方案2："></a>2. 方案2：</h2><p>直接在View上绘制爱心<br>参考资料：<a href="https://github.com/HomHomLin/Android-DivergeView" target="_blank" rel="external">https://github.com/HomHomLin/Android-DivergeView</a><br>核心就是一个while循环，不断计算当前爱心的位置</p>
+<pre><code>while (mRunning) {
+    if (mQueen == null) {
+        continue;
+    }
+    if (mIsDrawing) {
+        //如果正在绘制，不要处理数据
+        continue;
+    }
+    dealQueen();
+    dealDiverge();
+    mIsDrawing = true;
+    postInvalidate();
+}
+</code></pre><p>在dealQueen里面处理正在等待走动画的点赞  </p>
+<pre><code>if (mQueen.size() &gt; 0 &amp;&amp; now - mLastAddTime &gt; mQueenDuration) {
+        mLastAddTime = System.currentTimeMillis();
+        DivergeInfo divergeInfo = null;
+        if (mDeadPool.size() &gt; 0) {
+            //死池里面有空闲的divergeNode
+            divergeInfo = mDeadPool.get(0);
+            mDeadPool.remove(0);
+        }
+        if (divergeInfo == null) {
+            divergeInfo = createDivergeNode(mQueen.get(0));
+        }
+        divergeInfo.reset();
+        divergeInfo.mType = mQueen.get(0);
+        mDivergeInfos.add(divergeInfo);
+        mQueen.remove(0);
+    }
+</code></pre><p>在dealDiverge里面计算已经在走动画的爱心的位置  </p>
+<pre><code>for (int i = 0; i &lt; mDivergeInfos.size(); i++) {
+       DivergeInfo divergeInfo = mDivergeInfos.get(i);
+       float timeLeft = 1.0F - divergeInfo.mDuration;
+       divergeInfo.mDuration += mDuration;
+       float x, y;
+       //二次贝塞尔
+       float time1 = timeLeft * timeLeft;
+       float time2 = 2 * timeLeft * divergeInfo.mDuration;
+       float time3 = divergeInfo.mDuration * divergeInfo.mDuration;
+       x = time1 * (mPtStart.x)
+               + time2 * (divergeInfo.mBreakPoint.x)
+               + time3 * (divergeInfo.mEndPoint.x);
+
+       divergeInfo.mX = x;
+
+       y = time1 * (mPtStart.y)
+               + time2 * (divergeInfo.mBreakPoint.y)
+               + time3 * (divergeInfo.mEndPoint.y);
+
+       divergeInfo.mY = y;
+
+       if (divergeInfo.mY &lt;= divergeInfo.mEndPoint.y) {
+           mDivergeInfos.remove(i);
+           mDeadPool.add(divergeInfo);
+           i--;
+           continue;
+       }
+   }
+</code></pre><p>onDraw方法</p>
+<pre><code>for (DivergeInfo divergeInfo : mDivergeInfos) {
+          mPaint.setAlpha((int) (255 * divergeInfo.mY / mPtStart.y));
+          Bitmap bm = mDivergeViewProvider.getBitmap(divergeInfo.mType);
+          float originCenterX = divergeInfo.mX + bm.getWidth() / 2;
+          float originCenterY = divergeInfo.mY + bm.getHeight() / 2;
+          float scaleWidth, scaleHeight;               
+          scaleWidth = bm.getWidth();
+          scaleHeight = bm.getHeight();
+          RectF destRect = new RectF(originCenterX - scaleWidth / 2, originCenterY - scaleHeight / 2,
+                  originCenterX + scaleWidth / 2, originCenterY + scaleHeight / 2);
+          canvas.drawBitmap(bm, null
+                  , destRect,
+                  mPaint);
+      }
+ mIsDrawing = false;
+</code></pre><p>ps：映客的点赞爱心就是这么实现的（映客是本地点赞出爱心，这个直接分析元素会失败，可以进入直播后，断网然后分析元素）</p>
+<h3 id="2-1-优化方向："><a href="#2-1-优化方向：" class="headerlink" title="2.1. 优化方向："></a>2.1. 优化方向：</h3><ol>
+<li>停止爱心动画的时机（什么时候可以停止while循环）</li>
+<li>削峰：Android 每隔 16.6 ms 刷新一次屏幕，可以根据这个计算一次主流机型阈值</li>
+</ol>
+<p>都需要利用到削峰</p>
+<h1 id="额外知识点"><a href="#额外知识点" class="headerlink" title="额外知识点"></a>额外知识点</h1><p>二阶贝塞尔曲线公式：<br><img src="https://gss2.bdstatic.com/9fo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D317/sign=9aefef4b08f79052eb1f413f3bf2d738/11385343fbf2b21129581916cb8065380cd78e70.jpg" alt="二阶">    </p>
+<p>三阶贝塞尔曲线公式：<br><img src="https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D421/sign=9a6521eab8014a90853e47bf98763971/f603918fa0ec08fad54f8dff58ee3d6d55fbda1f.jpg" alt="三阶">    </p>
+<p>在线演示：<a href="http://myst729.github.io/bezier-curve/" target="_blank" rel="external">http://myst729.github.io/bezier-curve/</a></p>
+
           
         
       

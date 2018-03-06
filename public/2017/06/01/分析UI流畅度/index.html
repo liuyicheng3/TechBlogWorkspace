@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="工具,github," />
+  <meta name="keywords" content="Android,性能分析," />
 
 
 
@@ -87,31 +87,65 @@
 
 
 
-<meta name="description" content="本地工程上传github
-首先在github上创建一个resp
-在本地工程里面引入 .gitignore
-在androidstudio 安装一个ignore 插件，可以生成部分ignore
-对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore
-.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）原文件">
+<meta name="description" content="手机端：开发者选项
+绘图》 显示布局边界
+
+硬件加速渲染 》调试GPU过渡绘制  要打开
+
+
+
+监控》启用严格模式
+
+GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分
+
+
+电脑端：
+查看MemoryMonitor  ，查看页面内存波动（对于listview ）
+
+tools》android》android  device  monistor（其实它就是把android sdk中tools下">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Github 教程">
-<meta property="og:url" content="http://yoursite.com/2015/11/01/github_guide/index.html">
+<meta property="og:title" content="Android 性能检测">
+<meta property="og:url" content="http://yoursite.com/2017/06/01/分析UI流畅度/index.html">
 <meta property="og:site_name" content="Nico随笔">
-<meta property="og:description" content="本地工程上传github
-首先在github上创建一个resp
-在本地工程里面引入 .gitignore
-在androidstudio 安装一个ignore 插件，可以生成部分ignore
-对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore
-.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）原文件">
-<meta property="og:updated_time" content="2018-03-05T17:43:33.000Z">
+<meta property="og:description" content="手机端：开发者选项
+绘图》 显示布局边界
+
+硬件加速渲染 》调试GPU过渡绘制  要打开
+
+
+
+监控》启用严格模式
+
+GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分
+
+
+电脑端：
+查看MemoryMonitor  ，查看页面内存波动（对于listview ）
+
+tools》android》android  device  monistor（其实它就是把android sdk中tools下">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6.png?raw=true">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6_2.png?raw=true">
+<meta property="og:updated_time" content="2018-03-06T06:53:51.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Github 教程">
-<meta name="twitter:description" content="本地工程上传github
-首先在github上创建一个resp
-在本地工程里面引入 .gitignore
-在androidstudio 安装一个ignore 插件，可以生成部分ignore
-对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore
-.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）原文件">
+<meta name="twitter:title" content="Android 性能检测">
+<meta name="twitter:description" content="手机端：开发者选项
+绘图》 显示布局边界
+
+硬件加速渲染 》调试GPU过渡绘制  要打开
+
+
+
+监控》启用严格模式
+
+GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分
+
+
+电脑端：
+查看MemoryMonitor  ，查看页面内存波动（对于listview ）
+
+tools》android》android  device  monistor（其实它就是把android sdk中tools下">
+<meta name="twitter:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true">
 
 
 
@@ -139,13 +173,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2015/11/01/github_guide/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/06/01/分析UI流畅度/"/>
 
 
 
 
 
-  <title> Github 教程 | Nico随笔 </title>
+  <title> Android 性能检测 | Nico随笔 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -264,7 +298,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/github_guide/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/01/分析UI流畅度/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -285,7 +319,7 @@
             
             
               
-                Github 教程
+                Android 性能检测
               
             
           </h1>
@@ -300,8 +334,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-01T00:00:00+08:00">
+                2017-06-01
               </time>
             
 
@@ -323,8 +357,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -358,59 +392,29 @@
       
 
       
-        <h2 id="本地工程上传github"><a href="#本地工程上传github" class="headerlink" title="本地工程上传github"></a>本地工程上传github</h2><ol>
-<li>首先在github上创建一个resp</li>
-<li>在本地工程里面引入 .gitignore<ul>
-<li>在androidstudio 安装一个ignore 插件，可以生成部分ignore</li>
-<li>对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore</li>
-<li>.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）<a href="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore" target="_blank" rel="external">原文件</a> </li>
-</ul>
+        <h1 id="手机端："><a href="#手机端：" class="headerlink" title="手机端："></a>手机端：</h1><h2 id="开发者选项"><a href="#开发者选项" class="headerlink" title="开发者选项"></a>开发者选项</h2><ol>
+<li><p>绘图》 显示布局边界</p>
+</li>
+<li><p>硬件加速渲染 》调试GPU过渡绘制  要打开</p>
 </li>
 </ol>
-<pre><code>.gradle
-/local.properties
-/gradle.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-bin
-gen
-.settings
-.idea
-target
-*.iml
-*.key
-</code></pre><ol>
-<li><p>touch README.md  》》生成 reamdme文件</p>
+<ol>
+<li><p>监控》启用严格模式</p>
 </li>
-<li><p>git init当前工程 》》生成 git信息</p>
-</li>
-<li><p>git add -A 》》把当前工程除了ingore的添加到git里面</p>
-</li>
-<li><p>git commit 》》生成第一次的commit信息</p>
-</li>
-<li><p>git remote add origin git@github.com:liuyicheng3/NewRepo.git   》》设置当前git工程的远程分支</p>
-</li>
-<li><p>git push -u origin master 》》push 到github上去</p>
-</li>
-<li><p>Attention:一般android studio的默认ssh是 androidstudio自己的，所以这时候用android studio会提交不上去<br>需要在settiings&gt;vertion control&gt; git里面吧 SSH excutable 由built-in 改成 native</p>
+<li><p>GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true" alt="image"></p>
 </li>
 </ol>
-<p>##维护git文档方法</p>
-<ul>
-<li>可以网页里面直接弄，就不要通本地修改再提交，太麻烦。</li>
-<li>涉及到外部链接的图片文件，git库里面建对应的文件夹统一维护。</li>
-<li>对于图片贴的地址一定要是raw的，不要那个github上显示的地址<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="string">原文件</span>](<span class="link">https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore</span>)</div></pre></td></tr></table></figure>
+<h1 id="电脑端："><a href="#电脑端：" class="headerlink" title="电脑端："></a>电脑端：</h1><ol>
+<li><p>查看MemoryMonitor  ，查看页面内存波动（对于listview ）</p>
 </li>
-</ul>
-<h2 id="一般的git工作流程"><a href="#一般的git工作流程" class="headerlink" title="一般的git工作流程"></a>一般的git工作流程</h2><h3 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h3><h3 id="按featrue-开发"><a href="#按featrue-开发" class="headerlink" title="按featrue 开发"></a>按featrue 开发</h3><h3 id="codereview及合并"><a href="#codereview及合并" class="headerlink" title="codereview及合并"></a>codereview及合并</h3><h2 id="Markdown-快捷键"><a href="#Markdown-快捷键" class="headerlink" title="Markdown 快捷键"></a>Markdown 快捷键</h2><ol>
-<li>空两行，让后代码区域两个TAB</li>
-<li>shift tab  收回一个tab</li>
+<li><p>tools》android》android  device  monistor<br>（其实它就是把android sdk中tools下面的很多功能聚合起来；  如ddms，uiautomatorviewer，monitor等功能聚合起来，但是好像没有集成hierarchyviewer的功能）</p>
+</li>
+<li><p>查看录制页面变化时候的cpu耗时<br>开始录制》选中进程，点击红色方框左边的按钮，然后点击红色方框里右侧的按钮录制正式开始，需要结束时，再点击右侧按钮结束，就会有结果自动生成<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6.png?raw=true" alt="image"></p>
+<p>分析结果》录制实际上是一个采样的过程，可以看图中红色方框里面最耗时的几个方法，基本上可以定位到程序的问题<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6_2.png?raw=true" alt="image"></p>
+</li>
+<li>查看布局层次，以及每一层的绘制时间，目的是减小层次<br>入口是在：tools 下面 hierarchyviewer  查看每个层次的绘制时间（这个好像必须在模拟器上看）</li>
 </ol>
-<h2 id="Git-必须踩的坑"><a href="#Git-必须踩的坑" class="headerlink" title="Git 必须踩的坑"></a>Git 必须踩的坑</h2><h3 id="1、不小心提交错了分支，把修改直接提交到master里面了"><a href="#1、不小心提交错了分支，把修改直接提交到master里面了" class="headerlink" title="1、不小心提交错了分支，把修改直接提交到master里面了"></a>1、不小心提交错了分支，把修改直接提交到master里面了</h3><pre><code>git push --force
-</code></pre><h3 id="2、git-reset-git-revert"><a href="#2、git-reset-git-revert" class="headerlink" title="2、git  reset   git revert"></a>2、git  reset   git revert</h3><p><a href="http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html" target="_blank" rel="external">http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html</a></p>
+<h1 id="分析卡的原因"><a href="#分析卡的原因" class="headerlink" title="分析卡的原因"></a>分析卡的原因</h1><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="http://www.cnblogs.com/krislight1105/p/5352500.html" target="_blank" rel="external">http://www.cnblogs.com/krislight1105/p/5352500.html</a><br><a href="http://blog.csdn.net/wangbaochu/article/details/50396512" target="_blank" rel="external">http://blog.csdn.net/wangbaochu/article/details/50396512</a></p>
 
       
     </div>
@@ -440,9 +444,9 @@ target
       
         <div class="post-tags">
           
-            <a href="/tags/工具/" rel="tag"># 工具</a>
+            <a href="/tags/Android/" rel="tag"># Android</a>
           
-            <a href="/tags/github/" rel="tag"># github</a>
+            <a href="/tags/性能分析/" rel="tag"># 性能分析</a>
           
         </div>
       
@@ -455,8 +459,8 @@ target
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/01/deep_link设计方案/" rel="next" title="Deeplink 设计">
-                <i class="fa fa-chevron-left"></i> Deeplink 设计
+              <a href="/2017/04/01/数据库/" rel="next" title="数据库踩坑和调试">
+                <i class="fa fa-chevron-left"></i> 数据库踩坑和调试
               </a>
             
           </div>
@@ -465,8 +469,8 @@ target
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/04/01/数据库/" rel="prev" title="数据库踩坑和调试">
-                数据库踩坑和调试 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/08/01/AMS浅析_01/" rel="prev" title="AMS client端分析">
+                AMS client端分析 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -596,7 +600,7 @@ target
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地工程上传github"><span class="nav-number">1.</span> <span class="nav-text">本地工程上传github</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一般的git工作流程"><span class="nav-number">2.</span> <span class="nav-text">一般的git工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#版本管理"><span class="nav-number">2.1.</span> <span class="nav-text">版本管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按featrue-开发"><span class="nav-number">2.2.</span> <span class="nav-text">按featrue 开发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#codereview及合并"><span class="nav-number">2.3.</span> <span class="nav-text">codereview及合并</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown-快捷键"><span class="nav-number">3.</span> <span class="nav-text">Markdown 快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-必须踩的坑"><span class="nav-number">4.</span> <span class="nav-text">Git 必须踩的坑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、不小心提交错了分支，把修改直接提交到master里面了"><span class="nav-number">4.1.</span> <span class="nav-text">1、不小心提交错了分支，把修改直接提交到master里面了</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、git-reset-git-revert"><span class="nav-number">4.2.</span> <span class="nav-text">2、git  reset   git revert</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#手机端："><span class="nav-number">1.</span> <span class="nav-text">手机端：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#开发者选项"><span class="nav-number">1.1.</span> <span class="nav-text">开发者选项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#电脑端："><span class="nav-number">2.</span> <span class="nav-text">电脑端：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析卡的原因"><span class="nav-number">3.</span> <span class="nav-text">分析卡的原因</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>

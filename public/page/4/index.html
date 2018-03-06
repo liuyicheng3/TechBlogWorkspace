@@ -247,7 +247,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Okhttp核心流程/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/ios学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -269,8 +269,8 @@
             
               
                 
-                <a class="post-title-link" href="/2015/11/01/Okhttp核心流程/" itemprop="url">
-                  Okhttp核心流程
+                <a class="post-title-link" href="/2015/11/01/ios学习笔记/" itemprop="url">
+                  iOS入门
                 </a>
               
             
@@ -309,8 +309,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
                   </a>
                 </span>
 
@@ -346,183 +346,75 @@
       
         
           
-            <h2 id="Interface：OkhttpClient（singleton）-Request-Response"><a href="#Interface：OkhttpClient（singleton）-Request-Response" class="headerlink" title="Interface：OkhttpClient（singleton）  Request  Response"></a>Interface：OkhttpClient（singleton）  Request  Response</h2><h2 id="主要由以下三部分-组成"><a href="#主要由以下三部分-组成" class="headerlink" title="主要由以下三部分 组成"></a>主要由以下三部分 组成</h2><h3 id="1-任务调度：-核心类disruptor（singleton）"><a href="#1-任务调度：-核心类disruptor（singleton）" class="headerlink" title="1. 任务调度： 核心类disruptor（singleton）"></a>1. 任务调度： 核心类disruptor（singleton）</h3><p>a. 线程池<br>b. 队列</p>
-<pre><code>/** Ready async calls in the order they&apos;ll be run. */
-private final Deque&lt;AsyncCall&gt; readyAsyncCalls = new ArrayDeque&lt;&gt;();
-
-/** Running asynchronous calls. Includes canceled calls that haven&apos;t finished yet. */
-private final Deque&lt;AsyncCall&gt; runningAsyncCalls = new ArrayDeque&lt;&gt;();
-
-/** Running synchronous calls. Includes canceled calls that haven&apos;t finished yet. */
- private final Deque&lt;RealCall&gt; runningSyncCalls = new ArrayDeque&lt;&gt;();
-</code></pre><p>(由于okhttp两种 运行模式   sync  和async）</p>
-<h3 id="2-网络请求"><a href="#2-网络请求" class="headerlink" title="2. 网络请求"></a>2. 网络请求</h3><ul>
-<li>核心类RealCall HttpEngine StreamAllocation   Interceptor (及其中的内部类  Chain） </li>
-<li>每个请求会生成一个Request  </li>
-<li>然后根据 request  和httpclieant  生成唯一的 RealCall(在real里面会构造出一个httpengine)  </li>
-</ul>
-<p>okhttp一个请求的完整流程图<br> <img src="http://blog.piasy.com/img/201607/okhttp_full_process.png" alt="image"></p>
-<p>在realcall的execute方法中会调用     </p>
-<pre><code>client.dispatcher().executed(this);//问题1  
-Response result = getResponseWithInterceptorChain(false);//问题2  
-</code></pre><p>获得请求结果.<br>现在看问题1  在这里面干了写什么<br>其实就是 dispatcher记录任务而已 ，没有任何执行方法<br>核心在问题2中<br>她会  </p>
-<pre><code>Interceptor.Chain chain = new ApplicationInterceptorChain(0, originalRequest, forWebSocket);
-return chain.proceed(originalRequest);
-</code></pre><p>也就是生成拦截器 ，并用这个拦截器启动这个请求<br>继续进入proceed 可以看到<br>进入了ApplicationInterceptorChain的getresponse方法<br>开始构造HttpEngine    </p>
-<pre><code>engine.sendRequest();//问题21
-engine.readResponse();//问题22
-</code></pre><p>在问题21中其实就是  Rfc 标准的一种 实现  </p>
-<pre><code>InternalCache responseCache = Internal.instance.internalCache(client);
-Response cacheCandidate = responseCache != null
-    ? responseCache.get(request)
-    : null;
-</code></pre><p>就是看当前是否配置了cache   如果有cache   则在responseCache.get找 当前request的cache<br>这个过程 就是根据 Util.md5Hex(request.url().toString())的从map中取值cacheCandidate的过程<br>当取到值后还要根据http cache的rfc标准  判断  是否合理能使用<br>new CacheStrategy.Factory(now, request, cacheCandidate).get();<br>在CacheStrategy中 这里会真正的判断和并处理当前的reponse cache和request（处理request是为了  当cache过期后还可以通过304  机制实现重用）；  </p>
-<p>这里需要判断  当前的  cacheCOntrol    Expires等  （尤其要处理一种情况就是当cache过期了  要根据 etag和Last-Modified  等等  要在request 中添加参数）</p>
-<pre><code>if (etag != null) {
-  conditionalRequestBuilder.header(&quot;If-None-Match&quot;, etag);
-} else if (lastModified != null) {
-  conditionalRequestBuilder.header(&quot;If-Modified-Since&quot;, lastModifiedString);
-} else if (servedDate != null) {
-  conditionalRequestBuilder.header(&quot;If-Modified-Since&quot;, servedDateString);
-}
-
-Request conditionalRequest = conditionalRequestBuilder.build();
-</code></pre><p>这是请求前的工作<br>现在开始发送请求</p>
-<pre><code>httpStream = connect();
-httpStream.setHttpEngine(this);
-</code></pre><p>这一部分的核心是StreamAllaction（辅助是ConnectionPool 和Route  RouteSelector）</p>
-<pre><code>streamAllocation.newStream(client.connectTimeoutMillis(),
-client.readTimeoutMillis(), client.writeTimeoutMillis(),
-client.retryOnConnectionFailure(), doExtensiveHealthChecks);
-</code></pre><p>解决的问题 是socket连接重用和  route<br>先是从连接池中找</p>
-<pre><code>// Attempt to get a connection from the pool.
- RealConnection pooledConnection = Internal.instance.get(connectionPool, address, this);
- if (pooledConnection != null) {
-   this.connection = pooledConnection;
-   return pooledConnection;
- }
-</code></pre><p>如果没有的话就看route可以重用嘛</p>
-<pre><code> if (selectedRoute == null) {
-  selectedRoute = routeSelector.next();
-  synchronized (connectionPool) {
-    route = selectedRoute;
-  }
-}
-RealConnection newConnection = new RealConnection(selectedRoute);
-acquire(newConnection);
-</code></pre><p>（这其实和一个dns解析 有关系也就是 一个域名对应多个ip  而且不一定所有的ip都是通的  建立连接的时候会尝试 所有的  直到通了为止</p>
-<pre><code>RouteDatabase里的Set&lt;Route&gt; failedRoutes = new LinkedHashSet&lt;&gt;()）
-</code></pre><p>弄完之后就是放如   </p>
-<pre><code>Internal.instance.put(connectionPool, newConnection);
-</code></pre><p>连接池中  方便下次继续使用<br>下一步 就是建立socket连接的过程</p>
-<pre><code> newConnection.connect(connectTimeout, readTimeout, writeTimeout, address.connectionSpecs(),
-    connectionRetryEnabled);
-routeDatabase().connected(newConnection.route());
-</code></pre><p>跟进去 就是</p>
-<pre><code>connectSocket(connectTimeout, readTimeout, writeTimeout, connectionSpecSelector);
-</code></pre><p>继续</p>
-<pre><code> try {
-  Platform.get().connectSocket(rawSocket, route.socketAddress(), connectTimeout);
-} catch (ConnectException e) {
-  throw new ConnectException(&quot;Failed to connect to &quot; + route.socketAddress());
-}
-source = Okio.buffer(Okio.source(rawSocket));
-sink = Okio.buffer(Okio.sink(rawSocket));
-</code></pre><p>连接socket（返回连接 是以Http1xStream Http2xStream）形式返回回来的<br>然后才是真正发送这个请求的过程</p>
-<pre><code>httpStream.writeRequestHeaders(networkRequest);
-requestBodyOut = httpStream.createRequestBody(networkRequest, contentLength);
-</code></pre><p>继续跟进</p>
-<pre><code> httpEngine.writingRequestHeaders();
-  String requestLine = RequestLine.get(
-    request, httpEngine.getConnection().route().proxy().type());
-writeRequest(request.headers(), requestLine);
-</code></pre><p>》》</p>
-<pre><code>** Returns bytes of a request header for sending on an HTTP transport. */
-public void writeRequest(Headers headers, String requestLine) throws IOException {
-if (state != STATE_IDLE) throw new IllegalStateException(&quot;state: &quot; + state);
-sink.writeUtf8(requestLine).writeUtf8(&quot;\r\n&quot;);
-for (int i = 0, size = headers.size(); i &lt; size; i++) {
-  sink.writeUtf8(headers.name(i))
-      .writeUtf8(&quot;: &quot;)
-      .writeUtf8(headers.value(i))
-      .writeUtf8(&quot;\r\n&quot;);
-}
-sink.writeUtf8(&quot;\r\n&quot;);
-state = STATE_OPEN_REQUEST_BODY;
-}
-</code></pre><p>读过程<br>就是通过这个stream构造出 newChunkedSink 或者newFixedLengthSink</p>
-<p>到此 请求reponse的工作做完了<br>现在 如果是需要真正发送网络请求就也就是问题22</p>
-<pre><code>networkResponse = new NetworkInterceptorChain(0, networkRequest).proceed(networkRequest);
-</code></pre><p>》》</p>
-<pre><code>engin.readResponse
-</code></pre><p>》》</p>
-<pre><code>// Write the request body to the socket.
-if (requestBodyOut != null) {
-  if (bufferedRequestBody != null) {
-    // This also closes the wrapped requestBodyOut.
-    bufferedRequestBody.close();
-  } else {
-    requestBodyOut.close();
-  }
-  if (requestBodyOut instanceof RetryableSink) {
-    httpStream.writeRequestBody((RetryableSink) requestBodyOut);
-  }
-}
-
-networkResponse = readNetworkResponse();
-</code></pre><p>》》</p>
-<pre><code>Response readNetworkResponse() throws IOException {
-httpStream.finishRequest();
-
-Response networkResponse = httpStream.readResponseHeaders()
-    .request(networkRequest)
-    .handshake(streamAllocation.connection().handshake())
-    .header(OkHeaders.SENT_MILLIS, Long.toString(sentRequestMillis))
-    .header(OkHeaders.RECEIVED_MILLIS, Long.toString(System.currentTimeMillis()))
-    .build();
-
-if (!forWebSocket) {
-  networkResponse = networkResponse.newBuilder()
-      .body(httpStream.openResponseBody(networkResponse))
-      .build();
-}
-
-if (&quot;close&quot;.equalsIgnoreCase(networkResponse.request().header(&quot;Connection&quot;))
-    || &quot;close&quot;.equalsIgnoreCase(networkResponse.header(&quot;Connection&quot;))) {
-  streamAllocation.noNewStreams();
-}
-
-return networkResponse;
-</code></pre><p>  }</p>
-<p>解析和返回</p>
-<pre><code> Response response = engine.getResponse();
-
-
-//tobe continue（已经 cache过程 请求重试过程）
- Request followUp = engine.followUpRequest();
-</code></pre><h3 id="3-cache管理"><a href="#3-cache管理" class="headerlink" title="3. cache管理"></a>3. cache管理</h3><p>最后附上 相关的http请求cache的rfc内容<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/http_cache.jpg" alt="image"></p>
-<h3 id="每个状态的详细说明如下："><a href="#每个状态的详细说明如下：" class="headerlink" title="每个状态的详细说明如下："></a>每个状态的详细说明如下：</h3><h4 id="1-Last-Modified"><a href="#1-Last-Modified" class="headerlink" title="1. Last-Modified"></a>1. Last-Modified</h4><p>在浏览器第一次请求某一个URL时，服务器端的返回状态会是200，内容是你请求的资源，同时有一个Last-Modified的属性标记(HttpReponse Header)此文件在服务期端最后被修改的时间，格式类似这样：<br>Last-Modified:Tue, 24 Feb 2009 08:01:04 GMT<br>客户端第二次请求此URL时，根据HTTP协议的规定，浏览器会向服务器传送If-Modified-Since报头(HttpRequest Header)，询问该时间之后文件是否有被修改过：<br>If-Modified-Since:Tue, 24 Feb 2009 08:01:04 GMT<br>如果服务器端的资源没有变化，则自动返回HTTP304（NotChanged.）状态码，内容为空，这样就节省了传输数据量。当服务器端代码发生改变或者重启服务器时，则重新发出资源，返回和第一次请求时类似。从而保证不向客户端重复发出资源，也保证当服务器有变化时，客户端能够得到最新的资源。<br>注：如果If-Modified-Since的时间比服务器当前时间(当前的请求时间request_time)还晚，会认为是个非法请求  </p>
-<h4 id="2-Etag工作原理"><a href="#2-Etag工作原理" class="headerlink" title="2. Etag工作原理"></a>2. Etag工作原理</h4><p>HTTP协议规格说明定义ETag为“被请求变量的实体标记”（参见14.19）。简单点即服务器响应时给请求URL标记，并在HTTP响应头中将其传送到客户端，类似服务器端返回的格式：<br>Etag:“5d8c72a5edda8d6a:3239″<br>客户端的查询更新格式是这样的：<br>If-None-Match:“5d8c72a5edda8d6a:3239″<br>如果ETag没改变，则返回状态304。<br>即:在客户端发出请求后，HttpReponse Header中包含Etag:“5d8c72a5edda8d6a:3239″<br>标识，等于告诉Client端，你拿到的这个的资源有表示ID：5d8c72a5edda8d6a:3239。当下次需要发Request索要同一个URI的时候，浏览器同时发出一个If-None-Match报头(Http RequestHeader)此时包头中信息包含上次访问得到的Etag:“5d8c72a5edda8d6a:3239″标识。<br>If-None-Match:“5d8c72a5edda8d6a:3239“<br>,这样，Client端等于Cache了两份，服务器端就会比对2者的etag。如果If-None-Match为False，不返回200，返回304(Not Modified) Response。  </p>
-<h4 id="3-Expires"><a href="#3-Expires" class="headerlink" title="3. Expires"></a>3. Expires</h4><p>给出的日期/时间后，被响应认为是过时。如Expires:Thu, 02 Apr 2009 05:14:08 GMT<br>需和Last-Modified结合使用。用于控制请求文件的有效时间，当请求数据在有效期内时客户端浏览器从缓存请求数据而不是服务器端.当缓存中数据失效或过期，才决定从服务器更新数据。  </p>
-<h4 id="4-Last-Modified和Expires"><a href="#4-Last-Modified和Expires" class="headerlink" title="4. Last-Modified和Expires"></a>4. Last-Modified和Expires</h4><p>Last-Modified标识能够节省一点带宽，但是还是逃不掉发一个HTTP请求出去，而且要和Expires一起用。而Expires标识却使得浏览器干脆连HTTP请求都不用发，比如当用户F5或者点击Refresh按钮的时候就算对于有Expires的URI，一样也会发一个HTTP请求出去，所以，Last-Modified还是要用的，而且要和Expires一起用。  </p>
-<h4 id="5-Etag和Expires"><a href="#5-Etag和Expires" class="headerlink" title="5. Etag和Expires"></a>5. Etag和Expires</h4><p>如果服务器端同时设置了Etag和Expires时，Etag原理同样，即与Last-Modified/Etag对应的HttpRequestHeader:If-Modified-Since和If-None-Match。我们可以看到这两个Header的值和WebServer发出的Last-Modified,Etag值完全一样；在完全匹配If-Modified-Since和If-None-Match即检查完修改时间和Etag之后，服务器才能返回304.  </p>
-<h4 id="6-Last-Modified和Etag"><a href="#6-Last-Modified和Etag" class="headerlink" title="6. Last-Modified和Etag"></a>6. Last-Modified和Etag</h4><p>分布式系统里多台机器间文件的last-modified必须保持一致，以免负载均衡到不同机器导致比对失败<br>分布式系统尽量关闭掉Etag(每台机器生成的etag都会不一样)<br>Last-Modified和ETags请求的http报头一起使用，服务器首先产生Last-Modified/Etag标记，服务器可在稍后使用它来判断页面是否已经被修改，来决定文件是否继续缓存<br>过程如下:  </p>
+            <h1 id="第一课：熟悉OC语法"><a href="#第一课：熟悉OC语法" class="headerlink" title="第一课：熟悉OC语法"></a>第一课：熟悉OC语法</h1><h1 id="第二课：storyboard和-手写View"><a href="#第二课：storyboard和-手写View" class="headerlink" title="第二课：storyboard和 手写View"></a>第二课：storyboard和 手写View</h1><p>storyboard;</p>
+<p>直接往上面拖放控件，然后按住ctr  把控件拖动到   @implementation，就相当于自动findview了，可以直接使用是这个控件了  </p>
+<p>   @property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;</p>
+<p>还有一种就是直接关联上点击事件<br>把控件直接拖动到这个申明方法上就可以了</p>
+<pre><code>- (IBAction)showAlert:(id)sender;
+</code></pre><p>这个的原理可以看看storyboard的文件内容就可以明白了，大致和android的类似</p>
+<p>图片资源文件两种放法</p>
+<ol>
+<li><p>在Supporting  Files 同级添加一个Resources的包，里面直接放图片进去（可以只放三倍图）   </p>
+<pre><code>UIImageView *imageView = [[UIImageView alloc] init];
+   imageView.image = [UIImage imageNamed:@&quot;home_banner.png&quot;];    // 正常显示的图片
+</code></pre></li>
+<li><p>在Assets.xcaseset里面右键新建New image set，然后手动把图片拖动到右边的一倍两倍三倍的框框中去 </p>
+</li>
+</ol>
+<p>storyboard  改成手写UI类型  </p>
+<ol>
+<li>第一步： </li>
+</ol>
 <ul>
-<li>客户端请求一个页面（A）。  </li>
-<li>服务器返回页面A，并在给A加上一个Last-Modified/ETag。  </li>
-<li>客户端展现该页面，并将页面连同Last-Modified/ETag一起缓存。  </li>
-<li>客户再次请求页面A，并将上次请求时服务器返回的Last-Modified/ETag一起传递给服务器。  </li>
-<li>服务器检查该Last-Modified或ETag，并判断出该页面自上次客户端请求之后还未被修改，直接返回响应304和一个空的响应体。  </li>
+<li>删除storyboard文件  </li>
+<li>编辑Supporting Files目录下的 .plist文件,<br>删除Main storyboard  file name这一项</li>
 </ul>
-<p>备注：   </p>
-<ul>
-<li>Last-Modified和Etag头都是由WebServer发出的HttpReponse Header，WebServer应该同时支持这两种头。  </li>
-<li>WebServer发送完Last-Modified/Etag头给客户端后，客户端会缓存这些头；  </li>
-<li>客户端再次发起相同页面的请求时，将分别发送与Last-Modified/Etag对应的HttpRequestHeader:If-Modified-Since和If-None-Match。我们可以看到这两个Header的值和WebServer发出的Last-Modified,Etag值完全一样；  </li>
-<li>通过上述值到服务器端检查，判断文件是否继续缓存；  </li>
-</ul>
-<h4 id="7-关于-Cache-Control-max-age-秒-和-Expires"><a href="#7-关于-Cache-Control-max-age-秒-和-Expires" class="headerlink" title="7.关于 Cache-Control: max-age=秒 和 Expires"></a>7.关于 Cache-Control: max-age=秒 和 Expires</h4><p>Expires = 时间，HTTP 1.0 版本，缓存的载止时间，允许客户端在这个时间之前不去检查（发请求）<br>max-age = 秒，HTTP 1.1版本，资源在本地缓存多少秒。<br>如果max-age和Expires同时存在，则被Cache-Control的max-age覆盖。<br>Expires 的一个缺点就是，返回的到期时间是服务器端的时间，这样存在一个问题，如果客户端的时间与服务器的时间相差很大，那么误差就很大，所以在HTTP 1.1版开始，使用Cache-Control: max-age=秒替代。<br>Expires =max-age +   “每次下载时的当前的request时间”<br>所以一旦重新下载的页面后，expires就重新计算一次，但last-modified不会变化   </p>
+<ol>
+<li>第二步：<br> 编辑AppDelegate</li>
+</ol>
+<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window makeKeyAndVisible];
 
+    ViewController *__rootController = [[ViewController alloc] init];
+    UINavigationController *__navCtrler = [[UINavigationController alloc] initWithRootViewController:__rootController];
+    __navCtrler.navigationBarHidden = YES;
+    self.window.rootViewController = __navCtrler;
+  // Override point for customization after application launch.
+    return YES;
+}
+</code></pre><p>这个相当于Application的oncreate,在这里加载Entry activity</p>
+<p>在ViewController里面手动往根View里面添加控件</p>
+<pre><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    UILabel *firstLable=[[UILabel alloc]init];
+    firstLable.frame=CGRectMake(0, 0, 100, 100);
+    firstLable.backgroundColor = [UIColor whiteColor]; //设置lable背景颜色为黑色
+
+    firstLable.text=@&quot;第一级&quot;;
+    firstLable.userInteractionEnabled = YES;
+
+    [firstLable setTextColor:[UIColor greenColor]]; //设置文本字体颜色为白色
+
+    [self.view addSubview:firstLable];
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapLable:)];
+    [firstLable addGestureRecognizer:singleTap];
+
+    // Do any additional setup after loading the view, typically from a nib.
+}
+</code></pre><p>viewDidLoad 相当于Activity的oncreate，这里我们就是手写View，然后加到根View里面去 self.view<br>    [self.view addSubview:firstLable];</p>
+<h1 id="第三课：Viewcontroller-之间的跳转"><a href="#第三课：Viewcontroller-之间的跳转" class="headerlink" title="第三课：Viewcontroller  之间的跳转"></a>第三课：Viewcontroller  之间的跳转</h1><p>在ViewController从一个Viewcontroller跳到另外一个SecondViewController</p>
+<pre><code>-(void) tapLable:(UILabel *)sender{
+    NSLog(@&quot;进入第二级Controller&quot;);
+
+    SecondViewController *controller = [[SecondViewController alloc] init];
+    [self.navigationController pushViewController:controller animated:YES];
+}
+</code></pre><p>在SecondViewController也是一样的写法</p>
+<p> 返回第一个VIewCOntroller的方法</p>
+<pre><code>[self.navigationController popViewControllerAnimated:YES];
+</code></pre>
           
         
       

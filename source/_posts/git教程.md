@@ -73,12 +73,43 @@ tags:
    2. shift tab  收回一个tab
 
 
-##  Git 必须踩的坑
-###  1、不小心提交错了分支，把修改直接提交到master里面了
-	git push --force
+##  Git 常见场景  
 
-###  2、git  reset   git revert
-http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html
+###  1. 不小心提交错了分支，把修改直接提交到master里面了
+
+  git log  查到提交前的versioncode
+  git revert 123dadafa     revert到这个节点
+	git push --force   强制用本地的版本覆盖git上的版本
+
+git  reset  和 git revert区别 http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html
+
+
+### 2. git 舍弃本地的修改   
+
+      git checkout . && git clean -xdf
+
+### 3. git 合并分支的冲突   
+
+解决冲突后需要   
+
+      git rebase --continue   
+
+### 4. git 生成patch  
+
+当前还没提交，生成当前修改的patch 
+
+      git diff  > 1.patch    
+
+生成已经提交的几次记录的patch   
+
+      git log    //查看需要生成到那个提交日志的patch
+      git format-patch -3     // 从master往前3个提交的内容，可修改为你想要的数值
+      git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
+
+#### 参考资料   
+
+http://blog.csdn.net/kevinx_xu/article/details/11660915
+
 
 
 

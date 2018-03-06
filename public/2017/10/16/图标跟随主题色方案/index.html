@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Android,又拍云,图片," />
+  <meta name="keywords" content="Android,主题色," />
 
 
 
@@ -87,19 +87,34 @@
 
 
 
-<meta name="description" content="1. 又拍云的图片尺寸问题又拍云会对我们上传的图片进行处理。然后会生成多种尺寸：110,160,210,240,320,480,640,720,1200。每种尺寸对应于不同的url。eg：http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg">
+<meta name="description" content="Icon图标
+部分是网络图标
+通过已有的图片处理成变色图片，方案就是作图的时候控制显示内容的透明度，   
+
+第一步：
+Bitmap mColorBitmap = Bitmap.createBitmap(mBitmap.getWidth(), mBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+Canvas mCanvas = new Canvas(mCo">
 <meta property="og:type" content="article">
-<meta property="og:title" content="又拍云图片显示优化">
-<meta property="og:url" content="http://yoursite.com/2018/02/10/图片不同尺寸缓存的优化方案/index.html">
+<meta property="og:title" content="图片跟随主题色变化">
+<meta property="og:url" content="http://yoursite.com/2017/10/16/图标跟随主题色方案/index.html">
 <meta property="og:site_name" content="Nico随笔">
-<meta property="og:description" content="1. 又拍云的图片尺寸问题又拍云会对我们上传的图片进行处理。然后会生成多种尺寸：110,160,210,240,320,480,640,720,1200。每种尺寸对应于不同的url。eg：http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg">
-<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD01.png?raw=true">
-<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD02.png?raw=true">
-<meta property="og:updated_time" content="2018-03-05T17:43:33.000Z">
+<meta property="og:description" content="Icon图标
+部分是网络图标
+通过已有的图片处理成变色图片，方案就是作图的时候控制显示内容的透明度，   
+
+第一步：
+Bitmap mColorBitmap = Bitmap.createBitmap(mBitmap.getWidth(), mBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+Canvas mCanvas = new Canvas(mCo">
+<meta property="og:updated_time" content="2018-03-06T06:53:51.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="又拍云图片显示优化">
-<meta name="twitter:description" content="1. 又拍云的图片尺寸问题又拍云会对我们上传的图片进行处理。然后会生成多种尺寸：110,160,210,240,320,480,640,720,1200。每种尺寸对应于不同的url。eg：http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg">
-<meta name="twitter:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD01.png?raw=true">
+<meta name="twitter:title" content="图片跟随主题色变化">
+<meta name="twitter:description" content="Icon图标
+部分是网络图标
+通过已有的图片处理成变色图片，方案就是作图的时候控制显示内容的透明度，   
+
+第一步：
+Bitmap mColorBitmap = Bitmap.createBitmap(mBitmap.getWidth(), mBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+Canvas mCanvas = new Canvas(mCo">
 
 
 
@@ -127,13 +142,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/02/10/图片不同尺寸缓存的优化方案/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/10/16/图标跟随主题色方案/"/>
 
 
 
 
 
-  <title> 又拍云图片显示优化 | Nico随笔 </title>
+  <title> 图片跟随主题色变化 | Nico随笔 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -252,7 +267,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/10/图片不同尺寸缓存的优化方案/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/16/图标跟随主题色方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -273,7 +288,7 @@
             
             
               
-                又拍云图片显示优化
+                图片跟随主题色变化
               
             
           </h1>
@@ -288,8 +303,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-10T00:00:00+08:00">
-                2018-02-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-16T00:00:00+08:00">
+                2017-10-16
               </time>
             
 
@@ -346,24 +361,27 @@
       
 
       
-        <h2 id="1-又拍云的图片尺寸问题"><a href="#1-又拍云的图片尺寸问题" class="headerlink" title="1. 又拍云的图片尺寸问题"></a>1. 又拍云的图片尺寸问题</h2><p>又拍云会对我们上传的图片进行处理。然后会生成多种尺寸：110,160,210,240,320,480,640,720,1200。<br>每种尺寸对应于不同的url。<br>eg：<br><a href="http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg!w480.jpg" target="_blank" rel="external">http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg!w480.jpg</a></p>
-<h2 id="2-简单的解决方案"><a href="#2-简单的解决方案" class="headerlink" title="2. 简单的解决方案"></a>2. 简单的解决方案</h2><p>为了利用又拍云自动帮我们处理出来的不同尺寸图片。在每次加载图片的时候根据当前显示View的尺寸加载合适的尺寸</p>
-<h3 id="2-1-这里有三个没解决的问题："><a href="#2-1-这里有三个没解决的问题：" class="headerlink" title="2.1 这里有三个没解决的问题："></a>2.1 这里有三个没解决的问题：</h3><ol>
-<li><p>不同尺寸的图片会在sd卡上存不同cache，比如由于我们先加载了640尺寸的图片，后面加载480尺寸还是无法公用640尺寸的图片cache,导致还得重新请求一次网络。实际上我们可以通过处理得到480尺寸的图片。</p>
-</li>
-<li><p>对于发带图片帖子的这种逻辑处理逻辑处理不方便。因为上传图片后，很有可能不知道图片的显示尺寸。无法把这张本地图片放置到对应位置的cache上去（虽然我们现在上传上去后，会直接显示的是本地图片，但这个有点治标不治本。第二次进来时候或者下拉刷新后 还是会从网上load这张图片）。</p>
-</li>
-<li><p>图片尺寸的获取，不是所有的ImageView在setImageUrl时候都可以获取尺寸，有的量不到尺寸，也就是在一个还没有渲染 并且也没有设置固定size的ImageVIew上设置Url（比Adapter里面的初次createView  然后立即设置Url就会出现量不到尺寸的问题）</p>
-</li>
+        <h1 id="Icon图标"><a href="#Icon图标" class="headerlink" title="Icon图标"></a>Icon图标</h1><ol>
+<li>部分是网络图标</li>
+<li>通过已有的图片处理成变色图片，方案就是作图的时候控制显示内容的透明度，   </li>
 </ol>
-<p>总结一些：又拍云会帮我们处理出来不同尺寸的图片。在小的地方我们可以仅仅加载小尺寸的图片，提高了展示速度。但是对于同一张图片，在不同地方展示不同尺寸的逻辑处理不够完美。所以以前在wecal里面会发现一个问题：同一个头像，已经展示过了，在下一个页面里用另个尺寸展示的时候还是会有点慢。 </p>
-<h2 id="3-对于又拍云的图片完美解决方案"><a href="#3-对于又拍云的图片完美解决方案" class="headerlink" title="3. 对于又拍云的图片完美解决方案"></a>3. 对于又拍云的图片完美解决方案</h2><p>核心需要在内存和sd卡缓存逻辑能够识别出不同尺寸的不同图片。也就是要每一url对应于一组cache。</p>
-<p>代码实现上就是要把当前的url的cache对应到一组cache 上去。<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD01.png?raw=true" alt=""></p>
-<h3 id="3-1-Memery-cache逻辑"><a href="#3-1-Memery-cache逻辑" class="headerlink" title="3.1 Memery cache逻辑"></a>3.1 Memery cache逻辑</h3><p>对于内存cache 建议还是按照以前的逻辑走，但是可以加上对于一个尺寸的的图片可以使用相近已经缓存尺寸的图片。</p>
-<h3 id="3-2-Disk-cache逻辑"><a href="#3-2-Disk-cache逻辑" class="headerlink" title="3.2 Disk cache逻辑"></a>3.2 Disk cache逻辑</h3><p>对于Disk cache 。如果需要加载一个小尺寸的图片，但是发现只有大尺寸图片，我们可以直接使用大图压缩出小图，返回过去。<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD02.png?raw=true" alt=""></p>
-<h3 id="3-3-2G网络模式"><a href="#3-3-2G网络模式" class="headerlink" title="3.3 2G网络模式"></a>3.3 2G网络模式</h3><p>在低速网络情况下，对于disk cache，如果发现没有当前尺寸的图片的情况下，可以使用任意尺寸的缓存转化。</p>
-<h2 id="5-推荐一个图片压缩库"><a href="#5-推荐一个图片压缩库" class="headerlink" title="5. 推荐一个图片压缩库"></a>5. 推荐一个图片压缩库</h2><p>Luban：<a href="https://github.com/Curzibn/Luban" target="_blank" rel="external">https://github.com/Curzibn/Luban</a>      大小仅仅是15K</p>
-<p>根据我的测试一般可以在不明显影响图片展示效果的条件减少图片体积2/3。使用它后发图片备注速度飞快。（在wecal里面默认发送压缩后的图片，也提供发送原图的可选项）</p>
+<p>第一步：</p>
+<pre><code>Bitmap mColorBitmap = Bitmap.createBitmap(mBitmap.getWidth(), mBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+Canvas mCanvas = new Canvas(mColorBitmap);
+Paint mPaint = new Paint();
+mPaint.setColor(mColor);  
+</code></pre><p>第二步：</p>
+<pre><code>//从原位图中提取只包含alpha的位图
+Bitmap alphaBitmap = mBitmap.extractAlpha();
+//在画布上通过透明度的部分控制显示颜色
+mCanvas.drawBitmap(alphaBitmap, 0, 0, mPaint);
+</code></pre><ol>
+<li>使用把图片做成字体<br>其实这和第二种的原理是相同的,只不过是UI和Android系统帮我们做了 </li>
+</ol>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h1 id="字体颜色"><a href="#字体颜色" class="headerlink" title="字体颜色"></a>字体颜色</h1><p>关于图片所占内存的大小  <a href="http://dev.qq.com/topic/591d61f56793d26660901b4e" target="_blank" rel="external">http://dev.qq.com/topic/591d61f56793d26660901b4e</a></p>
+<p>#ImageBitmap 和倍率的关系</p>
+<p>如果不设置Density  直接把一个bitmap 设置到ImageVIew上去 就是默认density。<br>但是可能图片都是三倍图，这时候如果设置到2倍分辩率的手机上就会出现缩小的情况，这时候就要设置图片的density。<br>bitmap.setDensity(480);<br>然后再设置到imageView上去</p>
+<p>关于图片的缩放系数：<a href="http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/" target="_blank" rel="external">http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/</a></p>
 
       
     </div>
@@ -395,9 +413,7 @@
           
             <a href="/tags/Android/" rel="tag"># Android</a>
           
-            <a href="/tags/又拍云/" rel="tag"># 又拍云</a>
-          
-            <a href="/tags/图片/" rel="tag"># 图片</a>
+            <a href="/tags/主题色/" rel="tag"># 主题色</a>
           
         </div>
       
@@ -410,8 +426,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/03/xml处理/" rel="next" title="生成分享图片">
-                <i class="fa fa-chevron-left"></i> 生成分享图片
+              <a href="/2017/10/10/点赞爱心动画/" rel="next" title="点赞爱心动画">
+                <i class="fa fa-chevron-left"></i> 点赞爱心动画
               </a>
             
           </div>
@@ -420,8 +436,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/02/10/生成分享图片/" rel="prev" title="生成分享图片">
-                生成分享图片 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/10/20/App核心指标/" rel="prev" title="App核心指标和广告计费方式">
+                App核心指标和广告计费方式 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -551,7 +567,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-又拍云的图片尺寸问题"><span class="nav-number">1.</span> <span class="nav-text">1. 又拍云的图片尺寸问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-简单的解决方案"><span class="nav-number">2.</span> <span class="nav-text">2. 简单的解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-这里有三个没解决的问题："><span class="nav-number">2.1.</span> <span class="nav-text">2.1 这里有三个没解决的问题：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-对于又拍云的图片完美解决方案"><span class="nav-number">3.</span> <span class="nav-text">3. 对于又拍云的图片完美解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Memery-cache逻辑"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 Memery cache逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Disk-cache逻辑"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Disk cache逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-2G网络模式"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 2G网络模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-推荐一个图片压缩库"><span class="nav-number">4.</span> <span class="nav-text">5. 推荐一个图片压缩库</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Icon图标"><span class="nav-number">1.</span> <span class="nav-text">Icon图标</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">2.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字体颜色"><span class="nav-number">3.</span> <span class="nav-text">字体颜色</span></a></li></ol></div>
             
 
           </div>

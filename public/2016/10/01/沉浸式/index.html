@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Android,性能分析," />
+  <meta name="keywords" content="Android,沉浸式," />
 
 
 
@@ -87,65 +87,22 @@
 
 
 
-<meta name="description" content="手机端：开发者选项
-绘图》 显示布局边界
-
-硬件加速渲染 》调试GPU过渡绘制  要打开
-
-
-
-监控》启用严格模式
-
-GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分
-
-
-电脑端：
-查看MemoryMonitor  ，查看页面内存波动（对于listview ）
-
-tools》android》android  device  monistor（其实它就是把android sdk中tools下">
+<meta name="description" content="Step 1：把状态栏设置为透明
+    if(Build.VERSION.SDK_INT&amp;gt;=Build.VERSION_CODES.LOLLIPOP&amp;amp;&amp;amp;!Build.BRAND.equalsIgnoreCase(&amp;quot;huawei&amp;quot;)){/**5.0及以上且不是华为,
+            因为华为5.0以上系统已经全屏但是状态栏黑色改不掉*/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android 性能检测">
-<meta property="og:url" content="http://yoursite.com/2015/11/01/分析UI流畅度/index.html">
+<meta property="og:title" content="沉浸式的实现方案">
+<meta property="og:url" content="http://yoursite.com/2016/10/01/沉浸式/index.html">
 <meta property="og:site_name" content="Nico随笔">
-<meta property="og:description" content="手机端：开发者选项
-绘图》 显示布局边界
-
-硬件加速渲染 》调试GPU过渡绘制  要打开
-
-
-
-监控》启用严格模式
-
-GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分
-
-
-电脑端：
-查看MemoryMonitor  ，查看页面内存波动（对于listview ）
-
-tools》android》android  device  monistor（其实它就是把android sdk中tools下">
-<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true">
-<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6.png?raw=true">
-<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6_2.png?raw=true">
-<meta property="og:updated_time" content="2018-03-05T17:43:33.000Z">
+<meta property="og:description" content="Step 1：把状态栏设置为透明
+    if(Build.VERSION.SDK_INT&amp;gt;=Build.VERSION_CODES.LOLLIPOP&amp;amp;&amp;amp;!Build.BRAND.equalsIgnoreCase(&amp;quot;huawei&amp;quot;)){/**5.0及以上且不是华为,
+            因为华为5.0以上系统已经全屏但是状态栏黑色改不掉*/">
+<meta property="og:updated_time" content="2018-03-06T06:53:51.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android 性能检测">
-<meta name="twitter:description" content="手机端：开发者选项
-绘图》 显示布局边界
-
-硬件加速渲染 》调试GPU过渡绘制  要打开
-
-
-
-监控》启用严格模式
-
-GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分
-
-
-电脑端：
-查看MemoryMonitor  ，查看页面内存波动（对于listview ）
-
-tools》android》android  device  monistor（其实它就是把android sdk中tools下">
-<meta name="twitter:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true">
+<meta name="twitter:title" content="沉浸式的实现方案">
+<meta name="twitter:description" content="Step 1：把状态栏设置为透明
+    if(Build.VERSION.SDK_INT&amp;gt;=Build.VERSION_CODES.LOLLIPOP&amp;amp;&amp;amp;!Build.BRAND.equalsIgnoreCase(&amp;quot;huawei&amp;quot;)){/**5.0及以上且不是华为,
+            因为华为5.0以上系统已经全屏但是状态栏黑色改不掉*/">
 
 
 
@@ -173,13 +130,13 @@ tools》android》android  device  monistor（其实它就是把android sdk中to
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2015/11/01/分析UI流畅度/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/10/01/沉浸式/"/>
 
 
 
 
 
-  <title> Android 性能检测 | Nico随笔 </title>
+  <title> 沉浸式的实现方案 | Nico随笔 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -298,7 +255,7 @@ tools》android》android  device  monistor（其实它就是把android sdk中to
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/分析UI流畅度/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/01/沉浸式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -319,7 +276,7 @@ tools》android》android  device  monistor（其实它就是把android sdk中to
             
             
               
-                Android 性能检测
+                沉浸式的实现方案
               
             
           </h1>
@@ -334,8 +291,8 @@ tools》android》android  device  monistor（其实它就是把android sdk中to
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-01T08:00:00+08:00">
+                2016-10-01
               </time>
             
 
@@ -392,29 +349,57 @@ tools》android》android  device  monistor（其实它就是把android sdk中to
       
 
       
-        <h1 id="手机端："><a href="#手机端：" class="headerlink" title="手机端："></a>手机端：</h1><h2 id="开发者选项"><a href="#开发者选项" class="headerlink" title="开发者选项"></a>开发者选项</h2><ol>
-<li><p>绘图》 显示布局边界</p>
-</li>
-<li><p>硬件加速渲染 》调试GPU过渡绘制  要打开</p>
-</li>
+        <h1 id="Step-1："><a href="#Step-1：" class="headerlink" title="Step 1："></a>Step 1：</h1><p>把状态栏设置为透明</p>
+<pre><code>    if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.LOLLIPOP&amp;&amp;!Build.BRAND.equalsIgnoreCase(&quot;huawei&quot;)){/**5.0及以上且不是华为,
+            因为华为5.0以上系统已经全屏但是状态栏黑色改不掉*/
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if(Build.VERSION.SDK_INT&gt;= Build.VERSION_CODES.M){
+            window.setStatusBarColor(Color.TRANSPARENT);
+            if(Build.MANUFACTURER.toLowerCase().contains(&quot;xiaomi&quot;)) {
+                setMiuiStatusBarDarkMode(true);
+            }
+        }else{
+            window.setStatusBarColor(Color.argb(0x80,0x00,0x00,0x00));
+        }
+
+    }else{/**5.0以下，4.0及以上*/
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        winParams.flags |= bits;
+        win.setAttributes(winParams);
+    }
+    /**由于MIUI 6修改过所以系统方法无法设置状态栏字体颜色无效，需要使用该方法设置
+    *ps:mui上设置状态栏字体颜色为深色
+    *
+    */
+    public void setMiuiStatusBarDarkMode(boolean isdarkmode) {
+    Class&lt;? extends Window&gt; clazz = this.getWindow().getClass();
+    try {
+        int darkModeFlag = 0;
+        Class&lt;?&gt; layoutParams = Class.forName(&quot;android.view.MiuiWindowManager$LayoutParams&quot;);
+        Field field = layoutParams.getField(&quot;EXTRA_FLAG_STATUS_BAR_DARK_MODE&quot;);
+        darkModeFlag = field.getInt(layoutParams);
+        Method extraFlagField = clazz.getMethod(&quot;setExtraFlags&quot;, int.class, int.class);
+        extraFlagField.invoke(this.getWindow(), isdarkmode ? darkModeFlag : 0, darkModeFlag);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+</code></pre><h2 id="Step-2："><a href="#Step-2：" class="headerlink" title="Step 2："></a>Step 2：</h2><p>设置绘制区域</p>
+<pre><code>rootView.setFitsSystemWindows(true);
+rootView.setClipToPadding(true);
+</code></pre><p>这样rootView就顶上头部去了，但是有个副作用就是界面显示区域也扩展下面的虚拟按键后面了，所以要对于alignparentbottom的功能栏，就不能直接放到rootView里面，必须放到与rootView外面。这样功能栏就不会被底部的虚拟按键盖住（这里不要考虑计算虚拟按键的高度，已经是否有虚拟按键，华为手机可以通过手势动态展开或者收起虚拟按键）</p>
+<h2 id="注意机型："><a href="#注意机型：" class="headerlink" title="注意机型："></a>注意机型：</h2><ol>
+<li>nexus固定死的虚拟按键</li>
+<li>华为和小米Mix可以使用手势控制的虚拟按键</li>
 </ol>
-<ol>
-<li><p>监控》启用严格模式</p>
-</li>
-<li><p>GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true" alt="image"></p>
-</li>
-</ol>
-<h1 id="电脑端："><a href="#电脑端：" class="headerlink" title="电脑端："></a>电脑端：</h1><ol>
-<li><p>查看MemoryMonitor  ，查看页面内存波动（对于listview ）</p>
-</li>
-<li><p>tools》android》android  device  monistor<br>（其实它就是把android sdk中tools下面的很多功能聚合起来；  如ddms，uiautomatorviewer，monitor等功能聚合起来，但是好像没有集成hierarchyviewer的功能）</p>
-</li>
-<li><p>查看录制页面变化时候的cpu耗时<br>开始录制》选中进程，点击红色方框左边的按钮，然后点击红色方框里右侧的按钮录制正式开始，需要结束时，再点击右侧按钮结束，就会有结果自动生成<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6.png?raw=true" alt="image"></p>
-<p>分析结果》录制实际上是一个采样的过程，可以看图中红色方框里面最耗时的几个方法，基本上可以定位到程序的问题<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6_2.png?raw=true" alt="image"></p>
-</li>
-<li>查看布局层次，以及每一层的绘制时间，目的是减小层次<br>入口是在：tools 下面 hierarchyviewer  查看每个层次的绘制时间（这个好像必须在模拟器上看）</li>
-</ol>
-<h1 id="分析卡的原因"><a href="#分析卡的原因" class="headerlink" title="分析卡的原因"></a>分析卡的原因</h1><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="http://www.cnblogs.com/krislight1105/p/5352500.html" target="_blank" rel="external">http://www.cnblogs.com/krislight1105/p/5352500.html</a><br><a href="http://blog.csdn.net/wangbaochu/article/details/50396512" target="_blank" rel="external">http://blog.csdn.net/wangbaochu/article/details/50396512</a></p>
 
       
     </div>
@@ -446,7 +431,7 @@ tools》android》android  device  monistor（其实它就是把android sdk中to
           
             <a href="/tags/Android/" rel="tag"># Android</a>
           
-            <a href="/tags/性能分析/" rel="tag"># 性能分析</a>
+            <a href="/tags/沉浸式/" rel="tag"># 沉浸式</a>
           
         </div>
       
@@ -459,8 +444,8 @@ tools》android》android  device  monistor（其实它就是把android sdk中to
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/01/动态往apk写入信息/" rel="next" title="快速打包方案">
-                <i class="fa fa-chevron-left"></i> 快速打包方案
+              <a href="/2015/11/01/deep_link设计方案/" rel="next" title="Deeplink 设计">
+                <i class="fa fa-chevron-left"></i> Deeplink 设计
               </a>
             
           </div>
@@ -469,8 +454,8 @@ tools》android》android  device  monistor（其实它就是把android sdk中to
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/11/01/deep_link设计方案/" rel="prev" title="Deeplink 设计">
-                Deeplink 设计 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/11/01/Okhttp核心流程/" rel="prev" title="Okhttp核心流程">
+                Okhttp核心流程 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -600,7 +585,7 @@ tools》android》android  device  monistor（其实它就是把android sdk中to
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#手机端："><span class="nav-number">1.</span> <span class="nav-text">手机端：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#开发者选项"><span class="nav-number">1.1.</span> <span class="nav-text">开发者选项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#电脑端："><span class="nav-number">2.</span> <span class="nav-text">电脑端：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析卡的原因"><span class="nav-number">3.</span> <span class="nav-text">分析卡的原因</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Step-1："><span class="nav-number">1.</span> <span class="nav-text">Step 1：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Step-2："><span class="nav-number">1.1.</span> <span class="nav-text">Step 2：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意机型："><span class="nav-number">1.2.</span> <span class="nav-text">注意机型：</span></a></li></ol></li></ol></div>
             
 
           </div>
