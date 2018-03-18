@@ -143,12 +143,12 @@ new CacheStrategy.Factory(now, request, cacheCandidate).get();
     }
     source = Okio.buffer(Okio.source(rawSocket));
     sink = Okio.buffer(Okio.sink(rawSocket));
-连接socket（返回连接 是以Http1xStream Http2xStream）形式返回回来的
-然后才是真正发送这个请求的过程
+连接socket（返回连接 是以Http1xStream Http2xStream）形式返回回来的   
+然后才是真正发送这个请求的过程   
 
        httpStream.writeRequestHeaders(networkRequest);
        requestBodyOut = httpStream.createRequestBody(networkRequest, contentLength);
-继续跟进
+继续跟进   
 
      httpEngine.writingRequestHeaders();
       String requestLine = RequestLine.get(
@@ -172,8 +172,8 @@ new CacheStrategy.Factory(now, request, cacheCandidate).get();
     }
 
 
-读过程
-就是通过这个stream构造出 newChunkedSink 或者newFixedLengthSink
+读过程    
+就是通过这个stream构造出 newChunkedSink 或者newFixedLengthSink  
 
 
 
@@ -239,6 +239,177 @@ new CacheStrategy.Factory(now, request, cacheCandidate).get();
      //tobe continue（已经 cache过程 请求重试过程）
       Request followUp = engine.followUpRequest();
 
+### 4. Interceptor.Chain  请求链路  
+
+#### 4.1 chain的初始化  
+
+第一个拦截器RetryAndFollowUpInterceptor 是在初始化RealCall 时候new的
+
+        RealCall(OkHttpClient client, Request originalRequest, boolean forWebSocket) {
+           final EventListener.Factory eventListenerFactory = client.eventListenerFactory();
+
+           this.client = client;
+           this.originalRequest = originalRequest;
+           this.forWebSocket = forWebSocket;
+           this.retryAndFollowUpInterceptor = new RetryAndFollowUpInterceptor(client, forWebSocket);
+
+           // TODO(jwilson): this is unsafe publication and not threadsafe.
+           this.eventListener = eventListenerFactory.create(this);
+         }
+ 
+ 
+ 后面再真正执行时候创建了其他拦截器   
+ 
+         @Override public Response execute() throws IOException {
+           try {
+             client.dispatcher().executed(this);
+             Response result = getResponseWithInterceptorChain();
+             if (result == null) throw new IOException("Canceled");
+             return result;
+           } finally {
+             client.dispatcher().finished(this);
+           }
+         }
+         
+               Response getResponseWithInterceptorChain() throws IOException {
+                  // Build a full stack of interceptors.
+                  List<Interceptor> interceptors = new ArrayList<>();
+                  interceptors.addAll(client.interceptors());
+                  interceptors.add(retryAndFollowUpInterceptor);
+                  interceptors.add(new BridgeInterceptor(client.cookieJar()));
+                  interceptors.add(new CacheInterceptor(client.internalCache()));
+                  interceptors.add(new ConnectInterceptor(client));
+                  if (!forWebSocket) {
+                    interceptors.addAll(client.networkInterceptors());
+                  }
+                  interceptors.add(new CallServerInterceptor(forWebSocket));
+
+                  Interceptor.Chain chain = new RealInterceptorChain(
+                      interceptors, null, null, null, 0, originalRequest);
+                  return chain.proceed(originalRequest);
+                }   
+                
+
+我们经常自定义的   
+
+              Applicationinterceptor 》》 client.interceptors() 
+              NetWorkclientepter 》》client.networkInterceptors()    
+              
+
+    
+责任链的实现 是需要通过 在每个层级Interceptor里面new RealInterceptorChain  实现的   
+
+每次new的时候都是在当前index+1， 而且里面传入所有的interceptors
+
+       // Call the next interceptor in the chain.
+       RealInterceptorChain next = new RealInterceptorChain(
+           interceptors, streamAllocation, httpCodec, connection, index + 1, request);
+       Interceptor interceptor = interceptors.get(index);
+       Response response = interceptor.intercept(next);
+
+RealInterceptorChain  中的
+
+              proceed(Request request, StreamAllocation streamAllocation, HttpCodec httpCodec,
+                  RealConnection connection)
+
+
+最后会调用  interceptor.intercept(next)  
+  
+          response = ((RealInterceptorChain) chain).proceed(request, streamAllocation, null, null);
+
+每个interceptor 都会在intercept方法里面调用本层级的 ((RealInterceptorChain) chain).proceed  进而递归到最后一层    
+
+            
+             
+最后递归到 CallServerInterceptor 的intercept方法：   
+
+
+       @Override public Response intercept(Chain chain) throws IOException {
+         RealInterceptorChain realChain = (RealInterceptorChain) chain;
+         HttpCodec httpCodec = realChain.httpStream();
+         StreamAllocation streamAllocation = realChain.streamAllocation();
+         RealConnection connection = (RealConnection) realChain.connection();
+         Request request = realChain.request();
+
+         if (HttpMethod.permitsRequestBody(request.method()) && request.body() != null) {
+          
+           if ("100-continue".equalsIgnoreCase(request.header("Expect"))) {
+             httpCodec.flushRequest();
+             responseBuilder = httpCodec.readResponseHeaders(true);
+           }
+
+           if (responseBuilder == null) {
+             // Write the request body if the "Expect: 100-continue" expectation was met.
+             Sink requestBodyOut = httpCodec.createRequestBody(request, request.body().contentLength());
+             BufferedSink bufferedRequestBody = Okio.buffer(requestBodyOut);
+             request.body().writeTo(bufferedRequestBody);
+             bufferedRequestBody.close();
+           } 
+
+         Response response = responseBuilder
+             .request(request)
+             .handshake(streamAllocation.connection().handshake())
+             .sentRequestAtMillis(sentRequestMillis)
+             .receivedResponseAtMillis(System.currentTimeMillis())
+             .build();
+              ......
+         return response;
+       }
+  
+  最后在每一个IntercepterChain里面的 
+  
+  Response response = interceptor.intercept(next);
+  
+  拿到里面一层的intercepter的response 然后加工最后返回给上一层的intercepter  
+  
+   例如BridgeInterceptor里面会拿到CacheInterpceter里面返回的response 然后处理一下返回给上一层的RetryAndFollowUpInterceptor  
+   
+     Response networkResponse = chain.proceed(requestBuilder.build());
+     Response response = interceptor.intercept(next);
+     HttpHeaders.receiveHeaders(cookieJar, userRequest.url(), networkResponse.headers());
+    Response.Builder responseBuilder = networkResponse.newBuilder()
+        .request(userRequest);
+
+    if (transparentGzip
+        && "gzip".equalsIgnoreCase(networkResponse.header("Content-Encoding"))
+        && HttpHeaders.hasBody(networkResponse)) {
+      GzipSource responseBody = new GzipSource(networkResponse.body().source());
+      Headers strippedHeaders = networkResponse.headers().newBuilder()
+          .removeAll("Content-Encoding")
+          .removeAll("Content-Length")
+          .build();
+      responseBuilder.headers(strippedHeaders);
+      responseBuilder.body(new RealResponseBody(strippedHeaders, Okio.buffer(responseBody)));
+    }
+
+    return responseBuilder.build();
+
+PS：这些intercepter大多数都在okhttp3.internal.http包下面 。   
+
+
+#### 4.3 
+
+虽然在ConnectInterceptor分配了Connection 但是却是在CallServerInterceptor发起的网络请求   
+（这里涉及到 HTTP1.1的长连接，一次建立TCP连接后，下一次请求同一域名，继续用这个通道传输数据）
+
+       @Override public Response intercept(Chain chain) throws IOException {
+           RealInterceptorChain realChain = (RealInterceptorChain) chain;
+           Request request = realChain.request();
+           StreamAllocation streamAllocation = realChain.streamAllocation();
+
+           // We need the network to satisfy this request. Possibly for validating a conditional GET.
+           boolean doExtensiveHealthChecks = !request.method().equals("GET");
+           HttpCodec httpCodec = streamAllocation.newStream(client, doExtensiveHealthChecks);
+           RealConnection connection = streamAllocation.connection();
+
+           return realChain.proceed(request, streamAllocation, httpCodec, connection);
+         }
+
+#### 4.2 这里的每个intercepter 都需要new 一个RealInterceptorChain 可以参考 Fresco的方案改进 
+
+RetryAndFollowUpInterceptor（BridgeInterceptor（CacheInterceptor(ConnectInterceptor(CallServerInterceptor()))）)
+
+这样一层嵌套一层，就可以直接不借助RealInterceptorChain实现责任链
 
 
 ### 3. cache管理

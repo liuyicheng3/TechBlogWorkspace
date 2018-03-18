@@ -141,7 +141,9 @@ ps：内部类的去混淆
         android:name="com.amap.api.v2.apikey"
         android:value="*******" />
 
-App组件化与业务拆分: http://www.jianshu.com/p/60c1b9ddd8ab
-
+App组件化与业务拆分: http://www.jianshu.com/p/60c1b9ddd8ab  
+安卓组件化相关开源方案最全总结：  
+https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww   
+https://juejin.im/post/5a7ab8846fb9a0634514a2f5
 
 

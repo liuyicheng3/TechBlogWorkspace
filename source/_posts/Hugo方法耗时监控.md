@@ -123,4 +123,5 @@ StringDef定义：
 # 参考文章  
 使用方法:http://blog.csdn.net/daihuimaozideren/article/details/78231983  
 原理分析:http://blog.csdn.net/xxxzhi/article/details/53048476    
-Retention、Target注解:  http://blog.csdn.net/limj625/article/details/70242773
+Retention、Target注解:  http://blog.csdn.net/limj625/article/details/70242773  
+Java中的注解：http://www.cnblogs.com/peida/archive/2013/04/24/3036689.html

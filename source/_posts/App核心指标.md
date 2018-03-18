@@ -27,6 +27,9 @@ http://www.woshipm.com/pmd/155084.html
 6. mau
 7. 时长
 
+# 内容  
+1. UGC(User-created Content):用户生产内容    
+2. PGC(Professionally-generated Content):专业生产内容    
 
 
 # 广告计费方式：

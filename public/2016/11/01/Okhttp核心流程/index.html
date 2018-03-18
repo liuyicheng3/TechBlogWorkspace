@@ -99,7 +99,7 @@ private final Deque&amp;lt;AsyncCall&amp;g">
 private final Deque&amp;lt;AsyncCall&amp;g">
 <meta property="og:image" content="http://blog.piasy.com/img/201607/okhttp_full_process.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/http_cache.jpg">
-<meta property="og:updated_time" content="2018-03-06T06:53:51.000Z">
+<meta property="og:updated_time" content="2018-03-18T16:53:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Okhttp核心流程">
 <meta name="twitter:description" content="Interface：OkhttpClient（singleton）  Request  Response主要由以下三部分 组成1. 任务调度： 核心类disruptor（singleton）a. 线程池b. 队列
@@ -434,10 +434,10 @@ routeDatabase().connected(newConnection.route());
 }
 source = Okio.buffer(Okio.source(rawSocket));
 sink = Okio.buffer(Okio.sink(rawSocket));
-</code></pre><p>连接socket（返回连接 是以Http1xStream Http2xStream）形式返回回来的<br>然后才是真正发送这个请求的过程</p>
+</code></pre><p>连接socket（返回连接 是以Http1xStream Http2xStream）形式返回回来的<br>然后才是真正发送这个请求的过程   </p>
 <pre><code>httpStream.writeRequestHeaders(networkRequest);
 requestBodyOut = httpStream.createRequestBody(networkRequest, contentLength);
-</code></pre><p>继续跟进</p>
+</code></pre><p>继续跟进   </p>
 <pre><code> httpEngine.writingRequestHeaders();
   String requestLine = RequestLine.get(
     request, httpEngine.getConnection().route().proxy().type());
@@ -456,7 +456,7 @@ for (int i = 0, size = headers.size(); i &lt; size; i++) {
 sink.writeUtf8(&quot;\r\n&quot;);
 state = STATE_OPEN_REQUEST_BODY;
 }
-</code></pre><p>读过程<br>就是通过这个stream构造出 newChunkedSink 或者newFixedLengthSink</p>
+</code></pre><p>读过程<br>就是通过这个stream构造出 newChunkedSink 或者newFixedLengthSink  </p>
 <p>到此 请求reponse的工作做完了<br>现在 如果是需要真正发送网络请求就也就是问题22</p>
 <pre><code>networkResponse = new NetworkInterceptorChain(0, networkRequest).proceed(networkRequest);
 </code></pre><p>》》</p>
@@ -506,7 +506,135 @@ return networkResponse;
 
 //tobe continue（已经 cache过程 请求重试过程）
  Request followUp = engine.followUpRequest();
-</code></pre><h3 id="3-cache管理"><a href="#3-cache管理" class="headerlink" title="3. cache管理"></a>3. cache管理</h3><p>最后附上 相关的http请求cache的rfc内容<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/http_cache.jpg" alt="image"></p>
+</code></pre><h3 id="4-Interceptor-Chain-请求链路"><a href="#4-Interceptor-Chain-请求链路" class="headerlink" title="4. Interceptor.Chain  请求链路"></a>4. Interceptor.Chain  请求链路</h3><h4 id="4-1-chain的初始化"><a href="#4-1-chain的初始化" class="headerlink" title="4.1 chain的初始化"></a>4.1 chain的初始化</h4><p>第一个拦截器RetryAndFollowUpInterceptor 是在初始化RealCall 时候new的</p>
+<pre><code>RealCall(OkHttpClient client, Request originalRequest, boolean forWebSocket) {
+   final EventListener.Factory eventListenerFactory = client.eventListenerFactory();
+
+   this.client = client;
+   this.originalRequest = originalRequest;
+   this.forWebSocket = forWebSocket;
+   this.retryAndFollowUpInterceptor = new RetryAndFollowUpInterceptor(client, forWebSocket);
+
+   // TODO(jwilson): this is unsafe publication and not threadsafe.
+   this.eventListener = eventListenerFactory.create(this);
+ }
+</code></pre><p> 后面再真正执行时候创建了其他拦截器   </p>
+<pre><code>@Override public Response execute() throws IOException {
+  try {
+    client.dispatcher().executed(this);
+    Response result = getResponseWithInterceptorChain();
+    if (result == null) throw new IOException(&quot;Canceled&quot;);
+    return result;
+  } finally {
+    client.dispatcher().finished(this);
+  }
+}
+
+      Response getResponseWithInterceptorChain() throws IOException {
+         // Build a full stack of interceptors.
+         List&lt;Interceptor&gt; interceptors = new ArrayList&lt;&gt;();
+         interceptors.addAll(client.interceptors());
+         interceptors.add(retryAndFollowUpInterceptor);
+         interceptors.add(new BridgeInterceptor(client.cookieJar()));
+         interceptors.add(new CacheInterceptor(client.internalCache()));
+         interceptors.add(new ConnectInterceptor(client));
+         if (!forWebSocket) {
+           interceptors.addAll(client.networkInterceptors());
+         }
+         interceptors.add(new CallServerInterceptor(forWebSocket));
+
+         Interceptor.Chain chain = new RealInterceptorChain(
+             interceptors, null, null, null, 0, originalRequest);
+         return chain.proceed(originalRequest);
+       }   
+</code></pre><p>我们经常自定义的   </p>
+<pre><code>Applicationinterceptor 》》 client.interceptors() 
+NetWorkclientepter 》》client.networkInterceptors()    
+</code></pre><p>责任链的实现 是需要通过 在每个层级Interceptor里面new RealInterceptorChain  实现的   </p>
+<p>每次new的时候都是在当前index+1， 而且里面传入所有的interceptors</p>
+<pre><code>// Call the next interceptor in the chain.
+RealInterceptorChain next = new RealInterceptorChain(
+    interceptors, streamAllocation, httpCodec, connection, index + 1, request);
+Interceptor interceptor = interceptors.get(index);
+Response response = interceptor.intercept(next);
+</code></pre><p>RealInterceptorChain  中的</p>
+<pre><code>proceed(Request request, StreamAllocation streamAllocation, HttpCodec httpCodec,
+    RealConnection connection)
+</code></pre><p>最后会调用  interceptor.intercept(next)  </p>
+<pre><code>response = ((RealInterceptorChain) chain).proceed(request, streamAllocation, null, null);
+</code></pre><p>每个interceptor 都会在intercept方法里面调用本层级的 ((RealInterceptorChain) chain).proceed  进而递归到最后一层    </p>
+<p>最后递归到 CallServerInterceptor 的intercept方法：   </p>
+<pre><code>@Override public Response intercept(Chain chain) throws IOException {
+  RealInterceptorChain realChain = (RealInterceptorChain) chain;
+  HttpCodec httpCodec = realChain.httpStream();
+  StreamAllocation streamAllocation = realChain.streamAllocation();
+  RealConnection connection = (RealConnection) realChain.connection();
+  Request request = realChain.request();
+
+  if (HttpMethod.permitsRequestBody(request.method()) &amp;&amp; request.body() != null) {
+
+    if (&quot;100-continue&quot;.equalsIgnoreCase(request.header(&quot;Expect&quot;))) {
+      httpCodec.flushRequest();
+      responseBuilder = httpCodec.readResponseHeaders(true);
+    }
+
+    if (responseBuilder == null) {
+      // Write the request body if the &quot;Expect: 100-continue&quot; expectation was met.
+      Sink requestBodyOut = httpCodec.createRequestBody(request, request.body().contentLength());
+      BufferedSink bufferedRequestBody = Okio.buffer(requestBodyOut);
+      request.body().writeTo(bufferedRequestBody);
+      bufferedRequestBody.close();
+    } 
+
+  Response response = responseBuilder
+      .request(request)
+      .handshake(streamAllocation.connection().handshake())
+      .sentRequestAtMillis(sentRequestMillis)
+      .receivedResponseAtMillis(System.currentTimeMillis())
+      .build();
+       ......
+  return response;
+}
+</code></pre><p>  最后在每一个IntercepterChain里面的 </p>
+<p>  Response response = interceptor.intercept(next);</p>
+<p>  拿到里面一层的intercepter的response 然后加工最后返回给上一层的intercepter  </p>
+<p>   例如BridgeInterceptor里面会拿到CacheInterpceter里面返回的response 然后处理一下返回给上一层的RetryAndFollowUpInterceptor  </p>
+<pre><code> Response networkResponse = chain.proceed(requestBuilder.build());
+ Response response = interceptor.intercept(next);
+ HttpHeaders.receiveHeaders(cookieJar, userRequest.url(), networkResponse.headers());
+Response.Builder responseBuilder = networkResponse.newBuilder()
+    .request(userRequest);
+
+if (transparentGzip
+    &amp;&amp; &quot;gzip&quot;.equalsIgnoreCase(networkResponse.header(&quot;Content-Encoding&quot;))
+    &amp;&amp; HttpHeaders.hasBody(networkResponse)) {
+  GzipSource responseBody = new GzipSource(networkResponse.body().source());
+  Headers strippedHeaders = networkResponse.headers().newBuilder()
+      .removeAll(&quot;Content-Encoding&quot;)
+      .removeAll(&quot;Content-Length&quot;)
+      .build();
+  responseBuilder.headers(strippedHeaders);
+  responseBuilder.body(new RealResponseBody(strippedHeaders, Okio.buffer(responseBody)));
+}
+
+return responseBuilder.build();
+</code></pre><p>PS：这些intercepter大多数都在okhttp3.internal.http包下面 。   </p>
+<h4 id="4-3"><a href="#4-3" class="headerlink" title="4.3"></a>4.3</h4><p>虽然在ConnectInterceptor分配了Connection 但是却是在CallServerInterceptor发起的网络请求<br>（这里涉及到 HTTP1.1的长连接，一次建立TCP连接后，下一次请求同一域名，继续用这个通道传输数据）</p>
+<pre><code>@Override public Response intercept(Chain chain) throws IOException {
+    RealInterceptorChain realChain = (RealInterceptorChain) chain;
+    Request request = realChain.request();
+    StreamAllocation streamAllocation = realChain.streamAllocation();
+
+    // We need the network to satisfy this request. Possibly for validating a conditional GET.
+    boolean doExtensiveHealthChecks = !request.method().equals(&quot;GET&quot;);
+    HttpCodec httpCodec = streamAllocation.newStream(client, doExtensiveHealthChecks);
+    RealConnection connection = streamAllocation.connection();
+
+    return realChain.proceed(request, streamAllocation, httpCodec, connection);
+  }
+</code></pre><h4 id="4-2-这里的每个intercepter-都需要new-一个RealInterceptorChain-可以参考-Fresco的方案改进"><a href="#4-2-这里的每个intercepter-都需要new-一个RealInterceptorChain-可以参考-Fresco的方案改进" class="headerlink" title="4.2 这里的每个intercepter 都需要new 一个RealInterceptorChain 可以参考 Fresco的方案改进"></a>4.2 这里的每个intercepter 都需要new 一个RealInterceptorChain 可以参考 Fresco的方案改进</h4><p>RetryAndFollowUpInterceptor（BridgeInterceptor（CacheInterceptor(ConnectInterceptor(CallServerInterceptor()))）)</p>
+<p>这样一层嵌套一层，就可以直接不借助RealInterceptorChain实现责任链</p>
+<h3 id="3-cache管理"><a href="#3-cache管理" class="headerlink" title="3. cache管理"></a>3. cache管理</h3><p>最后附上 相关的http请求cache的rfc内容<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/http_cache.jpg" alt="image"></p>
 <h3 id="每个状态的详细说明如下："><a href="#每个状态的详细说明如下：" class="headerlink" title="每个状态的详细说明如下："></a>每个状态的详细说明如下：</h3><h4 id="1-Last-Modified"><a href="#1-Last-Modified" class="headerlink" title="1. Last-Modified"></a>1. Last-Modified</h4><p>在浏览器第一次请求某一个URL时，服务器端的返回状态会是200，内容是你请求的资源，同时有一个Last-Modified的属性标记(HttpReponse Header)此文件在服务期端最后被修改的时间，格式类似这样：<br>Last-Modified:Tue, 24 Feb 2009 08:01:04 GMT<br>客户端第二次请求此URL时，根据HTTP协议的规定，浏览器会向服务器传送If-Modified-Since报头(HttpRequest Header)，询问该时间之后文件是否有被修改过：<br>If-Modified-Since:Tue, 24 Feb 2009 08:01:04 GMT<br>如果服务器端的资源没有变化，则自动返回HTTP304（NotChanged.）状态码，内容为空，这样就节省了传输数据量。当服务器端代码发生改变或者重启服务器时，则重新发出资源，返回和第一次请求时类似。从而保证不向客户端重复发出资源，也保证当服务器有变化时，客户端能够得到最新的资源。<br>注：如果If-Modified-Since的时间比服务器当前时间(当前的请求时间request_time)还晚，会认为是个非法请求  </p>
 <h4 id="2-Etag工作原理"><a href="#2-Etag工作原理" class="headerlink" title="2. Etag工作原理"></a>2. Etag工作原理</h4><p>HTTP协议规格说明定义ETag为“被请求变量的实体标记”（参见14.19）。简单点即服务器响应时给请求URL标记，并在HTTP响应头中将其传送到客户端，类似服务器端返回的格式：<br>Etag:“5d8c72a5edda8d6a:3239″<br>客户端的查询更新格式是这样的：<br>If-None-Match:“5d8c72a5edda8d6a:3239″<br>如果ETag没改变，则返回状态304。<br>即:在客户端发出请求后，HttpReponse Header中包含Etag:“5d8c72a5edda8d6a:3239″<br>标识，等于告诉Client端，你拿到的这个的资源有表示ID：5d8c72a5edda8d6a:3239。当下次需要发Request索要同一个URI的时候，浏览器同时发出一个If-None-Match报头(Http RequestHeader)此时包头中信息包含上次访问得到的Etag:“5d8c72a5edda8d6a:3239″标识。<br>If-None-Match:“5d8c72a5edda8d6a:3239“<br>,这样，Client端等于Cache了两份，服务器端就会比对2者的etag。如果If-None-Match为False，不返回200，返回304(Not Modified) Response。  </p>
 <h4 id="3-Expires"><a href="#3-Expires" class="headerlink" title="3. Expires"></a>3. Expires</h4><p>给出的日期/时间后，被响应认为是过时。如Expires:Thu, 02 Apr 2009 05:14:08 GMT<br>需和Last-Modified结合使用。用于控制请求文件的有效时间，当请求数据在有效期内时客户端浏览器从缓存请求数据而不是服务器端.当缓存中数据失效或过期，才决定从服务器更新数据。  </p>
@@ -654,7 +782,7 @@ return networkResponse;
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -711,7 +839,7 @@ return networkResponse;
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Interface：OkhttpClient（singleton）-Request-Response"><span class="nav-number">1.</span> <span class="nav-text">Interface：OkhttpClient（singleton）  Request  Response</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主要由以下三部分-组成"><span class="nav-number">2.</span> <span class="nav-text">主要由以下三部分 组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-任务调度：-核心类disruptor（singleton）"><span class="nav-number">2.1.</span> <span class="nav-text">1. 任务调度： 核心类disruptor（singleton）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-网络请求"><span class="nav-number">2.2.</span> <span class="nav-text">2. 网络请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-cache管理"><span class="nav-number">2.3.</span> <span class="nav-text">3. cache管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#每个状态的详细说明如下："><span class="nav-number">2.4.</span> <span class="nav-text">每个状态的详细说明如下：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Last-Modified"><span class="nav-number">2.4.1.</span> <span class="nav-text">1. Last-Modified</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Etag工作原理"><span class="nav-number">2.4.2.</span> <span class="nav-text">2. Etag工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Expires"><span class="nav-number">2.4.3.</span> <span class="nav-text">3. Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Last-Modified和Expires"><span class="nav-number">2.4.4.</span> <span class="nav-text">4. Last-Modified和Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Etag和Expires"><span class="nav-number">2.4.5.</span> <span class="nav-text">5. Etag和Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-Last-Modified和Etag"><span class="nav-number">2.4.6.</span> <span class="nav-text">6. Last-Modified和Etag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-关于-Cache-Control-max-age-秒-和-Expires"><span class="nav-number">2.4.7.</span> <span class="nav-text">7.关于 Cache-Control: max-age=秒 和 Expires</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Interface：OkhttpClient（singleton）-Request-Response"><span class="nav-number">1.</span> <span class="nav-text">Interface：OkhttpClient（singleton）  Request  Response</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主要由以下三部分-组成"><span class="nav-number">2.</span> <span class="nav-text">主要由以下三部分 组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-任务调度：-核心类disruptor（singleton）"><span class="nav-number">2.1.</span> <span class="nav-text">1. 任务调度： 核心类disruptor（singleton）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-网络请求"><span class="nav-number">2.2.</span> <span class="nav-text">2. 网络请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Interceptor-Chain-请求链路"><span class="nav-number">2.3.</span> <span class="nav-text">4. Interceptor.Chain  请求链路</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-chain的初始化"><span class="nav-number">2.3.1.</span> <span class="nav-text">4.1 chain的初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3"><span class="nav-number">2.3.2.</span> <span class="nav-text">4.3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-这里的每个intercepter-都需要new-一个RealInterceptorChain-可以参考-Fresco的方案改进"><span class="nav-number">2.3.3.</span> <span class="nav-text">4.2 这里的每个intercepter 都需要new 一个RealInterceptorChain 可以参考 Fresco的方案改进</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-cache管理"><span class="nav-number">2.4.</span> <span class="nav-text">3. cache管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#每个状态的详细说明如下："><span class="nav-number">2.5.</span> <span class="nav-text">每个状态的详细说明如下：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Last-Modified"><span class="nav-number">2.5.1.</span> <span class="nav-text">1. Last-Modified</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Etag工作原理"><span class="nav-number">2.5.2.</span> <span class="nav-text">2. Etag工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Expires"><span class="nav-number">2.5.3.</span> <span class="nav-text">3. Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Last-Modified和Expires"><span class="nav-number">2.5.4.</span> <span class="nav-text">4. Last-Modified和Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Etag和Expires"><span class="nav-number">2.5.5.</span> <span class="nav-text">5. Etag和Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-Last-Modified和Etag"><span class="nav-number">2.5.6.</span> <span class="nav-text">6. Last-Modified和Etag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-关于-Cache-Control-max-age-秒-和-Expires"><span class="nav-number">2.5.7.</span> <span class="nav-text">7.关于 Cache-Control: max-age=秒 和 Expires</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

@@ -247,6 +247,201 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/简易java热补丁/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/简易java热补丁/" itemprop="url">
+                  热补丁
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="核心两个部分"><a href="#核心两个部分" class="headerlink" title="核心两个部分"></a>核心两个部分</h2><h3 id="1-hook部分"><a href="#1-hook部分" class="headerlink" title="1. hook部分"></a>1. hook部分</h3><p>hook部分主要是使用反射调用补丁里面的内容</p>
+<p>hook部分的本质是提供对补丁方法调用的封装（主工程无法直接实例和调用补丁的方法），每次调用都是通过反射调用，传入activity，handler，callback进去。</p>
+<h3 id="2-补丁部分"><a href="#2-补丁部分" class="headerlink" title="2. 补丁部分"></a>2. 补丁部分</h3><p>补丁实际上是java代码转的dex<br>它的工作有两种：网络取数据，构造生成view</p>
+<p>补丁部分构造view是通过hook部分传过来activity，然后用代码动态构造view，不涉及到任何布局文件，资源文件。  </p>
+<h2 id="hook的初始化及调用过程"><a href="#hook的初始化及调用过程" class="headerlink" title="hook的初始化及调用过程"></a>hook的初始化及调用过程</h2><ol>
+<li><p>初始化DexClassLoader  </p>
+<pre><code>classLoader = new DexClassLoader(dexApkFilePath
+            + dexName + &quot;.apk&quot;, context.getDir(&quot;dex&quot;, Context.MODE_PRIVATE).getAbsolutePath(), null,
+            context.getClassLoader().getParent());
+</code></pre></li>
+<li><p>load补丁相应的class  </p>
+<pre><code>controllerClass = classLoader.loadClass(&quot;com.nico.Controller&quot;);
+</code></pre></li>
+<li><p>初始化构造函数</p>
+<pre><code>controllerConstrucor = controllerClass.getConstructor(new Class[]{Context.class, String.class, boolean.class});
+</code></pre></li>
+<li><p>实例化补丁里面的类</p>
+<pre><code>controllerInstance = controllerConstrucor.newInstance(new Object[]{mContext});
+</code></pre></li>
+<li><p>通过初始化的实例controllerInstance来调用里面的方法  </p>
+<pre><code>Method initController = controllerClass.getDeclaredMethod(&quot;initController&quot;, new Class[]{String.class, String.class, String.class});
+initController.setAccessible(true);
+initController.invoke(controllerInstance, new Object[]{paramsA, paramsB, paramsC});
+</code></pre></li>
+</ol>
+<h2 id="补丁的升级"><a href="#补丁的升级" class="headerlink" title="补丁的升级"></a>补丁的升级</h2><ol>
+<li>校验是否有新的版本升级</li>
+<li>把新的补丁下载到本地sd卡中去</li>
+<li>解压补丁到data/data/app.pkg/app_dex目录<br>ZipManager.extNativeZipFile(mContext,<pre><code>mContext.getResources().getAssets().open(Utils.ZIP_NAME),
+cachePath, dexApkFilePath, lastVersion)
+</code></pre></li>
+<li>重新走一遍补丁的实例化过程（从DexLoader开始）</li>
+</ol>
+<h2 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h2><ol>
+<li>第一次安装，补丁放到asset目录下面</li>
+<li>由于里面传入了activity，要注意销毁补丁里面的强引用</li>
+</ol>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>dexclassloader : 可以加载apk文件中的字节码<br>pathclassloader : 只能加载文件目录下的apk文件中的classes</p>
+<h2 id="To-Be-Continue"><a href="#To-Be-Continue" class="headerlink" title="To Be Continue"></a>To Be Continue</h2><ol>
+<li><p>load补丁里面的资源文件 ,通过反射调用AssetManger里面的资源文件，把ID设置上去 </p>
+<pre><code>AssetManager assetManager = AssetManager.class.newInstance();  
+Method addAssetPath = assetManager.getClass().getMethod(&quot;addAssetPath&quot;, String.class);  
+addAssetPath.invoke(assetManager, libPath);  
+Resources superRes = super.getResources();  
+mRes = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getConfiguration());
+</code></pre></li>
+<li><p>尝试使用mvp模式，把controllor从activity里面剥离开来，让所有contollor可以被热补丁，这要处理起来（可以把整个app轻量化）</p>
+</li>
+</ol>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="http://blog.csdn.net/wwj_748/article/details/46349781" target="_blank" rel="external">http://blog.csdn.net/wwj_748/article/details/46349781</a></p>
+<p><a href="http://blog.csdn.net/yuanzeyao/article/details/42390431" target="_blank" rel="external">http://blog.csdn.net/yuanzeyao/article/details/42390431</a></p>
+<p><a href="http://blog.csdn.net/u010386612/article/details/51077291" target="_blank" rel="external">http://blog.csdn.net/u010386612/article/details/51077291</a></p>
+<p><a href="http://blog.csdn.net/cn_foolishman/article/details/46874811" target="_blank" rel="external">http://blog.csdn.net/cn_foolishman/article/details/46874811</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/ios学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -497,7 +692,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">32</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
