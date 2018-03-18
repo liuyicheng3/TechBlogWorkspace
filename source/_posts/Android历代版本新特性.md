@@ -1,13 +1,30 @@
-title: Android版本更新特性     
+title: Android版本更新特性 	    
+        
 date: 2018-3-17         
-categories:        
+        
+categories:            
+        
 - Android        
+        
+        
+        
            
-           
-           
+        
+        
+        
 tags:           
+        
+        
+        
 - 版本        
+        
+        
+        
 - Android        
+        
+        
+        
+        
 ---  
 
 ## 1. Android 3.0 
