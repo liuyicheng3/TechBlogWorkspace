@@ -31,12 +31,12 @@ class HexoUtil(object):
             lines_origin = mark_down_file.readlines()
             lines = map(lambda i:i.replace("\n", "").strip(),lines_origin)
             lines = filter(lambda i: len(i) > 0, lines)
-            if len(lines) > 3 and lines[0].startswith('title: ') and lines[1].startswith('date: ') and lines[2].startswith('categories:') :
+            if len(lines) > 3 and lines[0].startswith('title:') and lines[1].startswith('date:') and lines[2].startswith('categories:') :
                 for i in range(0,len(lines_origin)):
-                    if lines_origin[i].replace("\n", "").strip().endswith('---'):
+                    if lines_origin[i].replace("\n", "").strip().startswith('---'):
                         break
                     else:
-                        if not lines_origin[i].endswith('    \n'):
+                        if len(lines_origin[i].replace("\n", "").strip()) >0 and not lines_origin[i].endswith('    \n'):
                             lines_origin[i] = lines_origin[i].replace('\n', '    \n')
                             need_modify = True
 

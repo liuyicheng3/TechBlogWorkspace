@@ -1,31 +1,27 @@
-title: Android版本更新特性 	    
-        
-date: 2018-3-17         
-        
-categories:            
-        
-- Android        
-        
-        
-        
-           
-        
-        
-        
-tags:           
-        
-        
-        
-- 版本        
-        
-        
-        
-- Android        
-        
-        
-        
-        
----  
+title: Android版本更新特性 	
+    
+   
+date: 2018-3-17     
+    
+   
+categories:        
+    
+   
+- Android       
+    
+    
+tags:       
+    
+  
+- 版本    
+    
+        
+- Android    
+    
+       
+---    
+
+
 
 ## 1. Android 3.0 
 * 硬件加速  
