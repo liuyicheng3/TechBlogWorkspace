@@ -1,4 +1,4 @@
-title: 生成分享图片    
+title: pythonXML解析     
 date: 2018-1-3     
 categories:    
 - Python    
