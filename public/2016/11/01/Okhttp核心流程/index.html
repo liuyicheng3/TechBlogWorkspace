@@ -99,7 +99,7 @@ private final Deque&amp;lt;AsyncCall&amp;g">
 private final Deque&amp;lt;AsyncCall&amp;g">
 <meta property="og:image" content="http://blog.piasy.com/img/201607/okhttp_full_process.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/http_cache.jpg">
-<meta property="og:updated_time" content="2018-03-19T10:20:41.000Z">
+<meta property="og:updated_time" content="2018-03-20T01:51:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Okhttp核心流程">
 <meta name="twitter:description" content="Interface：OkhttpClient（singleton）  Request  Response主要由以下三部分 组成1. 任务调度： 核心类disruptor（singleton）a. 线程池b. 队列
@@ -634,6 +634,54 @@ return responseBuilder.build();
   }
 </code></pre><h4 id="4-2-这里的每个intercepter-都需要new-一个RealInterceptorChain-可以参考-Fresco的方案改进"><a href="#4-2-这里的每个intercepter-都需要new-一个RealInterceptorChain-可以参考-Fresco的方案改进" class="headerlink" title="4.2 这里的每个intercepter 都需要new 一个RealInterceptorChain 可以参考 Fresco的方案改进"></a>4.2 这里的每个intercepter 都需要new 一个RealInterceptorChain 可以参考 Fresco的方案改进</h4><p>RetryAndFollowUpInterceptor（BridgeInterceptor（CacheInterceptor(ConnectInterceptor(CallServerInterceptor()))）)</p>
 <p>这样一层嵌套一层，就可以直接不借助RealInterceptorChain实现责任链</p>
+<h4 id="4-3-日志"><a href="#4-3-日志" class="headerlink" title="4.3  日志"></a>4.3  日志</h4><ul>
+<li><p>请求结果日志  </p>
+<pre><code>  compile &apos;com.squareup.okhttp3:logging-interceptor:3.8.1&apos;   
+
+public class HttpLogger implements HttpLoggingInterceptor.Logger {
+  @Override
+  public void log(String message) {
+    Log.d(&quot;HttpLogInfo&quot;, message);
+  }
+}  
+
+HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor(new HttpLogger());
+logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);   
+
+OkHttpClient client = new OkHttpClient.Builder()
+              .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+              .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+    .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+    .addNetworkInterceptor(logInterceptor)
+</code></pre></li>
+</ul>
+<ul>
+<li>请求时长日志  </li>
+</ul>
+<pre><code>class LoggingInterceptor implements Interceptor {
+  @Override public Response intercept(Interceptor.Chain chain) throws IOException {
+    Request request = chain.request();
+
+    //请求前--打印请求信息
+    long t1 = System.nanoTime();
+    logger.info(String.format(&quot;Sending request %s on %s%n%s&quot;,
+        request.url(), chain.connection(), request.headers()));
+
+    //网络请求
+    Response response = chain.proceed(request);
+
+    //网络响应后--打印响应信息
+    long t2 = System.nanoTime();
+    logger.info(String.format(&quot;Received response for %s in %.1fms%n%s&quot;,
+        response.request().url(), (t2 - t1) / 1e6d, response.headers()));
+
+    return response;
+  }
+}
+</code></pre><ul>
+<li>日志打印框架<br><a href="https://github.com/orhanobut/logger" target="_blank" rel="external">https://github.com/orhanobut/logger</a></li>
+</ul>
+<p>参考资料：<a href="https://www.jianshu.com/p/d04b463806c8" target="_blank" rel="external">https://www.jianshu.com/p/d04b463806c8</a>    </p>
 <h3 id="3-cache管理"><a href="#3-cache管理" class="headerlink" title="3. cache管理"></a>3. cache管理</h3><p>最后附上 相关的http请求cache的rfc内容<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/http_cache.jpg" alt="image"></p>
 <h3 id="每个状态的详细说明如下："><a href="#每个状态的详细说明如下：" class="headerlink" title="每个状态的详细说明如下："></a>每个状态的详细说明如下：</h3><h4 id="1-Last-Modified"><a href="#1-Last-Modified" class="headerlink" title="1. Last-Modified"></a>1. Last-Modified</h4><p>在浏览器第一次请求某一个URL时，服务器端的返回状态会是200，内容是你请求的资源，同时有一个Last-Modified的属性标记(HttpReponse Header)此文件在服务期端最后被修改的时间，格式类似这样：<br>Last-Modified:Tue, 24 Feb 2009 08:01:04 GMT<br>客户端第二次请求此URL时，根据HTTP协议的规定，浏览器会向服务器传送If-Modified-Since报头(HttpRequest Header)，询问该时间之后文件是否有被修改过：<br>If-Modified-Since:Tue, 24 Feb 2009 08:01:04 GMT<br>如果服务器端的资源没有变化，则自动返回HTTP304（NotChanged.）状态码，内容为空，这样就节省了传输数据量。当服务器端代码发生改变或者重启服务器时，则重新发出资源，返回和第一次请求时类似。从而保证不向客户端重复发出资源，也保证当服务器有变化时，客户端能够得到最新的资源。<br>注：如果If-Modified-Since的时间比服务器当前时间(当前的请求时间request_time)还晚，会认为是个非法请求  </p>
 <h4 id="2-Etag工作原理"><a href="#2-Etag工作原理" class="headerlink" title="2. Etag工作原理"></a>2. Etag工作原理</h4><p>HTTP协议规格说明定义ETag为“被请求变量的实体标记”（参见14.19）。简单点即服务器响应时给请求URL标记，并在HTTP响应头中将其传送到客户端，类似服务器端返回的格式：<br>Etag:“5d8c72a5edda8d6a:3239″<br>客户端的查询更新格式是这样的：<br>If-None-Match:“5d8c72a5edda8d6a:3239″<br>如果ETag没改变，则返回状态304。<br>即:在客户端发出请求后，HttpReponse Header中包含Etag:“5d8c72a5edda8d6a:3239″<br>标识，等于告诉Client端，你拿到的这个的资源有表示ID：5d8c72a5edda8d6a:3239。当下次需要发Request索要同一个URI的时候，浏览器同时发出一个If-None-Match报头(Http RequestHeader)此时包头中信息包含上次访问得到的Etag:“5d8c72a5edda8d6a:3239″标识。<br>If-None-Match:“5d8c72a5edda8d6a:3239“<br>,这样，Client端等于Cache了两份，服务器端就会比对2者的etag。如果If-None-Match为False，不返回200，返回304(Not Modified) Response。  </p>
@@ -839,7 +887,7 @@ return responseBuilder.build();
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Interface：OkhttpClient（singleton）-Request-Response"><span class="nav-number">1.</span> <span class="nav-text">Interface：OkhttpClient（singleton）  Request  Response</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主要由以下三部分-组成"><span class="nav-number">2.</span> <span class="nav-text">主要由以下三部分 组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-任务调度：-核心类disruptor（singleton）"><span class="nav-number">2.1.</span> <span class="nav-text">1. 任务调度： 核心类disruptor（singleton）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-网络请求"><span class="nav-number">2.2.</span> <span class="nav-text">2. 网络请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Interceptor-Chain-请求链路"><span class="nav-number">2.3.</span> <span class="nav-text">4. Interceptor.Chain  请求链路</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-chain的初始化"><span class="nav-number">2.3.1.</span> <span class="nav-text">4.1 chain的初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3"><span class="nav-number">2.3.2.</span> <span class="nav-text">4.3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-这里的每个intercepter-都需要new-一个RealInterceptorChain-可以参考-Fresco的方案改进"><span class="nav-number">2.3.3.</span> <span class="nav-text">4.2 这里的每个intercepter 都需要new 一个RealInterceptorChain 可以参考 Fresco的方案改进</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-cache管理"><span class="nav-number">2.4.</span> <span class="nav-text">3. cache管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#每个状态的详细说明如下："><span class="nav-number">2.5.</span> <span class="nav-text">每个状态的详细说明如下：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Last-Modified"><span class="nav-number">2.5.1.</span> <span class="nav-text">1. Last-Modified</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Etag工作原理"><span class="nav-number">2.5.2.</span> <span class="nav-text">2. Etag工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Expires"><span class="nav-number">2.5.3.</span> <span class="nav-text">3. Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Last-Modified和Expires"><span class="nav-number">2.5.4.</span> <span class="nav-text">4. Last-Modified和Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Etag和Expires"><span class="nav-number">2.5.5.</span> <span class="nav-text">5. Etag和Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-Last-Modified和Etag"><span class="nav-number">2.5.6.</span> <span class="nav-text">6. Last-Modified和Etag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-关于-Cache-Control-max-age-秒-和-Expires"><span class="nav-number">2.5.7.</span> <span class="nav-text">7.关于 Cache-Control: max-age=秒 和 Expires</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Interface：OkhttpClient（singleton）-Request-Response"><span class="nav-number">1.</span> <span class="nav-text">Interface：OkhttpClient（singleton）  Request  Response</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主要由以下三部分-组成"><span class="nav-number">2.</span> <span class="nav-text">主要由以下三部分 组成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-任务调度：-核心类disruptor（singleton）"><span class="nav-number">2.1.</span> <span class="nav-text">1. 任务调度： 核心类disruptor（singleton）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-网络请求"><span class="nav-number">2.2.</span> <span class="nav-text">2. 网络请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Interceptor-Chain-请求链路"><span class="nav-number">2.3.</span> <span class="nav-text">4. Interceptor.Chain  请求链路</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-chain的初始化"><span class="nav-number">2.3.1.</span> <span class="nav-text">4.1 chain的初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3"><span class="nav-number">2.3.2.</span> <span class="nav-text">4.3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-这里的每个intercepter-都需要new-一个RealInterceptorChain-可以参考-Fresco的方案改进"><span class="nav-number">2.3.3.</span> <span class="nav-text">4.2 这里的每个intercepter 都需要new 一个RealInterceptorChain 可以参考 Fresco的方案改进</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-日志"><span class="nav-number">2.3.4.</span> <span class="nav-text">4.3  日志</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-cache管理"><span class="nav-number">2.4.</span> <span class="nav-text">3. cache管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#每个状态的详细说明如下："><span class="nav-number">2.5.</span> <span class="nav-text">每个状态的详细说明如下：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Last-Modified"><span class="nav-number">2.5.1.</span> <span class="nav-text">1. Last-Modified</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Etag工作原理"><span class="nav-number">2.5.2.</span> <span class="nav-text">2. Etag工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Expires"><span class="nav-number">2.5.3.</span> <span class="nav-text">3. Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Last-Modified和Expires"><span class="nav-number">2.5.4.</span> <span class="nav-text">4. Last-Modified和Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Etag和Expires"><span class="nav-number">2.5.5.</span> <span class="nav-text">5. Etag和Expires</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-Last-Modified和Etag"><span class="nav-number">2.5.6.</span> <span class="nav-text">6. Last-Modified和Etag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-关于-Cache-Control-max-age-秒-和-Expires"><span class="nav-number">2.5.7.</span> <span class="nav-text">7.关于 Cache-Control: max-age=秒 和 Expires</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

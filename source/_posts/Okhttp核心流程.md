@@ -411,6 +411,57 @@ RetryAndFollowUpInterceptor（BridgeInterceptor（CacheInterceptor(ConnectInterc
 
 这样一层嵌套一层，就可以直接不借助RealInterceptorChain实现责任链
 
+#### 4.3  日志  
+* 请求结果日志  
+
+        compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'   
+
+      public class HttpLogger implements HttpLoggingInterceptor.Logger {
+        @Override
+        public void log(String message) {
+          Log.d("HttpLogInfo", message);
+        }
+      }  
+
+      HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor(new HttpLogger());
+      logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);   
+
+      OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                    .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+          .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+          .addNetworkInterceptor(logInterceptor)
+
+
+* 请求时长日志  
+
+
+        class LoggingInterceptor implements Interceptor {
+          @Override public Response intercept(Interceptor.Chain chain) throws IOException {
+            Request request = chain.request();
+            
+            //请求前--打印请求信息
+            long t1 = System.nanoTime();
+            logger.info(String.format("Sending request %s on %s%n%s",
+                request.url(), chain.connection(), request.headers()));
+
+            //网络请求
+            Response response = chain.proceed(request);
+
+            //网络响应后--打印响应信息
+            long t2 = System.nanoTime();
+            logger.info(String.format("Received response for %s in %.1fms%n%s",
+                response.request().url(), (t2 - t1) / 1e6d, response.headers()));
+
+            return response;
+          }
+        }
+
+* 日志打印框架  
+https://github.com/orhanobut/logger
+
+
+参考资料：https://www.jianshu.com/p/d04b463806c8    
 
 ### 3. cache管理
 

@@ -95,7 +95,7 @@
 <meta property="og:description" content="1. 又拍云的图片尺寸问题又拍云会对我们上传的图片进行处理。然后会生成多种尺寸：110,160,210,240,320,480,640,720,1200。每种尺寸对应于不同的url。eg：http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg">
 <meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD01.png?raw=true">
 <meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD02.png?raw=true">
-<meta property="og:updated_time" content="2018-03-19T10:20:41.000Z">
+<meta property="og:updated_time" content="2018-03-20T01:51:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="又拍云图片显示优化">
 <meta name="twitter:description" content="1. 又拍云的图片尺寸问题又拍云会对我们上传的图片进行处理。然后会生成多种尺寸：110,160,210,240,320,480,640,720,1200。每种尺寸对应于不同的url。eg：http://img2048.static.suishenyun.net/d62bb1e1bf1e2c6b8fb0dd004a952a01/4414fc28822e3643ff90a7e68305e12a.jpg">
@@ -364,7 +364,8 @@
 <h3 id="3-3-2G网络模式"><a href="#3-3-2G网络模式" class="headerlink" title="3.3 2G网络模式"></a>3.3 2G网络模式</h3><p>在低速网络情况下，对于disk cache，如果发现没有当前尺寸的图片的情况下，可以使用任意尺寸的缓存转化。</p>
 <h2 id="5-推荐一个图片压缩库"><a href="#5-推荐一个图片压缩库" class="headerlink" title="5. 推荐一个图片压缩库"></a>5. 推荐一个图片压缩库</h2><p>Luban：<a href="https://github.com/Curzibn/Luban" target="_blank" rel="external">https://github.com/Curzibn/Luban</a>      大小仅仅是15K</p>
 <p>根据我的测试一般可以在不明显影响图片展示效果的条件减少图片体积2/3。使用它后发图片备注速度飞快。（在wecal里面默认发送压缩后的图片，也提供发送原图的可选项）</p>
-<h2 id="相关推荐"><a href="#相关推荐" class="headerlink" title="相关推荐"></a>相关推荐</h2><p>Glide的ModuleLoader：<a href="https://github.com/bumptech/glide/wiki/Downloading-custom-sizes-with-Glide" target="_blank" rel="external">https://github.com/bumptech/glide/wiki/Downloading-custom-sizes-with-Glide</a><br>Android图片缓存之Glide进阶： <a href="http://www.cnblogs.com/whoislcj/p/5565012.html" target="_blank" rel="external">http://www.cnblogs.com/whoislcj/p/5565012.html</a>   </p>
+<h2 id="相关推荐"><a href="#相关推荐" class="headerlink" title="相关推荐"></a>相关推荐</h2><p>Glide的ModuleLoader：<a href="https://github.com/bumptech/glide/wiki/Downloading-custom-sizes-with-Glide" target="_blank" rel="external">https://github.com/bumptech/glide/wiki/Downloading-custom-sizes-with-Glide</a><br>Android图片缓存之Glide进阶： <a href="http://www.cnblogs.com/whoislcj/p/5565012.html" target="_blank" rel="external">http://www.cnblogs.com/whoislcj/p/5565012.html</a><br>ModelLoader: <a href="https://muyangmin.github.io/glide-docs-cn/tut/custom-modelloader.html#%E5%9C%A8-modelloader-%E4%B8%AD%E5%A4%84%E7%90%86%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B0%BA%E5%AF%B8" target="_blank" rel="external">https://muyangmin.github.io/glide-docs-cn/tut/custom-modelloader.html#%E5%9C%A8-modelloader-%E4%B8%AD%E5%A4%84%E7%90%86%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B0%BA%E5%AF%B8</a>   </p>
+<p><a href="https://github.com/bumptech/glide/blob/b4b45791cca6b72345a540dcaa71a358f5706276/samples/giphy/src/main/java/com/bumptech/glide/samples/giphy/GiphyModelLoader.java#L31" target="_blank" rel="external">https://github.com/bumptech/glide/blob/b4b45791cca6b72345a540dcaa71a358f5706276/samples/giphy/src/main/java/com/bumptech/glide/samples/giphy/GiphyModelLoader.java#L31</a></p>
 
       
     </div>
