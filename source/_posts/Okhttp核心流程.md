@@ -435,6 +435,7 @@ RetryAndFollowUpInterceptor（BridgeInterceptor（CacheInterceptor(ConnectInterc
 
 * 请求时长日志  
 
+在okhttp里面打印：
 
         class LoggingInterceptor implements Interceptor {
           @Override public Response intercept(Interceptor.Chain chain) throws IOException {
@@ -455,7 +456,17 @@ RetryAndFollowUpInterceptor（BridgeInterceptor（CacheInterceptor(ConnectInterc
 
             return response;
           }
-        }
+        }   
+
+在volley里面打印：  
+
+在GsonRequest里面 打印请求响应时间和请求日志  
+
+        protected Response<T> parseNetworkResponse(NetworkResponse response) 
+
+
+请求响应时长：可以在new GsonRequest时候记录开始时间，在parseNetworkResponse时候后打印最终响应时间    
+请求日志：直接打印response.data的结果就行了   
 
 * 日志打印框架  
 https://github.com/orhanobut/logger

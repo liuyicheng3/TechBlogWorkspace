@@ -2146,6 +2146,7 @@ OkHttpClient client = new OkHttpClient.Builder()
 <ul>
 <li>请求时长日志  </li>
 </ul>
+<p>在okhttp里面打印：</p>
 <pre><code>class LoggingInterceptor implements Interceptor {
   @Override public Response intercept(Interceptor.Chain chain) throws IOException {
     Request request = chain.request();
@@ -2165,8 +2166,12 @@ OkHttpClient client = new OkHttpClient.Builder()
 
     return response;
   }
-}
-</code></pre><ul>
+}   
+</code></pre><p>在volley里面打印：  </p>
+<p>在GsonRequest里面 打印请求响应时间和请求日志  </p>
+<pre><code>protected Response&lt;T&gt; parseNetworkResponse(NetworkResponse response) 
+</code></pre><p>请求响应时长：可以在new GsonRequest时候记录开始时间，在parseNetworkResponse时候后打印最终响应时间<br>请求日志：直接打印response.data的结果就行了   </p>
+<ul>
 <li>日志打印框架<br><a href="https://github.com/orhanobut/logger" target="_blank" rel="external">https://github.com/orhanobut/logger</a></li>
 </ul>
 <p>参考资料：<a href="https://www.jianshu.com/p/d04b463806c8" target="_blank" rel="external">https://www.jianshu.com/p/d04b463806c8</a>    </p>
