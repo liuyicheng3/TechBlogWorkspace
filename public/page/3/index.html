@@ -440,7 +440,7 @@ rootView.setClipToPadding(true);
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/动态往apk写入信息/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Gradle小结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -462,8 +462,8 @@ rootView.setClipToPadding(true);
             
               
                 
-                <a class="post-title-link" href="/2015/11/01/动态往apk写入信息/" itemprop="url">
-                  快速打包方案
+                <a class="post-title-link" href="/2015/11/01/Gradle小结/" itemprop="url">
+                  Gradle配置分析
                 </a>
               
             
@@ -502,8 +502,8 @@ rootView.setClipToPadding(true);
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android快速打包/" itemprop="url" rel="index">
-                    <span itemprop="name">Android快速打包</span>
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
                   </a>
                 </span>
 
@@ -539,115 +539,218 @@ rootView.setClipToPadding(true);
       
         
           
-            <h1 id="往apk文件里面动态添加信息的两种方法。"><a href="#往apk文件里面动态添加信息的两种方法。" class="headerlink" title="往apk文件里面动态添加信息的两种方法。"></a>往apk文件里面动态添加信息的两种方法。</h1><p>（都需要保留安装时候的apk文件）</p>
-<ol>
-<li>方案一：往meta_info里面添加文件,写入参数信息</li>
-<li>方案二：在apk这个文件的comment信息里面添加需要传入的信息  </li>
-</ol>
-<h2 id="方案一："><a href="#方案一：" class="headerlink" title="方案一："></a>方案一：</h2><p>参考：<a href="http://tech.meituan.com/mt-apk-packaging.html" target="_blank" rel="external">http://tech.meituan.com/mt-apk-packaging.html</a><br>主要代表：美团<br>原理：meta_info（里面存的就是签名信息）里面的文件不参与签名，修改后，apk不需要签名 </p>
-<h2 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h2><p>参考：<a href="http://blog.csdn.net/kongpinde/article/details/51518466" target="_blank" rel="external">http://blog.csdn.net/kongpinde/article/details/51518466</a><br>主要代表：天猫、豌豆荚<br>原理：apk就是一个zip压缩包。而zip包有个comment区域，可以往里面写入信息，而不对apk的安装产生影响<br>zip 文件的末尾有一个 Central Directory Record 区域，其末尾包含一个 File comment 区域，可以存放一些数据，所以 File comment 是 zip 文件一部分，如果可以正确的修改这个部分，就可以在不破坏压缩包、不用重新打包的的前提下快速的给 Apk 文件写入自己想要的数据。</p>
-<p>comment 是在 Central Directory Record 末尾储存的，可以将数据直接写在这里，下表是 header 末尾的结构。<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment.png" alt="image"><br>从表中可以看到定义 comment 长度的字段位于 comment 之前。</p>
-<p>这里我们需要自定义 comment，在自定义 comment 内容的后面添加一个区域储存 comment 的长度，结构如下图。<br><img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment_structure.png" alt="image"></p>
-<h3 id="Server动态生成apk"><a href="#Server动态生成apk" class="headerlink" title="Server动态生成apk"></a>Server动态生成apk</h3><p>这一部分可以在本地或服务端进行，需要定义一个长度为 2 的 byte[] 来储存 comment 的长度，直接使用 Java 的 api 就可以把 comment 和 comment 的长度写到 Apk 的末尾，代码如下：</p>
-<pre><code>public static void writeApk(File file, String comment) {
-    ZipFile zipFile = null;
-    ByteArrayOutputStream outputStream = null;
-    RandomAccessFile accessFile = null;
-    try {
-        zipFile = new ZipFile(file);
-        String zipComment = zipFile.getComment();
-        // 判断comment区域是否已经有数据了
-        if (zipComment != null)
-            return;
-        byte[] byteComment = comment.getBytes();
-        outputStream = new ByteArrayOutputStream();
-        // 将数据写入输出流
-        outputStream.write(byteComment);
-        // 紧接着写入数据大小
-        outputStream.write(short2Stream((short) byteComment.length));
-            byte[] data = outputStream.toByteArray();
-        accessFile = new RandomAccessFile(file, &quot;rw&quot;);
-        // 跳到comment区域
-        accessFile.seek(file.length() - 2);
-        // 先写入数据大小
-        accessFile.write(short2Stream((short) data.length));
-        // 写入数据
-        accessFile.write(data);
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        try {
-            if (zipFile != null)
-                zipFile.close();
-            if (outputStream != null)
-                outputStream.close();
-            if (accessFile != null)
-                accessFile.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            <p>TopicLevel的gradle    </p>
+<pre><code>buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath &apos;com.android.tools.build:gradle:2.2.2&apos;
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+</code></pre><p>Mudule level的build.gradle  </p>
+<pre><code>apply plugin: &apos;com.android.application&apos;
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion &quot;24.0.0&quot;
+
+
+    compileOptions{
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId &quot;com.lyc.study&quot;
+        minSdkVersion 15
+        targetSdkVersion 20
+        versionCode 1
+        versionName &quot;1.0&quot;
+        jackOptions{
+            enabled true
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;
         }
     }
 }
-private static byte[] short2Stream(short data) {
-    ByteBuffer buffer = ByteBuffer.allocate(2);
-    buffer.order(ByteOrder.LITTLE_ENDIAN);
-    buffer.putShort(data);
-    buffer.flip();
-    return buffer.array();
+
+dependencies {
+    compile fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)
+    compile &apos;com.android.support:support-v4:+&apos;
+    compile &apos;com.android.support:support-annotations:22.2.0&apos;
+    compile &apos;com.android.support:support-v13:20.1.1&apos;
 }
-</code></pre><h3 id="客户端解析apk数据："><a href="#客户端解析apk数据：" class="headerlink" title="客户端解析apk数据："></a>客户端解析apk数据：</h3><pre><code>private static String readApk(Context context) {
-    // 获取文件路径
-    File file = new File(context.getPackageCodePath());
-    byte[] bytes = null;
-    RandomAccessFile accessFile = null;
-    try {
-        accessFile = new RandomAccessFile(file, &quot;r&quot;);
-        long index = accessFile.length();
-        bytes = new byte[2];
-        // 获取comment文件的位置
-        index = index - bytes.length;
-        accessFile.seek(index);
-        // 获取comment中写入数据的大小byte类型
-        accessFile.readFully(bytes);
-        // 将byte转换成大小
-        int contentLength = stream2Short(bytes, 0);
-        // 创建byte[]数据大小来存储写入的数据
-        bytes = new byte[contentLength];
-        index = index - bytes.length;
-        accessFile.seek(index);
-        // 读取数据
-        accessFile.readFully(bytes);
-        return new String(bytes, &quot;utf-8&quot;);
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        if (accessFile != null) {
-            try {
-                accessFile.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+</code></pre><p>以上是标准的打包方式,下面是常用的我们自定义的内容   </p>
+<pre><code>dependencies {
+    compile fileTree(include: &apos;*.jar&apos;, dir: &apos;libs&apos;)
+    compile project(&apos;:google_services&apos;)
+
+    // compile &apos;com.android.support:multidex:1.0.1&apos;
+    compile &apos;top.zibin:Luban:1.0.9&apos;
+    debugCompile &apos;com.bugtags.library:bugtags-lib:latest.integration&apos;
+
+    testCompile &apos;junit:junit:4.12&apos;
+
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion &apos;23.0.2&apos;
+
+    sourceSets {
+        main {
+            manifest.srcFile &apos;AndroidManifest.xml&apos;
+            java.srcDirs = [&apos;src&apos;]
+            resources.srcDirs = [&apos;src&apos;]
+            aidl.srcDirs = [&apos;src&apos;]
+            renderscript.srcDirs = [&apos;src&apos;]
+            res.srcDirs = [&apos;res&apos;]
+            assets.srcDirs = [&apos;assets&apos;]
+            jniLibs.srcDirs = [&apos;libs&apos;]
+        }
+
+        test.setRoot(&apos;test&apos;)
+
+        debug.setRoot(&apos;build-types/debug&apos;)
+        release.setRoot(&apos;build-types/release&apos;)
+    }
+
+    signingConfigs {
+        debug {
+            // 请配置好pub.key及其密码，或者改为使用debug.keystore
+            storeFile file(&apos;pub.key&apos;) // storeFile file(&apos;debug.keystore&apos;)
+            storePassword STORE_PASSWORD
+            keyAlias KEY_ALIAS
+            keyPassword KEY_PASSWORD
+        }
+        release {
+            storeFile file(&apos;pub.key&apos;)
+            storePassword STORE_PASSWORD
+            keyAlias KEY_ALIAS
+            keyPassword KEY_PASSWORD
+        }
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
+            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
+            signingConfig signingConfigs.debug
+
+            ndk{
+                abiFilters &apos;armeabi&apos;, &apos;armeabi-v7a&apos;, &apos;x86&apos; //,&apos;arm64-v8a&apos;, &apos;x86_64&apos;, &apos;mips&apos;, &apos;mips64&apos;
+            }
+        }
+        release {
+            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;2017/1/1\&quot;&quot; //  发布时修改为当天日期
+            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;false&quot; // 关闭开发者模式
+            proguardFiles &apos;proguard.cfg&apos;
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
+            jniDebuggable false
+            signingConfig signingConfigs.release
+
+            applicationVariants.all { variant -&gt;
+                variant.outputs.each { output -&gt;
+                    def outputFile = output.outputFile
+                    if (outputFile != null &amp;&amp; outputFile.name.endsWith(&apos;.apk&apos;)) {
+                        // APK命名格式 Going-release.apk TODO 发布时使用
+                        def fileName = &quot;Going-v${defaultConfig.versionName}-${defaultConfig.versionCode}-release.apk&quot;
+//                         def fileName = &quot;Going.apk&quot;
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
             }
         }
     }
-    return null;
-}
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
+        versionCode 1000
+        versionName &quot;1.0.0&quot;
+        //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
+        multiDexEnabled false
+        multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
+        resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; //暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
+    }
+
+    productFlavors {
+          own {}
+          googleMarket {}
+
+          tencent {}
+          baidu {}
 
 
-private static short stream2Short(byte[] stream, int offset) {
-    ByteBuffer buffer = ByteBuffer.allocate(2);
-    buffer.order(ByteOrder.LITTLE_ENDIAN);
-    buffer.put(stream[offset]);
-    buffer.put(stream[offset + 1]);
-    return buffer.getShort(0);
+    }
+
+//    productFlavors.all { flavor -&gt;
+//        flavor.manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//    }
+
+    packagingOptions {
+        exclude &apos;META-INF/LICENSE.txt&apos;
+    }
+
+    // 可以适当的打开Lint，检查是否存在隐藏问题
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    android.dexOptions {
+        jumboMode = true
+        javaMaxHeapSize &quot;2g&quot;
+        maxProcessCount 8
+    }
+
 }
-</code></pre><h1 id="apk的安装过程"><a href="#apk的安装过程" class="headerlink" title="apk的安装过程"></a>apk的安装过程</h1><ol>
-<li>复制APK安装包到data/app目录下（所以安装完成后，即使把sd卡中的apk删除也没关系）;</li>
-<li>解压并扫描安装包，把dex文件(Dalvik字节码)保存到dalvik-cache目录;</li>
-<li>并data/data目录下创建对应的应用数据目录。</li>
-</ol>
-<h2 id="应用安装涉及到如下几个目录："><a href="#应用安装涉及到如下几个目录：" class="headerlink" title="应用安装涉及到如下几个目录："></a>应用安装涉及到如下几个目录：</h2><p>system/app —————系统自带的应用程序，获得adb root权限才能删除</p>
-<p>data/app  —————用户程序安装的目录。安装时把                                                                                                      apk文件复制到此目录<br>data/data —————存放应用程序的数据<br>data/dalvik-cache——–将apk中的dex文件安装到dalvik-cache目录下(dex文件是dalvik虚拟机的可执行文件,其大小约为原始apk文件大小的四分之一)</p>
-<h2 id="app卸载"><a href="#app卸载" class="headerlink" title="app卸载"></a>app卸载</h2><p>删除安装过程中在上述三个目录下创建的文件及目录。</p>
+
+// 替换编码方式，否则编译可能有中文乱码
+tasks.withType(org.gradle.api.tasks.compile.JavaCompile) {
+    options.encoding = &quot;UTF-8&quot;
+}
+</code></pre><p>相对于标准的我们在 android Task中新增了sourceSets这个Task制定了一些文件夹的目录，如果工程目录是标注的就不需要设置了</p>
+<p>在build.gradle同级新建一个gradle.properties<br>里面可以用来存放build.gradle里面的一些参数<br>STORE_PASSWORD=nico<br>KEY_ALIAS=nick<br>KEY_PASSWORD=nico</p>
+<p>这个地方对应的脚本是signingConfigs》debug里面的参数 </p>
+<p> buildTypes 》debug 中的buildConfigField参数则会在编译时候  </p>
+<p> <img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/gradle%E5%88%86%E6%9E%9001.png?raw=true" alt="gradle01"></p>
+<pre><code>buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
+buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
+</code></pre><p>会在编译时候生成并存放在build/generated/source/buildConfig/…BuildConfig.java   </p>
+<pre><code>public final class BuildConfig {
+  public static final boolean DEBUG = Boolean.parseBoolean(&quot;true&quot;);
+  public static final String APPLICATION_ID = &quot;com.lyc.study&quot;;
+  public static final String BUILD_TYPE = &quot;debug&quot;;
+  public static final String FLAVOR = &quot;own&quot;;
+  public static final int VERSION_CODE = 100;
+  public static final String VERSION_NAME = &quot;1.0.0&quot;;
+  // Fields from build type: debug
+  public static final boolean DEVELOP_MODE = true;
+  public static final String RELEASE_TIME = &quot;Not yet&quot;;
+}
+</code></pre><p>可以参考友盟的多渠道打包（github）</p>
+<p>一个介绍gradle比较好的网站<br><a href="http://stormzhang.com/posts/" target="_blank" rel="external">http://stormzhang.com/posts/</a></p>
+<p><a href="https://segmentfault.com/a/1190000006915937" target="_blank" rel="external">https://segmentfault.com/a/1190000006915937</a></p>
+<p>这两个网站都是一系列的教程，建议一个一个的看</p>
 
           
         
@@ -1028,7 +1131,7 @@ private static void goWaitress(final Context ctx, String actionUrl) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/动态往apk写入信息/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -1050,8 +1153,8 @@ private static void goWaitress(final Context ctx, String actionUrl) {
             
               
                 
-                <a class="post-title-link" href="/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/" itemprop="url">
-                  AS和Xcode快捷键
+                <a class="post-title-link" href="/2015/11/01/动态往apk写入信息/" itemprop="url">
+                  快速打包方案
                 </a>
               
             
@@ -1090,8 +1193,8 @@ private static void goWaitress(final Context ctx, String actionUrl) {
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
+                  <a href="/categories/Android快速打包/" itemprop="url" rel="index">
+                    <span itemprop="name">Android快速打包</span>
                   </a>
                 </span>
 
@@ -1127,23 +1230,500 @@ private static void goWaitress(final Context ctx, String actionUrl) {
       
         
           
-            <h1 id="Xcode"><a href="#Xcode" class="headerlink" title="Xcode"></a>Xcode</h1><p>XCode   不能直接修改文件名，需要找到本文件对应的申明或者实现的名称，右键refactor&gt;rename  修改<br>（记得勾选 Rename related files）</p>
-<p>在 Xcode里面所有的窗口控制显示与否都可以通过右上角的来控制  </p>
-<p>定位类的位置  shift  commoand  j</p>
-<p>commond  6 </p>
-<p>option 然后点击方法位置</p>
-<p>commond   T</p>
-<p>shift  commoand  O</p>
-<p>shift  commoand  F</p>
-<p> commoand  F</p>
-<p>esc  查看方法参数   </p>
-<p>快捷键位置方法   XCode&gt;preferences&gt;Key Bindings</p>
-<p>显示主题颜色设置   XCode&gt;preferences&gt;Font &amp; Colors   从Default  改成   Dusk<br>窗口显示和隐藏的button（其中代码下面的debug和log窗口在他们的右下角又有单独的控制显示和隐藏的button）  </p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E8%AE%BE%E7%BD%AE.png?raw=true" alt="image"></p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E5%BF%AB%E6%8D%B7%E9%94%AE.jpg?raw=true" alt="image">  </p>
-<p>参考资料：<a href="http://www.cocoachina.com/ios/20141224/10752.html" target="_blank" rel="external">http://www.cocoachina.com/ios/20141224/10752.html</a></p>
-<h1 id="AndroidStudio"><a href="#AndroidStudio" class="headerlink" title="AndroidStudio"></a>AndroidStudio</h1><p>快捷键位置方法   AndroidStudio&gt;preferences&gt;Keymap  （把Mac  OS X 复制一份，然后修改）</p>
-<p>显示主题颜色设置   AndroidStudio&gt;preferences&gt;Editor&gt;Colors &amp; Font   从Default  改成   Darcula  (然后点击 save as  ，再把字体调大一点，不能直接修改) </p>
+            <h1 id="往apk文件里面动态添加信息的两种方法。"><a href="#往apk文件里面动态添加信息的两种方法。" class="headerlink" title="往apk文件里面动态添加信息的两种方法。"></a>往apk文件里面动态添加信息的两种方法。</h1><p>（都需要保留安装时候的apk文件）</p>
+<ol>
+<li>方案一：往meta_info里面添加文件,写入参数信息</li>
+<li>方案二：在apk这个文件的comment信息里面添加需要传入的信息  </li>
+</ol>
+<h2 id="方案一："><a href="#方案一：" class="headerlink" title="方案一："></a>方案一：</h2><p>参考：<a href="http://tech.meituan.com/mt-apk-packaging.html" target="_blank" rel="external">http://tech.meituan.com/mt-apk-packaging.html</a><br>主要代表：美团<br>原理：meta_info（里面存的就是签名信息）里面的文件不参与签名，修改后，apk不需要签名 </p>
+<h2 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h2><p>参考：<a href="http://blog.csdn.net/kongpinde/article/details/51518466" target="_blank" rel="external">http://blog.csdn.net/kongpinde/article/details/51518466</a><br>主要代表：天猫、豌豆荚<br>原理：apk就是一个zip压缩包。而zip包有个comment区域，可以往里面写入信息，而不对apk的安装产生影响<br>zip 文件的末尾有一个 Central Directory Record 区域，其末尾包含一个 File comment 区域，可以存放一些数据，所以 File comment 是 zip 文件一部分，如果可以正确的修改这个部分，就可以在不破坏压缩包、不用重新打包的的前提下快速的给 Apk 文件写入自己想要的数据。</p>
+<p>comment 是在 Central Directory Record 末尾储存的，可以将数据直接写在这里，下表是 header 末尾的结构。<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment.png" alt="image"><br>从表中可以看到定义 comment 长度的字段位于 comment 之前。</p>
+<p>这里我们需要自定义 comment，在自定义 comment 内容的后面添加一个区域储存 comment 的长度，结构如下图。<br><img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment_structure.png" alt="image"></p>
+<h3 id="Server动态生成apk"><a href="#Server动态生成apk" class="headerlink" title="Server动态生成apk"></a>Server动态生成apk</h3><p>这一部分可以在本地或服务端进行，需要定义一个长度为 2 的 byte[] 来储存 comment 的长度，直接使用 Java 的 api 就可以把 comment 和 comment 的长度写到 Apk 的末尾，代码如下：</p>
+<pre><code>public static void writeApk(File file, String comment) {
+    ZipFile zipFile = null;
+    ByteArrayOutputStream outputStream = null;
+    RandomAccessFile accessFile = null;
+    try {
+        zipFile = new ZipFile(file);
+        String zipComment = zipFile.getComment();
+        // 判断comment区域是否已经有数据了
+        if (zipComment != null)
+            return;
+        byte[] byteComment = comment.getBytes();
+        outputStream = new ByteArrayOutputStream();
+        // 将数据写入输出流
+        outputStream.write(byteComment);
+        // 紧接着写入数据大小
+        outputStream.write(short2Stream((short) byteComment.length));
+            byte[] data = outputStream.toByteArray();
+        accessFile = new RandomAccessFile(file, &quot;rw&quot;);
+        // 跳到comment区域
+        accessFile.seek(file.length() - 2);
+        // 先写入数据大小
+        accessFile.write(short2Stream((short) data.length));
+        // 写入数据
+        accessFile.write(data);
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (zipFile != null)
+                zipFile.close();
+            if (outputStream != null)
+                outputStream.close();
+            if (accessFile != null)
+                accessFile.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+private static byte[] short2Stream(short data) {
+    ByteBuffer buffer = ByteBuffer.allocate(2);
+    buffer.order(ByteOrder.LITTLE_ENDIAN);
+    buffer.putShort(data);
+    buffer.flip();
+    return buffer.array();
+}
+</code></pre><h3 id="客户端解析apk数据："><a href="#客户端解析apk数据：" class="headerlink" title="客户端解析apk数据："></a>客户端解析apk数据：</h3><pre><code>private static String readApk(Context context) {
+    // 获取文件路径
+    File file = new File(context.getPackageCodePath());
+    byte[] bytes = null;
+    RandomAccessFile accessFile = null;
+    try {
+        accessFile = new RandomAccessFile(file, &quot;r&quot;);
+        long index = accessFile.length();
+        bytes = new byte[2];
+        // 获取comment文件的位置
+        index = index - bytes.length;
+        accessFile.seek(index);
+        // 获取comment中写入数据的大小byte类型
+        accessFile.readFully(bytes);
+        // 将byte转换成大小
+        int contentLength = stream2Short(bytes, 0);
+        // 创建byte[]数据大小来存储写入的数据
+        bytes = new byte[contentLength];
+        index = index - bytes.length;
+        accessFile.seek(index);
+        // 读取数据
+        accessFile.readFully(bytes);
+        return new String(bytes, &quot;utf-8&quot;);
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (accessFile != null) {
+            try {
+                accessFile.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    return null;
+}
+
+
+private static short stream2Short(byte[] stream, int offset) {
+    ByteBuffer buffer = ByteBuffer.allocate(2);
+    buffer.order(ByteOrder.LITTLE_ENDIAN);
+    buffer.put(stream[offset]);
+    buffer.put(stream[offset + 1]);
+    return buffer.getShort(0);
+}
+</code></pre><h1 id="apk的安装过程"><a href="#apk的安装过程" class="headerlink" title="apk的安装过程"></a>apk的安装过程</h1><ol>
+<li>复制APK安装包到data/app目录下（所以安装完成后，即使把sd卡中的apk删除也没关系）;</li>
+<li>解压并扫描安装包，把dex文件(Dalvik字节码)保存到dalvik-cache目录;</li>
+<li>并data/data目录下创建对应的应用数据目录。</li>
+</ol>
+<h2 id="应用安装涉及到如下几个目录："><a href="#应用安装涉及到如下几个目录：" class="headerlink" title="应用安装涉及到如下几个目录："></a>应用安装涉及到如下几个目录：</h2><p>system/app —————系统自带的应用程序，获得adb root权限才能删除</p>
+<p>data/app  —————用户程序安装的目录。安装时把                                                                                                      apk文件复制到此目录<br>data/data —————存放应用程序的数据<br>data/dalvik-cache——–将apk中的dex文件安装到dalvik-cache目录下(dex文件是dalvik虚拟机的可执行文件,其大小约为原始apk文件大小的四分之一)</p>
+<h2 id="app卸载"><a href="#app卸载" class="headerlink" title="app卸载"></a>app卸载</h2><p>删除安装过程中在上述三个目录下创建的文件及目录。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/ios学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/ios学习笔记/" itemprop="url">
+                  iOS入门
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="第一课：熟悉OC语法"><a href="#第一课：熟悉OC语法" class="headerlink" title="第一课：熟悉OC语法"></a>第一课：熟悉OC语法</h1><h1 id="第二课：storyboard和-手写View"><a href="#第二课：storyboard和-手写View" class="headerlink" title="第二课：storyboard和 手写View"></a>第二课：storyboard和 手写View</h1><p>storyboard;</p>
+<p>直接往上面拖放控件，然后按住ctr  把控件拖动到   @implementation，就相当于自动findview了，可以直接使用是这个控件了  </p>
+<p>   @property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;</p>
+<p>还有一种就是直接关联上点击事件<br>把控件直接拖动到这个申明方法上就可以了</p>
+<pre><code>- (IBAction)showAlert:(id)sender;
+</code></pre><p>这个的原理可以看看storyboard的文件内容就可以明白了，大致和android的类似</p>
+<p>图片资源文件两种放法</p>
+<ol>
+<li><p>在Supporting  Files 同级添加一个Resources的包，里面直接放图片进去（可以只放三倍图）   </p>
+<pre><code>UIImageView *imageView = [[UIImageView alloc] init];
+   imageView.image = [UIImage imageNamed:@&quot;home_banner.png&quot;];    // 正常显示的图片
+</code></pre></li>
+<li><p>在Assets.xcaseset里面右键新建New image set，然后手动把图片拖动到右边的一倍两倍三倍的框框中去 </p>
+</li>
+</ol>
+<p>storyboard  改成手写UI类型  </p>
+<ol>
+<li>第一步： </li>
+</ol>
+<ul>
+<li>删除storyboard文件  </li>
+<li>编辑Supporting Files目录下的 .plist文件,<br>删除Main storyboard  file name这一项</li>
+</ul>
+<ol>
+<li>第二步：<br> 编辑AppDelegate</li>
+</ol>
+<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window makeKeyAndVisible];
+
+    ViewController *__rootController = [[ViewController alloc] init];
+    UINavigationController *__navCtrler = [[UINavigationController alloc] initWithRootViewController:__rootController];
+    __navCtrler.navigationBarHidden = YES;
+    self.window.rootViewController = __navCtrler;
+  // Override point for customization after application launch.
+    return YES;
+}
+</code></pre><p>这个相当于Application的oncreate,在这里加载Entry activity</p>
+<p>在ViewController里面手动往根View里面添加控件</p>
+<pre><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    UILabel *firstLable=[[UILabel alloc]init];
+    firstLable.frame=CGRectMake(0, 0, 100, 100);
+    firstLable.backgroundColor = [UIColor whiteColor]; //设置lable背景颜色为黑色
+
+    firstLable.text=@&quot;第一级&quot;;
+    firstLable.userInteractionEnabled = YES;
+
+    [firstLable setTextColor:[UIColor greenColor]]; //设置文本字体颜色为白色
+
+    [self.view addSubview:firstLable];
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapLable:)];
+    [firstLable addGestureRecognizer:singleTap];
+
+    // Do any additional setup after loading the view, typically from a nib.
+}
+</code></pre><p>viewDidLoad 相当于Activity的oncreate，这里我们就是手写View，然后加到根View里面去 self.view<br>    [self.view addSubview:firstLable];</p>
+<h1 id="第三课：Viewcontroller-之间的跳转"><a href="#第三课：Viewcontroller-之间的跳转" class="headerlink" title="第三课：Viewcontroller  之间的跳转"></a>第三课：Viewcontroller  之间的跳转</h1><p>在ViewController从一个Viewcontroller跳到另外一个SecondViewController</p>
+<pre><code>-(void) tapLable:(UILabel *)sender{
+    NSLog(@&quot;进入第二级Controller&quot;);
+
+    SecondViewController *controller = [[SecondViewController alloc] init];
+    [self.navigationController pushViewController:controller animated:YES];
+}
+</code></pre><p>在SecondViewController也是一样的写法</p>
+<p> 返回第一个VIewCOntroller的方法</p>
+<pre><code>[self.navigationController popViewControllerAnimated:YES];
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/混淆写法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/混淆写法/" itemprop="url">
+                  混淆写法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/打包/" itemprop="url" rel="index">
+                    <span itemprop="name">打包</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>-keepclassmembers class <strong> {<br>    public void onEvent*(</strong>);<br>}</p>
+<p>只保护 public void onEvent<em>(*</em>)的方法不被重命名</p>
+<p>-keepattributes Signature</p>
+<p>-keep class okio.<em>* {</em>;}</p>
+<p>-keep class android.support.v4.app.NotificationCompat<em>*{<br>    public </em>;<br>}</p>
+<p>-keep class com.veda.lyc.Utils{ static *;}<br>保持里面的静态方法不被混淆</p>
+<p>keep的几个选项</p>
+<table>
+<thead>
+<tr>
+<th>Keep</th>
+<th style="text-align:right">From being removed or renamed</th>
+<th style="text-align:center">From being renamed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Classes and class members</td>
+<td style="text-align:right">-keep</td>
+<td style="text-align:center">-keepnames</td>
+</tr>
+<tr>
+<td>Class members only</td>
+<td style="text-align:right">-keepclassmembers</td>
+<td style="text-align:center">-keepclassmembernames</td>
+</tr>
+<tr>
+<td>-keepclassmembers    -keepclassmembernames</td>
+</tr>
+</tbody>
+</table>
+<p>Classes and class members, if class members present       |    -keepclasseswithmembers    |  -keepclasseswithmembernames  |</p>
+<p>参考资料<br><a href="http://blog.csdn.net/sudic_niu/article/details/7921548" target="_blank" rel="external">http://blog.csdn.net/sudic_niu/article/details/7921548</a></p>
 
           
         
@@ -1392,7 +1972,7 @@ git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/gradle坑/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -1414,8 +1994,8 @@ git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
             
               
                 
-                <a class="post-title-link" href="/2015/11/01/gradle坑/" itemprop="url">
-                  AS 踩坑日记
+                <a class="post-title-link" href="/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/" itemprop="url">
+                  AS和Xcode快捷键
                 </a>
               
             
@@ -1491,714 +2071,23 @@ git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
       
         
           
-            <p>升级instant run时候的报错<br>Error:Access to the dex task is now impossible, starting with 1.4.0<br>1.4.0 introduces a new Transform API allowing manipulation of the .class files.<br>See more information: <a href="http://tools.android.com/tech-docs/new-build-system/transform-api" target="_blank" rel="external">http://tools.android.com/tech-docs/new-build-system/transform-api</a></p>
-<p>解决方案：</p>
-<p>buildscript {<br>    repositories {<br>        jcenter()<br>    }<br>    dependencies {<br>        classpath ‘com.android.tools.build:gradle:2.0.0’</p>
-<pre><code>}
-</code></pre><p>}</p>
-<p>改成1.3.0</p>
-<p>项目根目录的gradle的<br>grade.property</p>
-<p>distributionUrl=https\://services.gradle.org/distributions/gradle-2.2-all.zip</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/混淆写法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/混淆写法/" itemprop="url">
-                  混淆写法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/打包/" itemprop="url" rel="index">
-                    <span itemprop="name">打包</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>-keepclassmembers class <strong> {<br>    public void onEvent*(</strong>);<br>}</p>
-<p>只保护 public void onEvent<em>(*</em>)的方法不被重命名</p>
-<p>-keepattributes Signature</p>
-<p>-keep class okio.<em>* {</em>;}</p>
-<p>-keep class android.support.v4.app.NotificationCompat<em>*{<br>    public </em>;<br>}</p>
-<p>-keep class com.veda.lyc.Utils{ static *;}<br>保持里面的静态方法不被混淆</p>
-<p>keep的几个选项</p>
-<table>
-<thead>
-<tr>
-<th>Keep</th>
-<th style="text-align:right">From being removed or renamed</th>
-<th style="text-align:center">From being renamed</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Classes and class members</td>
-<td style="text-align:right">-keep</td>
-<td style="text-align:center">-keepnames</td>
-</tr>
-<tr>
-<td>Class members only</td>
-<td style="text-align:right">-keepclassmembers</td>
-<td style="text-align:center">-keepclassmembernames</td>
-</tr>
-<tr>
-<td>-keepclassmembers    -keepclassmembernames</td>
-</tr>
-</tbody>
-</table>
-<p>Classes and class members, if class members present       |    -keepclasseswithmembers    |  -keepclasseswithmembernames  |</p>
-<p>参考资料<br><a href="http://blog.csdn.net/sudic_niu/article/details/7921548" target="_blank" rel="external">http://blog.csdn.net/sudic_niu/article/details/7921548</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/AS导入工程配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/AS导入工程配置/" itemprop="url">
-                  AS工程导入
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="1-工程导入"><a href="#1-工程导入" class="headerlink" title="1.工程导入"></a>1.工程导入</h1><h2 id="1-1-普通eclipse-工程导入"><a href="#1-1-普通eclipse-工程导入" class="headerlink" title="1.1 普通eclipse  工程导入"></a>1.1 普通eclipse  工程导入</h2><p>直接import，AS会提示转成eclipse工程</p>
-<h2 id="1-2-github上的工程导入"><a href="#1-2-github上的工程导入" class="headerlink" title="1.2 github上的工程导入"></a>1.2 github上的工程导入</h2><p>用AS打开top level的settings.gradle选择进行配置导入<br>ps：如果这一步直接导入的话就会报   Could not find method android() for arguments   </p>
-<p>可能遇到的问题：  </p>
-<ol>
-<li><p>配置sdk位置（顶层build.gradle同级）<br>local.properties（建议从已有工程拷贝一个）<br>sdk.dir=/Users/lyc/codeTools/android-sdk  </p>
-</li>
-<li><p>配置模块的build.gradle的gradletoolVersion版本<br>buildToolsVersion ‘23.0.2’</p>
-</li>
-</ol>
-<p>建议从已有工程的里面找一个可用的版本填上去</p>
-<p>查看自己已经有哪些版本的buildTools的方法，</p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B01.png?raw=true" alt="see">  </p>
-<ol>
-<li>modle配置模块的工程compileSdkVersionversion<br>为一个已有版本的</li>
-</ol>
-<ol>
-<li>配置<br>dependencies中的com.android.support的版本，要求是于compileSdkVersionversion的版本一直<br>，但是这个不好处理</li>
-</ol>
-<p>compile ‘com.android.support:design:25.1.1’<br>compile ‘com.android.support:appcompat-v7:25.1.1’<br>compile ‘com.android.support:cardview-v7:25.1.1’</p>
-<p>英文有子序列号<br>建议按照以下方法写<br>compile ‘com.android.support:cardview-v7:25.+’<br>这样就会取本版本号下面最大的一个</p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B02.png?raw=true" alt="see">   </p>
-<p>5.配置本地Gradel版本<br>这个常见于直接从别人那里拷贝的工程（也就是带有gradle/wrapper/**）的工程</p>
-<pre><code>distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip 
-</code></pre><p>gradle会去找这个版本的gradle，如果找不到就会重新下载<br>gradle的默认下载目录在用户目录的.gradle/wrapper/dists文件夹中（隐藏的）  里面会有所有已经下载的gradle 版本，可以把它改成一个已经有的版本就行</p>
-<h2 id="1-3-本地工程导入"><a href="#1-3-本地工程导入" class="headerlink" title="1.3 本地工程导入"></a>1.3 本地工程导入</h2><p>直接import</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Gradle小结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/Gradle小结/" itemprop="url">
-                  Gradle配置分析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>TopicLevel的gradle    </p>
-<pre><code>buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath &apos;com.android.tools.build:gradle:2.2.2&apos;
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-</code></pre><p>Mudule level的build.gradle  </p>
-<pre><code>apply plugin: &apos;com.android.application&apos;
-
-android {
-    compileSdkVersion 20
-    buildToolsVersion &quot;24.0.0&quot;
-
-
-    compileOptions{
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    defaultConfig {
-        applicationId &quot;com.lyc.study&quot;
-        minSdkVersion 15
-        targetSdkVersion 20
-        versionCode 1
-        versionName &quot;1.0&quot;
-        jackOptions{
-            enabled true
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;
-        }
-    }
-}
-
-dependencies {
-    compile fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)
-    compile &apos;com.android.support:support-v4:+&apos;
-    compile &apos;com.android.support:support-annotations:22.2.0&apos;
-    compile &apos;com.android.support:support-v13:20.1.1&apos;
-}
-</code></pre><p>以上是标准的打包方式,下面是常用的我们自定义的内容   </p>
-<pre><code>dependencies {
-    compile fileTree(include: &apos;*.jar&apos;, dir: &apos;libs&apos;)
-    compile project(&apos;:google_services&apos;)
-
-    // compile &apos;com.android.support:multidex:1.0.1&apos;
-    compile &apos;top.zibin:Luban:1.0.9&apos;
-    debugCompile &apos;com.bugtags.library:bugtags-lib:latest.integration&apos;
-
-    testCompile &apos;junit:junit:4.12&apos;
-
-}
-
-android {
-    compileSdkVersion 21
-    buildToolsVersion &apos;23.0.2&apos;
-
-    sourceSets {
-        main {
-            manifest.srcFile &apos;AndroidManifest.xml&apos;
-            java.srcDirs = [&apos;src&apos;]
-            resources.srcDirs = [&apos;src&apos;]
-            aidl.srcDirs = [&apos;src&apos;]
-            renderscript.srcDirs = [&apos;src&apos;]
-            res.srcDirs = [&apos;res&apos;]
-            assets.srcDirs = [&apos;assets&apos;]
-            jniLibs.srcDirs = [&apos;libs&apos;]
-        }
-
-        test.setRoot(&apos;test&apos;)
-
-        debug.setRoot(&apos;build-types/debug&apos;)
-        release.setRoot(&apos;build-types/release&apos;)
-    }
-
-    signingConfigs {
-        debug {
-            // 请配置好pub.key及其密码，或者改为使用debug.keystore
-            storeFile file(&apos;pub.key&apos;) // storeFile file(&apos;debug.keystore&apos;)
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
-        release {
-            storeFile file(&apos;pub.key&apos;)
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
-    }
-
-    buildTypes {
-        debug {
-            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
-            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
-            signingConfig signingConfigs.debug
-
-            ndk{
-                abiFilters &apos;armeabi&apos;, &apos;armeabi-v7a&apos;, &apos;x86&apos; //,&apos;arm64-v8a&apos;, &apos;x86_64&apos;, &apos;mips&apos;, &apos;mips64&apos;
-            }
-        }
-        release {
-            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;2017/1/1\&quot;&quot; //  发布时修改为当天日期
-            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;false&quot; // 关闭开发者模式
-            proguardFiles &apos;proguard.cfg&apos;
-            minifyEnabled true
-            shrinkResources true
-            debuggable false
-            jniDebuggable false
-            signingConfig signingConfigs.release
-
-            applicationVariants.all { variant -&gt;
-                variant.outputs.each { output -&gt;
-                    def outputFile = output.outputFile
-                    if (outputFile != null &amp;&amp; outputFile.name.endsWith(&apos;.apk&apos;)) {
-                        // APK命名格式 Going-release.apk TODO 发布时使用
-                        def fileName = &quot;Going-v${defaultConfig.versionName}-${defaultConfig.versionCode}-release.apk&quot;
-//                         def fileName = &quot;Going.apk&quot;
-                        output.outputFile = new File(outputFile.parent, fileName)
-                    }
-                }
-            }
-        }
-    }
-
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
-        versionCode 1000
-        versionName &quot;1.0.0&quot;
-        //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
-        multiDexEnabled false
-        multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
-        resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; //暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
-    }
-
-    productFlavors {
-          own {}
-          googleMarket {}
-
-          tencent {}
-          baidu {}
-
-
-    }
-
-//    productFlavors.all { flavor -&gt;
-//        flavor.manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
-//    }
-
-    packagingOptions {
-        exclude &apos;META-INF/LICENSE.txt&apos;
-    }
-
-    // 可以适当的打开Lint，检查是否存在隐藏问题
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-
-    android.dexOptions {
-        jumboMode = true
-        javaMaxHeapSize &quot;2g&quot;
-        maxProcessCount 8
-    }
-
-}
-
-// 替换编码方式，否则编译可能有中文乱码
-tasks.withType(org.gradle.api.tasks.compile.JavaCompile) {
-    options.encoding = &quot;UTF-8&quot;
-}
-</code></pre><p>相对于标准的我们在 android Task中新增了sourceSets这个Task制定了一些文件夹的目录，如果工程目录是标注的就不需要设置了</p>
-<p>在build.gradle同级新建一个gradle.properties<br>里面可以用来存放build.gradle里面的一些参数<br>STORE_PASSWORD=nico<br>KEY_ALIAS=nick<br>KEY_PASSWORD=nico</p>
-<p>这个地方对应的脚本是signingConfigs》debug里面的参数 </p>
-<p> buildTypes 》debug 中的buildConfigField参数则会在编译时候  </p>
-<p> <img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/gradle%E5%88%86%E6%9E%9001.png?raw=true" alt="gradle01"></p>
-<pre><code>buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
-buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
-</code></pre><p>会在编译时候生成并存放在build/generated/source/buildConfig/…BuildConfig.java   </p>
-<pre><code>public final class BuildConfig {
-  public static final boolean DEBUG = Boolean.parseBoolean(&quot;true&quot;);
-  public static final String APPLICATION_ID = &quot;com.lyc.study&quot;;
-  public static final String BUILD_TYPE = &quot;debug&quot;;
-  public static final String FLAVOR = &quot;own&quot;;
-  public static final int VERSION_CODE = 100;
-  public static final String VERSION_NAME = &quot;1.0.0&quot;;
-  // Fields from build type: debug
-  public static final boolean DEVELOP_MODE = true;
-  public static final String RELEASE_TIME = &quot;Not yet&quot;;
-}
-</code></pre><p>可以参考友盟的多渠道打包（github）</p>
-<p>一个介绍gradle比较好的网站<br><a href="http://stormzhang.com/posts/" target="_blank" rel="external">http://stormzhang.com/posts/</a></p>
-<p><a href="https://segmentfault.com/a/1190000006915937" target="_blank" rel="external">https://segmentfault.com/a/1190000006915937</a></p>
-<p>这两个网站都是一系列的教程，建议一个一个的看</p>
+            <h1 id="Xcode"><a href="#Xcode" class="headerlink" title="Xcode"></a>Xcode</h1><p>XCode   不能直接修改文件名，需要找到本文件对应的申明或者实现的名称，右键refactor&gt;rename  修改<br>（记得勾选 Rename related files）</p>
+<p>在 Xcode里面所有的窗口控制显示与否都可以通过右上角的来控制  </p>
+<p>定位类的位置  shift  commoand  j</p>
+<p>commond  6 </p>
+<p>option 然后点击方法位置</p>
+<p>commond   T</p>
+<p>shift  commoand  O</p>
+<p>shift  commoand  F</p>
+<p> commoand  F</p>
+<p>esc  查看方法参数   </p>
+<p>快捷键位置方法   XCode&gt;preferences&gt;Key Bindings</p>
+<p>显示主题颜色设置   XCode&gt;preferences&gt;Font &amp; Colors   从Default  改成   Dusk<br>窗口显示和隐藏的button（其中代码下面的debug和log窗口在他们的右下角又有单独的控制显示和隐藏的button）  </p>
+<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E8%AE%BE%E7%BD%AE.png?raw=true" alt="image"></p>
+<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E5%BF%AB%E6%8D%B7%E9%94%AE.jpg?raw=true" alt="image">  </p>
+<p>参考资料：<a href="http://www.cocoachina.com/ios/20141224/10752.html" target="_blank" rel="external">http://www.cocoachina.com/ios/20141224/10752.html</a></p>
+<h1 id="AndroidStudio"><a href="#AndroidStudio" class="headerlink" title="AndroidStudio"></a>AndroidStudio</h1><p>快捷键位置方法   AndroidStudio&gt;preferences&gt;Keymap  （把Mac  OS X 复制一份，然后修改）</p>
+<p>显示主题颜色设置   AndroidStudio&gt;preferences&gt;Editor&gt;Colors &amp; Font   从Default  改成   Darcula  (然后点击 save as  ，再把字体调大一点，不能直接修改) </p>
 
           
         
@@ -2426,6 +2315,156 @@ compile project(&apos;:Module_common&apos;)
     android:name=&quot;com.amap.api.v2.apikey&quot;
     android:value=&quot;*******&quot; /&gt;
 </code></pre><p>App组件化与业务拆分: <a href="http://www.jianshu.com/p/60c1b9ddd8ab" target="_blank" rel="external">http://www.jianshu.com/p/60c1b9ddd8ab</a><br>安卓组件化相关开源方案最全总结：<br><a href="https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww" target="_blank" rel="external">https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww</a><br><a href="https://juejin.im/post/5a7ab8846fb9a0634514a2f5" target="_blank" rel="external">https://juejin.im/post/5a7ab8846fb9a0634514a2f5</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/gradle坑/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/gradle坑/" itemprop="url">
+                  AS 踩坑日记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>升级instant run时候的报错<br>Error:Access to the dex task is now impossible, starting with 1.4.0<br>1.4.0 introduces a new Transform API allowing manipulation of the .class files.<br>See more information: <a href="http://tools.android.com/tech-docs/new-build-system/transform-api" target="_blank" rel="external">http://tools.android.com/tech-docs/new-build-system/transform-api</a></p>
+<p>解决方案：</p>
+<p>buildscript {<br>    repositories {<br>        jcenter()<br>    }<br>    dependencies {<br>        classpath ‘com.android.tools.build:gradle:2.0.0’</p>
+<pre><code>}
+</code></pre><p>}</p>
+<p>改成1.3.0</p>
+<p>项目根目录的gradle的<br>grade.property</p>
+<p>distributionUrl=https\://services.gradle.org/distributions/gradle-2.2-all.zip</p>
 
           
         
