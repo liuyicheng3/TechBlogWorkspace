@@ -774,715 +774,6 @@ rootView.setClipToPadding(true);
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Gradle小结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/Gradle小结/" itemprop="url">
-                  Gradle配置分析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>TopicLevel的gradle    </p>
-<pre><code>buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath &apos;com.android.tools.build:gradle:2.2.2&apos;
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-</code></pre><p>Mudule level的build.gradle  </p>
-<pre><code>apply plugin: &apos;com.android.application&apos;
-
-android {
-    compileSdkVersion 20
-    buildToolsVersion &quot;24.0.0&quot;
-
-
-    compileOptions{
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    defaultConfig {
-        applicationId &quot;com.lyc.study&quot;
-        minSdkVersion 15
-        targetSdkVersion 20
-        versionCode 1
-        versionName &quot;1.0&quot;
-        jackOptions{
-            enabled true
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;
-        }
-    }
-}
-
-dependencies {
-    compile fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)
-    compile &apos;com.android.support:support-v4:+&apos;
-    compile &apos;com.android.support:support-annotations:22.2.0&apos;
-    compile &apos;com.android.support:support-v13:20.1.1&apos;
-}
-</code></pre><p>以上是标准的打包方式,下面是常用的我们自定义的内容   </p>
-<pre><code>dependencies {
-    compile fileTree(include: &apos;*.jar&apos;, dir: &apos;libs&apos;)
-    compile project(&apos;:google_services&apos;)
-
-    // compile &apos;com.android.support:multidex:1.0.1&apos;
-    compile &apos;top.zibin:Luban:1.0.9&apos;
-    debugCompile &apos;com.bugtags.library:bugtags-lib:latest.integration&apos;
-
-    testCompile &apos;junit:junit:4.12&apos;
-
-}
-
-android {
-    compileSdkVersion 21
-    buildToolsVersion &apos;23.0.2&apos;
-
-    sourceSets {
-        main {
-            manifest.srcFile &apos;AndroidManifest.xml&apos;
-            java.srcDirs = [&apos;src&apos;]
-            resources.srcDirs = [&apos;src&apos;]
-            aidl.srcDirs = [&apos;src&apos;]
-            renderscript.srcDirs = [&apos;src&apos;]
-            res.srcDirs = [&apos;res&apos;]
-            assets.srcDirs = [&apos;assets&apos;]
-            jniLibs.srcDirs = [&apos;libs&apos;]
-        }
-
-        test.setRoot(&apos;test&apos;)
-
-        debug.setRoot(&apos;build-types/debug&apos;)
-        release.setRoot(&apos;build-types/release&apos;)
-    }
-
-    signingConfigs {
-        debug {
-            // 请配置好pub.key及其密码，或者改为使用debug.keystore
-            storeFile file(&apos;pub.key&apos;) // storeFile file(&apos;debug.keystore&apos;)
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
-        release {
-            storeFile file(&apos;pub.key&apos;)
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
-    }
-
-    buildTypes {
-        debug {
-            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
-            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
-            signingConfig signingConfigs.debug
-
-            ndk{
-                abiFilters &apos;armeabi&apos;, &apos;armeabi-v7a&apos;, &apos;x86&apos; //,&apos;arm64-v8a&apos;, &apos;x86_64&apos;, &apos;mips&apos;, &apos;mips64&apos;
-            }
-        }
-        release {
-            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;2017/1/1\&quot;&quot; //  发布时修改为当天日期
-            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;false&quot; // 关闭开发者模式
-            proguardFiles &apos;proguard.cfg&apos;
-            minifyEnabled true
-            shrinkResources true
-            debuggable false
-            jniDebuggable false
-            signingConfig signingConfigs.release
-
-            applicationVariants.all { variant -&gt;
-                variant.outputs.each { output -&gt;
-                    def outputFile = output.outputFile
-                    if (outputFile != null &amp;&amp; outputFile.name.endsWith(&apos;.apk&apos;)) {
-                        // APK命名格式 Going-release.apk TODO 发布时使用
-                        def fileName = &quot;Going-v${defaultConfig.versionName}-${defaultConfig.versionCode}-release.apk&quot;
-//                         def fileName = &quot;Going.apk&quot;
-                        output.outputFile = new File(outputFile.parent, fileName)
-                    }
-                }
-            }
-        }
-    }
-
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
-        versionCode 1000
-        versionName &quot;1.0.0&quot;
-        //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
-        multiDexEnabled false
-        multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
-        resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; //暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
-    }
-
-    productFlavors {
-          own {}
-          googleMarket {}
-
-          tencent {}
-          baidu {}
-
-
-    }
-
-//    productFlavors.all { flavor -&gt;
-//        flavor.manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
-//    }
-
-    packagingOptions {
-        exclude &apos;META-INF/LICENSE.txt&apos;
-    }
-
-    // 可以适当的打开Lint，检查是否存在隐藏问题
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-
-    android.dexOptions {
-        jumboMode = true
-        javaMaxHeapSize &quot;2g&quot;
-        maxProcessCount 8
-    }
-
-}
-
-// 替换编码方式，否则编译可能有中文乱码
-tasks.withType(org.gradle.api.tasks.compile.JavaCompile) {
-    options.encoding = &quot;UTF-8&quot;
-}
-</code></pre><p>相对于标准的我们在 android Task中新增了sourceSets这个Task制定了一些文件夹的目录，如果工程目录是标注的就不需要设置了</p>
-<p>在build.gradle同级新建一个gradle.properties<br>里面可以用来存放build.gradle里面的一些参数<br>STORE_PASSWORD=nico<br>KEY_ALIAS=nick<br>KEY_PASSWORD=nico</p>
-<p>这个地方对应的脚本是signingConfigs》debug里面的参数 </p>
-<p> buildTypes 》debug 中的buildConfigField参数则会在编译时候  </p>
-<p> <img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/gradle%E5%88%86%E6%9E%9001.png?raw=true" alt="gradle01"></p>
-<pre><code>buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
-buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
-</code></pre><p>会在编译时候生成并存放在build/generated/source/buildConfig/…BuildConfig.java   </p>
-<pre><code>public final class BuildConfig {
-  public static final boolean DEBUG = Boolean.parseBoolean(&quot;true&quot;);
-  public static final String APPLICATION_ID = &quot;com.lyc.study&quot;;
-  public static final String BUILD_TYPE = &quot;debug&quot;;
-  public static final String FLAVOR = &quot;own&quot;;
-  public static final int VERSION_CODE = 100;
-  public static final String VERSION_NAME = &quot;1.0.0&quot;;
-  // Fields from build type: debug
-  public static final boolean DEVELOP_MODE = true;
-  public static final String RELEASE_TIME = &quot;Not yet&quot;;
-}
-</code></pre><p>可以参考友盟的多渠道打包（github）</p>
-<p>一个介绍gradle比较好的网站<br><a href="http://stormzhang.com/posts/" target="_blank" rel="external">http://stormzhang.com/posts/</a></p>
-<p><a href="https://segmentfault.com/a/1190000006915937" target="_blank" rel="external">https://segmentfault.com/a/1190000006915937</a></p>
-<p>这两个网站都是一系列的教程，建议一个一个的看</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/git教程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/git教程/" itemprop="url">
-                  Github 教程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="本地工程上传github"><a href="#本地工程上传github" class="headerlink" title="本地工程上传github"></a>本地工程上传github</h2><ol>
-<li>首先在github上创建一个resp</li>
-<li>在本地工程里面引入 .gitignore<ul>
-<li>在androidstudio 安装一个ignore 插件，可以生成部分ignore</li>
-<li>对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore</li>
-<li>.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）<a href="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore" target="_blank" rel="external">原文件</a> </li>
-</ul>
-</li>
-</ol>
-<pre><code>.gradle
-/local.properties
-/gradle.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-bin
-gen
-.settings
-.idea
-target
-*.iml
-*.key
-</code></pre><ol>
-<li><p>touch README.md  》》生成 reamdme文件</p>
-</li>
-<li><p>git init当前工程 》》生成 git信息</p>
-</li>
-<li><p>git add -A 》》把当前工程除了ingore的添加到git里面</p>
-</li>
-<li><p>git commit 》》生成第一次的commit信息</p>
-</li>
-<li><p>git remote add origin git@github.com:liuyicheng3/NewRepo.git   》》设置当前git工程的远程分支</p>
-</li>
-<li><p>git push -u origin master 》》push 到github上去</p>
-</li>
-<li><p>Attention:一般android studio的默认ssh是 androidstudio自己的，所以这时候用android studio会提交不上去<br>需要在settiings&gt;vertion control&gt; git里面吧 SSH excutable 由built-in 改成 native</p>
-</li>
-</ol>
-<p>##维护git文档方法</p>
-<ul>
-<li>可以网页里面直接弄，就不要通本地修改再提交，太麻烦。</li>
-<li>涉及到外部链接的图片文件，git库里面建对应的文件夹统一维护。</li>
-<li>对于图片贴的地址一定要是raw的，不要那个github上显示的地址<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="string">原文件</span>](<span class="link">https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore</span>)</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="一般的git工作流程"><a href="#一般的git工作流程" class="headerlink" title="一般的git工作流程"></a>一般的git工作流程</h2><h3 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h3><h3 id="按featrue-开发"><a href="#按featrue-开发" class="headerlink" title="按featrue 开发"></a>按featrue 开发</h3><h3 id="codereview及合并"><a href="#codereview及合并" class="headerlink" title="codereview及合并"></a>codereview及合并</h3><h2 id="Markdown-快捷键"><a href="#Markdown-快捷键" class="headerlink" title="Markdown 快捷键"></a>Markdown 快捷键</h2><ol>
-<li>空两行，让后代码区域两个TAB</li>
-<li>shift tab  收回一个tab</li>
-</ol>
-<h2 id="Git-常见场景"><a href="#Git-常见场景" class="headerlink" title="Git 常见场景"></a>Git 常见场景</h2><h3 id="1-不小心提交错了分支，把修改直接提交到master里面了"><a href="#1-不小心提交错了分支，把修改直接提交到master里面了" class="headerlink" title="1. 不小心提交错了分支，把修改直接提交到master里面了"></a>1. 不小心提交错了分支，把修改直接提交到master里面了</h3><p>  git log  查到提交前的versioncode<br>  git revert 123dadafa     revert到这个节点<br>    git push –force   强制用本地的版本覆盖git上的版本</p>
-<p>git  reset  和 git revert区别 <a href="http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html" target="_blank" rel="external">http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html</a></p>
-<h3 id="2-git-舍弃本地的修改"><a href="#2-git-舍弃本地的修改" class="headerlink" title="2. git 舍弃本地的修改"></a>2. git 舍弃本地的修改</h3><pre><code>git checkout . &amp;&amp; git clean -xdf
-</code></pre><h3 id="3-git-合并分支的冲突"><a href="#3-git-合并分支的冲突" class="headerlink" title="3. git 合并分支的冲突"></a>3. git 合并分支的冲突</h3><p>解决冲突后需要   </p>
-<pre><code>git rebase --continue   
-</code></pre><h3 id="4-git-生成patch"><a href="#4-git-生成patch" class="headerlink" title="4. git 生成patch"></a>4. git 生成patch</h3><p>当前还没提交，生成当前修改的patch </p>
-<pre><code>git diff  &gt; 1.patch    
-</code></pre><p>生成已经提交的几次记录的patch   </p>
-<pre><code>git log    //查看需要生成到那个提交日志的patch
-git format-patch -3     // 从master往前3个提交的内容，可修改为你想要的数值
-git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
-</code></pre><h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a href="http://blog.csdn.net/kevinx_xu/article/details/11660915" target="_blank" rel="external">http://blog.csdn.net/kevinx_xu/article/details/11660915</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/gradle坑/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/gradle坑/" itemprop="url">
-                  AS 踩坑日记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>升级instant run时候的报错<br>Error:Access to the dex task is now impossible, starting with 1.4.0<br>1.4.0 introduces a new Transform API allowing manipulation of the .class files.<br>See more information: <a href="http://tools.android.com/tech-docs/new-build-system/transform-api" target="_blank" rel="external">http://tools.android.com/tech-docs/new-build-system/transform-api</a></p>
-<p>解决方案：</p>
-<p>buildscript {<br>    repositories {<br>        jcenter()<br>    }<br>    dependencies {<br>        classpath ‘com.android.tools.build:gradle:2.0.0’</p>
-<pre><code>}
-</code></pre><p>}</p>
-<p>改成1.3.0</p>
-<p>项目根目录的gradle的<br>grade.property</p>
-<p>distributionUrl=https\://services.gradle.org/distributions/gradle-2.2-all.zip</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/deep_link设计方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1820,6 +1111,361 @@ private static void goWaitress(final Context ctx, String actionUrl) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/gradle坑/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/gradle坑/" itemprop="url">
+                  AS 踩坑日记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>升级instant run时候的报错<br>Error:Access to the dex task is now impossible, starting with 1.4.0<br>1.4.0 introduces a new Transform API allowing manipulation of the .class files.<br>See more information: <a href="http://tools.android.com/tech-docs/new-build-system/transform-api" target="_blank" rel="external">http://tools.android.com/tech-docs/new-build-system/transform-api</a></p>
+<p>解决方案：</p>
+<p>buildscript {<br>    repositories {<br>        jcenter()<br>    }<br>    dependencies {<br>        classpath ‘com.android.tools.build:gradle:2.0.0’</p>
+<pre><code>}
+</code></pre><p>}</p>
+<p>改成1.3.0</p>
+<p>项目根目录的gradle的<br>grade.property</p>
+<p>distributionUrl=https\://services.gradle.org/distributions/gradle-2.2-all.zip</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/git教程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/git教程/" itemprop="url">
+                  Github 教程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="本地工程上传github"><a href="#本地工程上传github" class="headerlink" title="本地工程上传github"></a>本地工程上传github</h2><ol>
+<li>首先在github上创建一个resp</li>
+<li>在本地工程里面引入 .gitignore<ul>
+<li>在androidstudio 安装一个ignore 插件，可以生成部分ignore</li>
+<li>对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore</li>
+<li>.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）<a href="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore" target="_blank" rel="external">原文件</a> </li>
+</ul>
+</li>
+</ol>
+<pre><code>.gradle
+/local.properties
+/gradle.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+bin
+gen
+.settings
+.idea
+target
+*.iml
+*.key
+</code></pre><ol>
+<li><p>touch README.md  》》生成 reamdme文件</p>
+</li>
+<li><p>git init当前工程 》》生成 git信息</p>
+</li>
+<li><p>git add -A 》》把当前工程除了ingore的添加到git里面</p>
+</li>
+<li><p>git commit 》》生成第一次的commit信息</p>
+</li>
+<li><p>git remote add origin git@github.com:liuyicheng3/NewRepo.git   》》设置当前git工程的远程分支</p>
+</li>
+<li><p>git push -u origin master 》》push 到github上去</p>
+</li>
+<li><p>Attention:一般android studio的默认ssh是 androidstudio自己的，所以这时候用android studio会提交不上去<br>需要在settiings&gt;vertion control&gt; git里面吧 SSH excutable 由built-in 改成 native</p>
+</li>
+</ol>
+<p>##维护git文档方法</p>
+<ul>
+<li>可以网页里面直接弄，就不要通本地修改再提交，太麻烦。</li>
+<li>涉及到外部链接的图片文件，git库里面建对应的文件夹统一维护。</li>
+<li>对于图片贴的地址一定要是raw的，不要那个github上显示的地址<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="string">原文件</span>](<span class="link">https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore</span>)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="一般的git工作流程"><a href="#一般的git工作流程" class="headerlink" title="一般的git工作流程"></a>一般的git工作流程</h2><h3 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h3><h3 id="按featrue-开发"><a href="#按featrue-开发" class="headerlink" title="按featrue 开发"></a>按featrue 开发</h3><h3 id="codereview及合并"><a href="#codereview及合并" class="headerlink" title="codereview及合并"></a>codereview及合并</h3><h2 id="Markdown-快捷键"><a href="#Markdown-快捷键" class="headerlink" title="Markdown 快捷键"></a>Markdown 快捷键</h2><ol>
+<li>空两行，让后代码区域两个TAB</li>
+<li>shift tab  收回一个tab</li>
+</ol>
+<h2 id="Git-常见场景"><a href="#Git-常见场景" class="headerlink" title="Git 常见场景"></a>Git 常见场景</h2><h3 id="1-不小心提交错了分支，把修改直接提交到master里面了"><a href="#1-不小心提交错了分支，把修改直接提交到master里面了" class="headerlink" title="1. 不小心提交错了分支，把修改直接提交到master里面了"></a>1. 不小心提交错了分支，把修改直接提交到master里面了</h3><p>  git log  查到提交前的versioncode<br>  git revert 123dadafa     revert到这个节点<br>    git push –force   强制用本地的版本覆盖git上的版本</p>
+<p>git  reset  和 git revert区别 <a href="http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html" target="_blank" rel="external">http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html</a></p>
+<h3 id="2-git-舍弃本地的修改"><a href="#2-git-舍弃本地的修改" class="headerlink" title="2. git 舍弃本地的修改"></a>2. git 舍弃本地的修改</h3><pre><code>git checkout . &amp;&amp; git clean -xdf
+</code></pre><h3 id="3-git-合并分支的冲突"><a href="#3-git-合并分支的冲突" class="headerlink" title="3. git 合并分支的冲突"></a>3. git 合并分支的冲突</h3><p>解决冲突后需要   </p>
+<pre><code>git rebase --continue   
+</code></pre><h3 id="4-git-生成patch"><a href="#4-git-生成patch" class="headerlink" title="4. git 生成patch"></a>4. git 生成patch</h3><p>当前还没提交，生成当前修改的patch </p>
+<pre><code>git diff  &gt; 1.patch    
+</code></pre><p>生成已经提交的几次记录的patch   </p>
+<pre><code>git log    //查看需要生成到那个提交日志的patch
+git format-patch -3     // 从master往前3个提交的内容，可修改为你想要的数值
+git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
+</code></pre><h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a href="http://blog.csdn.net/kevinx_xu/article/details/11660915" target="_blank" rel="external">http://blog.csdn.net/kevinx_xu/article/details/11660915</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/动态往apk写入信息/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2028,6 +1674,360 @@ private static short stream2Short(byte[] stream, int offset) {
 <h2 id="应用安装涉及到如下几个目录："><a href="#应用安装涉及到如下几个目录：" class="headerlink" title="应用安装涉及到如下几个目录："></a>应用安装涉及到如下几个目录：</h2><p>system/app —————系统自带的应用程序，获得adb root权限才能删除</p>
 <p>data/app  —————用户程序安装的目录。安装时把                                                                                                      apk文件复制到此目录<br>data/data —————存放应用程序的数据<br>data/dalvik-cache——–将apk中的dex文件安装到dalvik-cache目录下(dex文件是dalvik虚拟机的可执行文件,其大小约为原始apk文件大小的四分之一)</p>
 <h2 id="app卸载"><a href="#app卸载" class="headerlink" title="app卸载"></a>app卸载</h2><p>删除安装过程中在上述三个目录下创建的文件及目录。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Gradle小结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/Gradle小结/" itemprop="url">
+                  Gradle配置分析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>TopicLevel的gradle    </p>
+<pre><code>buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath &apos;com.android.tools.build:gradle:2.2.2&apos;
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+</code></pre><p>Mudule level的build.gradle  </p>
+<pre><code>apply plugin: &apos;com.android.application&apos;
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion &quot;24.0.0&quot;
+
+
+    compileOptions{
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId &quot;com.lyc.study&quot;
+        minSdkVersion 15
+        targetSdkVersion 20
+        versionCode 1
+        versionName &quot;1.0&quot;
+        jackOptions{
+            enabled true
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)
+    compile &apos;com.android.support:support-v4:+&apos;
+    compile &apos;com.android.support:support-annotations:22.2.0&apos;
+    compile &apos;com.android.support:support-v13:20.1.1&apos;
+}
+</code></pre><p>以上是标准的打包方式,下面是常用的我们自定义的内容   </p>
+<pre><code>dependencies {
+    compile fileTree(include: &apos;*.jar&apos;, dir: &apos;libs&apos;)
+    compile project(&apos;:google_services&apos;)
+
+    // compile &apos;com.android.support:multidex:1.0.1&apos;
+    compile &apos;top.zibin:Luban:1.0.9&apos;
+    debugCompile &apos;com.bugtags.library:bugtags-lib:latest.integration&apos;
+
+    testCompile &apos;junit:junit:4.12&apos;
+
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion &apos;23.0.2&apos;
+
+    sourceSets {
+        main {
+            manifest.srcFile &apos;AndroidManifest.xml&apos;
+            java.srcDirs = [&apos;src&apos;]
+            resources.srcDirs = [&apos;src&apos;]
+            aidl.srcDirs = [&apos;src&apos;]
+            renderscript.srcDirs = [&apos;src&apos;]
+            res.srcDirs = [&apos;res&apos;]
+            assets.srcDirs = [&apos;assets&apos;]
+            jniLibs.srcDirs = [&apos;libs&apos;]
+        }
+
+        test.setRoot(&apos;test&apos;)
+
+        debug.setRoot(&apos;build-types/debug&apos;)
+        release.setRoot(&apos;build-types/release&apos;)
+    }
+
+    signingConfigs {
+        debug {
+            // 请配置好pub.key及其密码，或者改为使用debug.keystore
+            storeFile file(&apos;pub.key&apos;) // storeFile file(&apos;debug.keystore&apos;)
+            storePassword STORE_PASSWORD
+            keyAlias KEY_ALIAS
+            keyPassword KEY_PASSWORD
+        }
+        release {
+            storeFile file(&apos;pub.key&apos;)
+            storePassword STORE_PASSWORD
+            keyAlias KEY_ALIAS
+            keyPassword KEY_PASSWORD
+        }
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
+            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
+            signingConfig signingConfigs.debug
+
+            ndk{
+                abiFilters &apos;armeabi&apos;, &apos;armeabi-v7a&apos;, &apos;x86&apos; //,&apos;arm64-v8a&apos;, &apos;x86_64&apos;, &apos;mips&apos;, &apos;mips64&apos;
+            }
+        }
+        release {
+            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;2017/1/1\&quot;&quot; //  发布时修改为当天日期
+            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;false&quot; // 关闭开发者模式
+            proguardFiles &apos;proguard.cfg&apos;
+            minifyEnabled true
+            shrinkResources true
+            debuggable false
+            jniDebuggable false
+            signingConfig signingConfigs.release
+
+            applicationVariants.all { variant -&gt;
+                variant.outputs.each { output -&gt;
+                    def outputFile = output.outputFile
+                    if (outputFile != null &amp;&amp; outputFile.name.endsWith(&apos;.apk&apos;)) {
+                        // APK命名格式 Going-release.apk TODO 发布时使用
+                        def fileName = &quot;Going-v${defaultConfig.versionName}-${defaultConfig.versionCode}-release.apk&quot;
+//                         def fileName = &quot;Going.apk&quot;
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
+        }
+    }
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
+        versionCode 1000
+        versionName &quot;1.0.0&quot;
+        //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
+        multiDexEnabled false
+        multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
+        resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; //暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
+    }
+
+    productFlavors {
+          own {}
+          googleMarket {}
+
+          tencent {}
+          baidu {}
+
+
+    }
+
+//    productFlavors.all { flavor -&gt;
+//        flavor.manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
+//    }
+
+    packagingOptions {
+        exclude &apos;META-INF/LICENSE.txt&apos;
+    }
+
+    // 可以适当的打开Lint，检查是否存在隐藏问题
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    android.dexOptions {
+        jumboMode = true
+        javaMaxHeapSize &quot;2g&quot;
+        maxProcessCount 8
+    }
+
+}
+
+// 替换编码方式，否则编译可能有中文乱码
+tasks.withType(org.gradle.api.tasks.compile.JavaCompile) {
+    options.encoding = &quot;UTF-8&quot;
+}
+</code></pre><p>相对于标准的我们在 android Task中新增了sourceSets这个Task制定了一些文件夹的目录，如果工程目录是标注的就不需要设置了</p>
+<p>在build.gradle同级新建一个gradle.properties<br>里面可以用来存放build.gradle里面的一些参数<br>STORE_PASSWORD=nico<br>KEY_ALIAS=nick<br>KEY_PASSWORD=nico</p>
+<p>这个地方对应的脚本是signingConfigs》debug里面的参数 </p>
+<p> buildTypes 》debug 中的buildConfigField参数则会在编译时候  </p>
+<p> <img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/gradle%E5%88%86%E6%9E%9001.png?raw=true" alt="gradle01"></p>
+<pre><code>buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
+buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
+</code></pre><p>会在编译时候生成并存放在build/generated/source/buildConfig/…BuildConfig.java   </p>
+<pre><code>public final class BuildConfig {
+  public static final boolean DEBUG = Boolean.parseBoolean(&quot;true&quot;);
+  public static final String APPLICATION_ID = &quot;com.lyc.study&quot;;
+  public static final String BUILD_TYPE = &quot;debug&quot;;
+  public static final String FLAVOR = &quot;own&quot;;
+  public static final int VERSION_CODE = 100;
+  public static final String VERSION_NAME = &quot;1.0.0&quot;;
+  // Fields from build type: debug
+  public static final boolean DEVELOP_MODE = true;
+  public static final String RELEASE_TIME = &quot;Not yet&quot;;
+}
+</code></pre><p>可以参考友盟的多渠道打包（github）</p>
+<p>一个介绍gradle比较好的网站<br><a href="http://stormzhang.com/posts/" target="_blank" rel="external">http://stormzhang.com/posts/</a></p>
+<p><a href="https://segmentfault.com/a/1190000006915937" target="_blank" rel="external">https://segmentfault.com/a/1190000006915937</a></p>
+<p>这两个网站都是一系列的教程，建议一个一个的看</p>
 
           
         
@@ -2511,7 +2511,7 @@ protected void attachBaseContext(Context base) {
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">分类</span>
               
             </div>
@@ -2522,7 +2522,7 @@ protected void attachBaseContext(Context base) {
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-count">33</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
