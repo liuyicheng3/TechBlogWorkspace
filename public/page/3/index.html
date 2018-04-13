@@ -440,6 +440,1283 @@ rootView.setClipToPadding(true);
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/deep_link设计方案/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/deep_link设计方案/" itemprop="url">
+                  Deeplink 设计
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>deeplink指的是在第三方客户端/浏览器中，打开一个APP的H5页面时候，如果发现本地安装了这个APP，就会使用本地APP打开。<br>需要前端和客户端互相配合来实现本功能。</p>
+<h1 id="服务器端："><a href="#服务器端：" class="headerlink" title="服务器端："></a>服务器端：</h1><pre><code>&lt;html&gt;
+&lt;head&gt;
+&lt;meta property=&quot;al:ios:url&quot; content=&quot;applinks://docs&quot; /&gt;
+&lt;meta property=&quot;al:ios:app_store_id&quot; content=&quot;12345&quot; /&gt;
+&lt;meta property=&quot;al:ios:app_name&quot; content=&quot;App Links&quot; /&gt;
+&lt;meta property=&quot;al:android:url&quot; content=&quot;applinks://docs&quot; /&gt;
+&lt;meta property=&quot;al:android:app_name&quot; content=&quot;App Links&quot; /&gt;
+&lt;meta property=&quot;al:android:package&quot; content=&quot;org.applinks&quot; /&gt;
+&lt;meta property=&quot;al:web:url&quot;
+content=&quot;http://applinks.org/documentation&quot; /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+Hello, world!
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h1 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h1><p>客户端deeplink的实现需要依靠jump系统。ps:jump系统可以通过URI 实现在app中的定向跳转 ，比如我们的app叫“天上人间”（缩写tsrj）。 </p>
+<ol>
+<li>需要先在menifest中注册相应的scheme的filter。<br>ps:一般加载主页上面.</li>
+</ol>
+<pre><code>&lt;intent-filter&gt;
+&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
+&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
+&lt;!-- Accepts URIs that begin with &quot;tsrj://&quot; --&gt;
+&lt;data android:scheme=&quot;tsrj&quot;/&gt;
+&lt;/intent-filter&gt;
+&lt;intent-filter&gt;
+&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
+&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
+&lt;!-- Accepts URIs that begin with &quot;http://m.tsrj.com/&quot; --&gt;
+&lt;data
+android:host=&quot;m.tsrj.com&quot;
+android:pathPrefix=&quot;/&quot;
+android:scheme=&quot;http&quot;/&gt;
+&lt;data
+android:host=&quot;m.tsrj.com&quot;
+android:pathPrefix=&quot;/&quot;
+android:scheme=&quot;https&quot;/&gt;
+&lt;/intent-filter&gt;
+</code></pre><ol>
+<li>在MainActivity新增解析jump信息的方法</li>
+</ol>
+<pre><code>private void jump(Intent intent) {
+/** 根据传过来的参数 进行jump跳转 **/
+String action_url = intent.getDataString();
+MLog.i(&quot;启动Main_action_url:&quot; + action_url);
+if (!TextUtils.isEmpty(action_url)) {
+JumpManager.jump(this, action_url);
+} 
+}
+
+JumpManger就实现解析数据然后根据URI跳转的功能
+public static boolean jump(Context ctx, String action_url) {
+
+if (TextUtils.isEmpty(action_url)) {
+return false;
+}
+
+MLog.d(&quot;JumpManager  url:&quot; + action_url);
+
+Uri uri = null;
+
+/**如果不是一个标准的uri格式说明传入的数据无效的 可以直接忽视*/
+
+try {
+uri = Uri.parse(action_url);
+} catch (Exception e) {
+return false;
+}
+
+if (uri == null) {
+return false;
+}
+
+/**检测到是一个合法的uri 先判断是否是满足跳转需求的头部 如果是 开始进行跳转检测 如果不是 直接往内置浏览器跳*/
+
+if (!action_url.startsWith(JumpUriFactory.JUM_URL_HEAD) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_S) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_CUSTOM)) {
+
+return false;
+}
+
+Intent jumpintent = null;
+
+List&lt;String&gt; paths = uri.getPathSegments();
+
+/**只有头没有页面参数就返回*/
+if (paths == null || paths.size() &lt;= 0) {
+
+return false;
+}
+
+/**有path 但是path里面为空值 直接打开*/
+String action = paths.get(0);
+if (TextUtils.isEmpty(action)) {
+if (!isFromWebView) {
+jumpToInteriorPageActivity(ctx, uri);
+}
+return false;
+}
+
+/** 使用系统浏览器打开 */
+if (action.equals(&quot;web_system&quot;)) {
+jumpToSystemWebPage(ctx, uri);
+return true;
+}
+
+
+/*else if (action.equals(JumpPageSet.detail)) {
+goWaitress(ctx, action_url);
+return true;
+}*/
+
+/** city */
+else if (action.equals(JumpPageSet.city)) {
+goCity(ctx, action_url);
+return true;
+}
+
+/** usercenter */
+else if (action.equals(JumpPageSet.personal_info)) {
+goUserCenter(ctx, action_url);
+return true;
+}
+</code></pre><ol>
+<li>处理uri解析出里面的参数,放入intent，并跳往相应的主页</li>
+</ol>
+<pre><code>/**
+ * 将url的数据进行解析 得到一个存放所有参数的集合
+ */
+public static Set&lt;String&gt; getMyQueryParameterNames(Uri uri) {
+    String query = uri.getEncodedQuery();
+    if (query == null) {
+        return Collections.emptySet();
+    }
+    Set&lt;String&gt; names = new LinkedHashSet&lt;String&gt;();
+    int start = 0;
+    do {
+        int next = query.indexOf(&apos;&amp;&apos;, start);
+        int end = (next == -1) ? query.length() : next;
+        int separator = query.indexOf(&apos;=&apos;, start);
+        if (separator &gt; end || separator == -1) {
+            separator = end;
+        }
+        String name = query.substring(start, separator);
+        names.add(Uri.decode(name));
+        // Move start to end of name.
+        start = end + 1;
+    } while (start &lt; query.length());
+    return Collections.unmodifiableSet(names);
+}
+private static void goWaitress(final Context ctx, String actionUrl) {
+    MLog.i(&quot;actionUrl&quot;+actionUrl);
+    Uri  uri;
+    uri=Uri.parse(actionUrl);
+    Set&lt;String&gt;  parameters=JumpManager.getMyQueryParameterNames(uri);
+    Hashtable&lt;String,String&gt; params=new Hashtable&lt;&gt;();
+    if(parameters!=null&amp;&amp;parameters.size()&gt;0){
+        for(String key:parameters){
+            String value=uri.getQueryParameter(key);
+            if(!TextUtils.isEmpty(value)){
+                params.put(key,value);
+            }
+        }
+    }
+    Intent it= new Intent(act, WaitressPage.class);
+    Set&lt;String&gt;  keySet=params.keySet();
+    for (String k:keySet){
+        it.putExtra(k,params.get(k));
+    }
+    startActivity(it);
+    }
+</code></pre><h1 id="DeepLink的坑："><a href="#DeepLink的坑：" class="headerlink" title="DeepLink的坑："></a>DeepLink的坑：</h1><ol>
+<li>由于有些页面有权限限制，所以要跳页面时候，要判断在当前账户当前版本是否可以打开</li>
+<li>如果从H5页面带过来的信息带有登录状态，而且当前app的账号信息和H5页面的不一致，可能需要一个账号切换工作</li>
+</ol>
+<p>#微信里面的deeplink：<br>微信里面的主要就是二维码加上linkme，linkme和微信有合作可以直接把分享的内容通过里面的二维码倒回到app，不过这里要注意一个问题<br>微信里面的图片对size 是有要求的</p>
+<p>图片size越大被压的越厉害，，这个即使通过以下方式绕过微信sdk也无法避免被压缩</p>
+<pre><code>try {
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setAction(Intent.ACTION_VIEW);
+    intent.addCategory(Intent.CATEGORY_DEFAULT);
+    ComponentName cmp = new ComponentName(&quot;com.tencent.mm&quot;, &quot;com.tencent.mm.ui.tools.ShareScreenImgUI&quot;);
+    intent.setComponent(cmp);
+    String path = localImgPath;
+    if (!TextUtils.isEmpty(path) &amp;&amp; !path.startsWith(&quot;file://&quot;)) {
+        path = &quot;file://&quot; + path;
+    }
+    intent.setDataAndType(Uri.parse(path), &quot;image/jpeg&quot;);
+    act.startActivity(intent);
+} catch (Exception e) {
+    ELog.e(&quot;wechat share failed&quot;);
+}
+</code></pre><p> 所以只有自己先压缩图片到一定的size，  再在这张压缩过的图片上绘制真正的二维码才行，（如果遇到好心的UI把二维码设计的很大就，可以跳过这个坑）</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/" itemprop="url">
+                  AS和Xcode快捷键
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Xcode"><a href="#Xcode" class="headerlink" title="Xcode"></a>Xcode</h1><p>XCode   不能直接修改文件名，需要找到本文件对应的申明或者实现的名称，右键refactor&gt;rename  修改<br>（记得勾选 Rename related files）</p>
+<p>在 Xcode里面所有的窗口控制显示与否都可以通过右上角的来控制  </p>
+<p>定位类的位置  shift  commoand  j</p>
+<p>commond  6 </p>
+<p>option 然后点击方法位置</p>
+<p>commond   T</p>
+<p>shift  commoand  O</p>
+<p>shift  commoand  F</p>
+<p> commoand  F</p>
+<p>esc  查看方法参数   </p>
+<p>快捷键位置方法   XCode&gt;preferences&gt;Key Bindings</p>
+<p>显示主题颜色设置   XCode&gt;preferences&gt;Font &amp; Colors   从Default  改成   Dusk<br>窗口显示和隐藏的button（其中代码下面的debug和log窗口在他们的右下角又有单独的控制显示和隐藏的button）  </p>
+<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E8%AE%BE%E7%BD%AE.png?raw=true" alt="image"></p>
+<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E5%BF%AB%E6%8D%B7%E9%94%AE.jpg?raw=true" alt="image">  </p>
+<p>参考资料：<a href="http://www.cocoachina.com/ios/20141224/10752.html" target="_blank" rel="external">http://www.cocoachina.com/ios/20141224/10752.html</a></p>
+<h1 id="AndroidStudio"><a href="#AndroidStudio" class="headerlink" title="AndroidStudio"></a>AndroidStudio</h1><p>快捷键位置方法   AndroidStudio&gt;preferences&gt;Keymap  （把Mac  OS X 复制一份，然后修改）</p>
+<p>显示主题颜色设置   AndroidStudio&gt;preferences&gt;Editor&gt;Colors &amp; Font   从Default  改成   Darcula  (然后点击 save as  ，再把字体调大一点，不能直接修改) </p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/gradle坑/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/gradle坑/" itemprop="url">
+                  AS 踩坑日记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>升级instant run时候的报错<br>Error:Access to the dex task is now impossible, starting with 1.4.0<br>1.4.0 introduces a new Transform API allowing manipulation of the .class files.<br>See more information: <a href="http://tools.android.com/tech-docs/new-build-system/transform-api" target="_blank" rel="external">http://tools.android.com/tech-docs/new-build-system/transform-api</a></p>
+<p>解决方案：</p>
+<p>buildscript {<br>    repositories {<br>        jcenter()<br>    }<br>    dependencies {<br>        classpath ‘com.android.tools.build:gradle:2.0.0’</p>
+<pre><code>}
+</code></pre><p>}</p>
+<p>改成1.3.0</p>
+<p>项目根目录的gradle的<br>grade.property</p>
+<p>distributionUrl=https\://services.gradle.org/distributions/gradle-2.2-all.zip</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/动态往apk写入信息/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/动态往apk写入信息/" itemprop="url">
+                  快速打包方案
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android快速打包/" itemprop="url" rel="index">
+                    <span itemprop="name">Android快速打包</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="往apk文件里面动态添加信息的两种方法。"><a href="#往apk文件里面动态添加信息的两种方法。" class="headerlink" title="往apk文件里面动态添加信息的两种方法。"></a>往apk文件里面动态添加信息的两种方法。</h1><p>（都需要保留安装时候的apk文件）</p>
+<ol>
+<li>方案一：往meta_info里面添加文件,写入参数信息</li>
+<li>方案二：在apk这个文件的comment信息里面添加需要传入的信息  </li>
+</ol>
+<h2 id="方案一："><a href="#方案一：" class="headerlink" title="方案一："></a>方案一：</h2><p>参考：<a href="http://tech.meituan.com/mt-apk-packaging.html" target="_blank" rel="external">http://tech.meituan.com/mt-apk-packaging.html</a><br>主要代表：美团<br>原理：meta_info（里面存的就是签名信息）里面的文件不参与签名，修改后，apk不需要签名 </p>
+<h2 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h2><p>参考：<a href="http://blog.csdn.net/kongpinde/article/details/51518466" target="_blank" rel="external">http://blog.csdn.net/kongpinde/article/details/51518466</a><br>主要代表：天猫、豌豆荚<br>原理：apk就是一个zip压缩包。而zip包有个comment区域，可以往里面写入信息，而不对apk的安装产生影响<br>zip 文件的末尾有一个 Central Directory Record 区域，其末尾包含一个 File comment 区域，可以存放一些数据，所以 File comment 是 zip 文件一部分，如果可以正确的修改这个部分，就可以在不破坏压缩包、不用重新打包的的前提下快速的给 Apk 文件写入自己想要的数据。</p>
+<p>comment 是在 Central Directory Record 末尾储存的，可以将数据直接写在这里，下表是 header 末尾的结构。<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment.png" alt="image"><br>从表中可以看到定义 comment 长度的字段位于 comment 之前。</p>
+<p>这里我们需要自定义 comment，在自定义 comment 内容的后面添加一个区域储存 comment 的长度，结构如下图。<br><img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment_structure.png" alt="image"></p>
+<h3 id="Server动态生成apk"><a href="#Server动态生成apk" class="headerlink" title="Server动态生成apk"></a>Server动态生成apk</h3><p>这一部分可以在本地或服务端进行，需要定义一个长度为 2 的 byte[] 来储存 comment 的长度，直接使用 Java 的 api 就可以把 comment 和 comment 的长度写到 Apk 的末尾，代码如下：</p>
+<pre><code>public static void writeApk(File file, String comment) {
+    ZipFile zipFile = null;
+    ByteArrayOutputStream outputStream = null;
+    RandomAccessFile accessFile = null;
+    try {
+        zipFile = new ZipFile(file);
+        String zipComment = zipFile.getComment();
+        // 判断comment区域是否已经有数据了
+        if (zipComment != null)
+            return;
+        byte[] byteComment = comment.getBytes();
+        outputStream = new ByteArrayOutputStream();
+        // 将数据写入输出流
+        outputStream.write(byteComment);
+        // 紧接着写入数据大小
+        outputStream.write(short2Stream((short) byteComment.length));
+            byte[] data = outputStream.toByteArray();
+        accessFile = new RandomAccessFile(file, &quot;rw&quot;);
+        // 跳到comment区域
+        accessFile.seek(file.length() - 2);
+        // 先写入数据大小
+        accessFile.write(short2Stream((short) data.length));
+        // 写入数据
+        accessFile.write(data);
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (zipFile != null)
+                zipFile.close();
+            if (outputStream != null)
+                outputStream.close();
+            if (accessFile != null)
+                accessFile.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+private static byte[] short2Stream(short data) {
+    ByteBuffer buffer = ByteBuffer.allocate(2);
+    buffer.order(ByteOrder.LITTLE_ENDIAN);
+    buffer.putShort(data);
+    buffer.flip();
+    return buffer.array();
+}
+</code></pre><h3 id="客户端解析apk数据："><a href="#客户端解析apk数据：" class="headerlink" title="客户端解析apk数据："></a>客户端解析apk数据：</h3><pre><code>private static String readApk(Context context) {
+    // 获取文件路径
+    File file = new File(context.getPackageCodePath());
+    byte[] bytes = null;
+    RandomAccessFile accessFile = null;
+    try {
+        accessFile = new RandomAccessFile(file, &quot;r&quot;);
+        long index = accessFile.length();
+        bytes = new byte[2];
+        // 获取comment文件的位置
+        index = index - bytes.length;
+        accessFile.seek(index);
+        // 获取comment中写入数据的大小byte类型
+        accessFile.readFully(bytes);
+        // 将byte转换成大小
+        int contentLength = stream2Short(bytes, 0);
+        // 创建byte[]数据大小来存储写入的数据
+        bytes = new byte[contentLength];
+        index = index - bytes.length;
+        accessFile.seek(index);
+        // 读取数据
+        accessFile.readFully(bytes);
+        return new String(bytes, &quot;utf-8&quot;);
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (accessFile != null) {
+            try {
+                accessFile.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    return null;
+}
+
+
+private static short stream2Short(byte[] stream, int offset) {
+    ByteBuffer buffer = ByteBuffer.allocate(2);
+    buffer.order(ByteOrder.LITTLE_ENDIAN);
+    buffer.put(stream[offset]);
+    buffer.put(stream[offset + 1]);
+    return buffer.getShort(0);
+}
+</code></pre><h1 id="apk的安装过程"><a href="#apk的安装过程" class="headerlink" title="apk的安装过程"></a>apk的安装过程</h1><ol>
+<li>复制APK安装包到data/app目录下（所以安装完成后，即使把sd卡中的apk删除也没关系）;</li>
+<li>解压并扫描安装包，把dex文件(Dalvik字节码)保存到dalvik-cache目录;</li>
+<li>并data/data目录下创建对应的应用数据目录。</li>
+</ol>
+<h2 id="应用安装涉及到如下几个目录："><a href="#应用安装涉及到如下几个目录：" class="headerlink" title="应用安装涉及到如下几个目录："></a>应用安装涉及到如下几个目录：</h2><p>system/app —————系统自带的应用程序，获得adb root权限才能删除</p>
+<p>data/app  —————用户程序安装的目录。安装时把                                                                                                      apk文件复制到此目录<br>data/data —————存放应用程序的数据<br>data/dalvik-cache——–将apk中的dex文件安装到dalvik-cache目录下(dex文件是dalvik虚拟机的可执行文件,其大小约为原始apk文件大小的四分之一)</p>
+<h2 id="app卸载"><a href="#app卸载" class="headerlink" title="app卸载"></a>app卸载</h2><p>删除安装过程中在上述三个目录下创建的文件及目录。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/git教程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/git教程/" itemprop="url">
+                  Github 教程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="本地工程上传github"><a href="#本地工程上传github" class="headerlink" title="本地工程上传github"></a>本地工程上传github</h2><ol>
+<li>首先在github上创建一个resp</li>
+<li>在本地工程里面引入 .gitignore<ul>
+<li>在androidstudio 安装一个ignore 插件，可以生成部分ignore</li>
+<li>对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore</li>
+<li>.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）<a href="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore" target="_blank" rel="external">原文件</a> </li>
+</ul>
+</li>
+</ol>
+<pre><code>.gradle
+/local.properties
+/gradle.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+bin
+gen
+.settings
+.idea
+target
+*.iml
+*.key
+</code></pre><ol>
+<li><p>touch README.md  》》生成 reamdme文件</p>
+</li>
+<li><p>git init当前工程 》》生成 git信息</p>
+</li>
+<li><p>git add -A 》》把当前工程除了ingore的添加到git里面</p>
+</li>
+<li><p>git commit 》》生成第一次的commit信息</p>
+</li>
+<li><p>git remote add origin git@github.com:liuyicheng3/NewRepo.git   》》设置当前git工程的远程分支</p>
+</li>
+<li><p>git push -u origin master 》》push 到github上去</p>
+</li>
+<li><p>Attention:一般android studio的默认ssh是 androidstudio自己的，所以这时候用android studio会提交不上去<br>需要在settiings&gt;vertion control&gt; git里面吧 SSH excutable 由built-in 改成 native</p>
+</li>
+</ol>
+<p>##维护git文档方法</p>
+<ul>
+<li>可以网页里面直接弄，就不要通本地修改再提交，太麻烦。</li>
+<li>涉及到外部链接的图片文件，git库里面建对应的文件夹统一维护。</li>
+<li>对于图片贴的地址一定要是raw的，不要那个github上显示的地址<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="string">原文件</span>](<span class="link">https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore</span>)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="一般的git工作流程"><a href="#一般的git工作流程" class="headerlink" title="一般的git工作流程"></a>一般的git工作流程</h2><h3 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h3><h3 id="按featrue-开发"><a href="#按featrue-开发" class="headerlink" title="按featrue 开发"></a>按featrue 开发</h3><h3 id="codereview及合并"><a href="#codereview及合并" class="headerlink" title="codereview及合并"></a>codereview及合并</h3><h2 id="Markdown-快捷键"><a href="#Markdown-快捷键" class="headerlink" title="Markdown 快捷键"></a>Markdown 快捷键</h2><ol>
+<li>空两行，让后代码区域两个TAB</li>
+<li>shift tab  收回一个tab</li>
+</ol>
+<h2 id="Git-常见场景"><a href="#Git-常见场景" class="headerlink" title="Git 常见场景"></a>Git 常见场景</h2><h3 id="1-不小心提交错了分支，把修改直接提交到master里面了"><a href="#1-不小心提交错了分支，把修改直接提交到master里面了" class="headerlink" title="1. 不小心提交错了分支，把修改直接提交到master里面了"></a>1. 不小心提交错了分支，把修改直接提交到master里面了</h3><p>  git log  查到提交前的versioncode<br>  git revert 123dadafa     revert到这个节点<br>    git push –force   强制用本地的版本覆盖git上的版本</p>
+<p>git  reset  和 git revert区别 <a href="http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html" target="_blank" rel="external">http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html</a></p>
+<h3 id="2-git-舍弃本地的修改"><a href="#2-git-舍弃本地的修改" class="headerlink" title="2. git 舍弃本地的修改"></a>2. git 舍弃本地的修改</h3><pre><code>git checkout . &amp;&amp; git clean -xdf
+</code></pre><h3 id="3-git-合并分支的冲突"><a href="#3-git-合并分支的冲突" class="headerlink" title="3. git 合并分支的冲突"></a>3. git 合并分支的冲突</h3><p>解决冲突后需要   </p>
+<pre><code>git rebase --continue   
+</code></pre><h3 id="4-git-生成patch"><a href="#4-git-生成patch" class="headerlink" title="4. git 生成patch"></a>4. git 生成patch</h3><p>当前还没提交，生成当前修改的patch </p>
+<pre><code>git diff  &gt; 1.patch    
+</code></pre><p>生成已经提交的几次记录的patch   </p>
+<pre><code>git log    //查看需要生成到那个提交日志的patch
+git format-patch -3     // 从master往前3个提交的内容，可修改为你想要的数值
+git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
+</code></pre><h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a href="http://blog.csdn.net/kevinx_xu/article/details/11660915" target="_blank" rel="external">http://blog.csdn.net/kevinx_xu/article/details/11660915</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/混淆写法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/混淆写法/" itemprop="url">
+                  混淆写法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/打包/" itemprop="url" rel="index">
+                    <span itemprop="name">打包</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>-keepclassmembers class <strong> {<br>    public void onEvent*(</strong>);<br>}</p>
+<p>只保护 public void onEvent<em>(*</em>)的方法不被重命名</p>
+<p>-keepattributes Signature</p>
+<p>-keep class okio.<em>* {</em>;}</p>
+<p>-keep class android.support.v4.app.NotificationCompat<em>*{<br>    public </em>;<br>}</p>
+<p>-keep class com.veda.lyc.Utils{ static *;}<br>保持里面的静态方法不被混淆</p>
+<p>keep的几个选项</p>
+<table>
+<thead>
+<tr>
+<th>Keep</th>
+<th style="text-align:right">From being removed or renamed</th>
+<th style="text-align:center">From being renamed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Classes and class members</td>
+<td style="text-align:right">-keep</td>
+<td style="text-align:center">-keepnames</td>
+</tr>
+<tr>
+<td>Class members only</td>
+<td style="text-align:right">-keepclassmembers</td>
+<td style="text-align:center">-keepclassmembernames</td>
+</tr>
+<tr>
+<td>-keepclassmembers    -keepclassmembernames</td>
+</tr>
+</tbody>
+</table>
+<p>Classes and class members, if class members present       |    -keepclasseswithmembers    |  -keepclasseswithmembernames  |</p>
+<p>参考资料<br><a href="http://blog.csdn.net/sudic_niu/article/details/7921548" target="_blank" rel="external">http://blog.csdn.net/sudic_niu/article/details/7921548</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Gradle小结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -794,1343 +2071,6 @@ buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/deep_link设计方案/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/deep_link设计方案/" itemprop="url">
-                  Deeplink 设计
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>deeplink指的是在第三方客户端/浏览器中，打开一个APP的H5页面时候，如果发现本地安装了这个APP，就会使用本地APP打开。<br>需要前端和客户端互相配合来实现本功能。</p>
-<h1 id="服务器端："><a href="#服务器端：" class="headerlink" title="服务器端："></a>服务器端：</h1><pre><code>&lt;html&gt;
-&lt;head&gt;
-&lt;meta property=&quot;al:ios:url&quot; content=&quot;applinks://docs&quot; /&gt;
-&lt;meta property=&quot;al:ios:app_store_id&quot; content=&quot;12345&quot; /&gt;
-&lt;meta property=&quot;al:ios:app_name&quot; content=&quot;App Links&quot; /&gt;
-&lt;meta property=&quot;al:android:url&quot; content=&quot;applinks://docs&quot; /&gt;
-&lt;meta property=&quot;al:android:app_name&quot; content=&quot;App Links&quot; /&gt;
-&lt;meta property=&quot;al:android:package&quot; content=&quot;org.applinks&quot; /&gt;
-&lt;meta property=&quot;al:web:url&quot;
-content=&quot;http://applinks.org/documentation&quot; /&gt;
-&lt;/head&gt;
-&lt;body&gt;
-Hello, world!
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre><h1 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h1><p>客户端deeplink的实现需要依靠jump系统。ps:jump系统可以通过URI 实现在app中的定向跳转 ，比如我们的app叫“天上人间”（缩写tsrj）。 </p>
-<ol>
-<li>需要先在menifest中注册相应的scheme的filter。<br>ps:一般加载主页上面.</li>
-</ol>
-<pre><code>&lt;intent-filter&gt;
-&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
-&lt;!-- Accepts URIs that begin with &quot;tsrj://&quot; --&gt;
-&lt;data android:scheme=&quot;tsrj&quot;/&gt;
-&lt;/intent-filter&gt;
-&lt;intent-filter&gt;
-&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
-&lt;!-- Accepts URIs that begin with &quot;http://m.tsrj.com/&quot; --&gt;
-&lt;data
-android:host=&quot;m.tsrj.com&quot;
-android:pathPrefix=&quot;/&quot;
-android:scheme=&quot;http&quot;/&gt;
-&lt;data
-android:host=&quot;m.tsrj.com&quot;
-android:pathPrefix=&quot;/&quot;
-android:scheme=&quot;https&quot;/&gt;
-&lt;/intent-filter&gt;
-</code></pre><ol>
-<li>在MainActivity新增解析jump信息的方法</li>
-</ol>
-<pre><code>private void jump(Intent intent) {
-/** 根据传过来的参数 进行jump跳转 **/
-String action_url = intent.getDataString();
-MLog.i(&quot;启动Main_action_url:&quot; + action_url);
-if (!TextUtils.isEmpty(action_url)) {
-JumpManager.jump(this, action_url);
-} 
-}
-
-JumpManger就实现解析数据然后根据URI跳转的功能
-public static boolean jump(Context ctx, String action_url) {
-
-if (TextUtils.isEmpty(action_url)) {
-return false;
-}
-
-MLog.d(&quot;JumpManager  url:&quot; + action_url);
-
-Uri uri = null;
-
-/**如果不是一个标准的uri格式说明传入的数据无效的 可以直接忽视*/
-
-try {
-uri = Uri.parse(action_url);
-} catch (Exception e) {
-return false;
-}
-
-if (uri == null) {
-return false;
-}
-
-/**检测到是一个合法的uri 先判断是否是满足跳转需求的头部 如果是 开始进行跳转检测 如果不是 直接往内置浏览器跳*/
-
-if (!action_url.startsWith(JumpUriFactory.JUM_URL_HEAD) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_S) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_CUSTOM)) {
-
-return false;
-}
-
-Intent jumpintent = null;
-
-List&lt;String&gt; paths = uri.getPathSegments();
-
-/**只有头没有页面参数就返回*/
-if (paths == null || paths.size() &lt;= 0) {
-
-return false;
-}
-
-/**有path 但是path里面为空值 直接打开*/
-String action = paths.get(0);
-if (TextUtils.isEmpty(action)) {
-if (!isFromWebView) {
-jumpToInteriorPageActivity(ctx, uri);
-}
-return false;
-}
-
-/** 使用系统浏览器打开 */
-if (action.equals(&quot;web_system&quot;)) {
-jumpToSystemWebPage(ctx, uri);
-return true;
-}
-
-
-/*else if (action.equals(JumpPageSet.detail)) {
-goWaitress(ctx, action_url);
-return true;
-}*/
-
-/** city */
-else if (action.equals(JumpPageSet.city)) {
-goCity(ctx, action_url);
-return true;
-}
-
-/** usercenter */
-else if (action.equals(JumpPageSet.personal_info)) {
-goUserCenter(ctx, action_url);
-return true;
-}
-</code></pre><ol>
-<li>处理uri解析出里面的参数,放入intent，并跳往相应的主页</li>
-</ol>
-<pre><code>/**
- * 将url的数据进行解析 得到一个存放所有参数的集合
- */
-public static Set&lt;String&gt; getMyQueryParameterNames(Uri uri) {
-    String query = uri.getEncodedQuery();
-    if (query == null) {
-        return Collections.emptySet();
-    }
-    Set&lt;String&gt; names = new LinkedHashSet&lt;String&gt;();
-    int start = 0;
-    do {
-        int next = query.indexOf(&apos;&amp;&apos;, start);
-        int end = (next == -1) ? query.length() : next;
-        int separator = query.indexOf(&apos;=&apos;, start);
-        if (separator &gt; end || separator == -1) {
-            separator = end;
-        }
-        String name = query.substring(start, separator);
-        names.add(Uri.decode(name));
-        // Move start to end of name.
-        start = end + 1;
-    } while (start &lt; query.length());
-    return Collections.unmodifiableSet(names);
-}
-private static void goWaitress(final Context ctx, String actionUrl) {
-    MLog.i(&quot;actionUrl&quot;+actionUrl);
-    Uri  uri;
-    uri=Uri.parse(actionUrl);
-    Set&lt;String&gt;  parameters=JumpManager.getMyQueryParameterNames(uri);
-    Hashtable&lt;String,String&gt; params=new Hashtable&lt;&gt;();
-    if(parameters!=null&amp;&amp;parameters.size()&gt;0){
-        for(String key:parameters){
-            String value=uri.getQueryParameter(key);
-            if(!TextUtils.isEmpty(value)){
-                params.put(key,value);
-            }
-        }
-    }
-    Intent it= new Intent(act, WaitressPage.class);
-    Set&lt;String&gt;  keySet=params.keySet();
-    for (String k:keySet){
-        it.putExtra(k,params.get(k));
-    }
-    startActivity(it);
-    }
-</code></pre><h1 id="DeepLink的坑："><a href="#DeepLink的坑：" class="headerlink" title="DeepLink的坑："></a>DeepLink的坑：</h1><ol>
-<li>由于有些页面有权限限制，所以要跳页面时候，要判断在当前账户当前版本是否可以打开</li>
-<li>如果从H5页面带过来的信息带有登录状态，而且当前app的账号信息和H5页面的不一致，可能需要一个账号切换工作</li>
-</ol>
-<p>#微信里面的deeplink：<br>微信里面的主要就是二维码加上linkme，linkme和微信有合作可以直接把分享的内容通过里面的二维码倒回到app，不过这里要注意一个问题<br>微信里面的图片对size 是有要求的</p>
-<p>图片size越大被压的越厉害，，这个即使通过以下方式绕过微信sdk也无法避免被压缩</p>
-<pre><code>try {
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.setAction(Intent.ACTION_VIEW);
-    intent.addCategory(Intent.CATEGORY_DEFAULT);
-    ComponentName cmp = new ComponentName(&quot;com.tencent.mm&quot;, &quot;com.tencent.mm.ui.tools.ShareScreenImgUI&quot;);
-    intent.setComponent(cmp);
-    String path = localImgPath;
-    if (!TextUtils.isEmpty(path) &amp;&amp; !path.startsWith(&quot;file://&quot;)) {
-        path = &quot;file://&quot; + path;
-    }
-    intent.setDataAndType(Uri.parse(path), &quot;image/jpeg&quot;);
-    act.startActivity(intent);
-} catch (Exception e) {
-    ELog.e(&quot;wechat share failed&quot;);
-}
-</code></pre><p> 所以只有自己先压缩图片到一定的size，  再在这张压缩过的图片上绘制真正的二维码才行，（如果遇到好心的UI把二维码设计的很大就，可以跳过这个坑）</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/动态往apk写入信息/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/动态往apk写入信息/" itemprop="url">
-                  快速打包方案
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android快速打包/" itemprop="url" rel="index">
-                    <span itemprop="name">Android快速打包</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="往apk文件里面动态添加信息的两种方法。"><a href="#往apk文件里面动态添加信息的两种方法。" class="headerlink" title="往apk文件里面动态添加信息的两种方法。"></a>往apk文件里面动态添加信息的两种方法。</h1><p>（都需要保留安装时候的apk文件）</p>
-<ol>
-<li>方案一：往meta_info里面添加文件,写入参数信息</li>
-<li>方案二：在apk这个文件的comment信息里面添加需要传入的信息  </li>
-</ol>
-<h2 id="方案一："><a href="#方案一：" class="headerlink" title="方案一："></a>方案一：</h2><p>参考：<a href="http://tech.meituan.com/mt-apk-packaging.html" target="_blank" rel="external">http://tech.meituan.com/mt-apk-packaging.html</a><br>主要代表：美团<br>原理：meta_info（里面存的就是签名信息）里面的文件不参与签名，修改后，apk不需要签名 </p>
-<h2 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h2><p>参考：<a href="http://blog.csdn.net/kongpinde/article/details/51518466" target="_blank" rel="external">http://blog.csdn.net/kongpinde/article/details/51518466</a><br>主要代表：天猫、豌豆荚<br>原理：apk就是一个zip压缩包。而zip包有个comment区域，可以往里面写入信息，而不对apk的安装产生影响<br>zip 文件的末尾有一个 Central Directory Record 区域，其末尾包含一个 File comment 区域，可以存放一些数据，所以 File comment 是 zip 文件一部分，如果可以正确的修改这个部分，就可以在不破坏压缩包、不用重新打包的的前提下快速的给 Apk 文件写入自己想要的数据。</p>
-<p>comment 是在 Central Directory Record 末尾储存的，可以将数据直接写在这里，下表是 header 末尾的结构。<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment.png" alt="image"><br>从表中可以看到定义 comment 长度的字段位于 comment 之前。</p>
-<p>这里我们需要自定义 comment，在自定义 comment 内容的后面添加一个区域储存 comment 的长度，结构如下图。<br><img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment_structure.png" alt="image"></p>
-<h3 id="Server动态生成apk"><a href="#Server动态生成apk" class="headerlink" title="Server动态生成apk"></a>Server动态生成apk</h3><p>这一部分可以在本地或服务端进行，需要定义一个长度为 2 的 byte[] 来储存 comment 的长度，直接使用 Java 的 api 就可以把 comment 和 comment 的长度写到 Apk 的末尾，代码如下：</p>
-<pre><code>public static void writeApk(File file, String comment) {
-    ZipFile zipFile = null;
-    ByteArrayOutputStream outputStream = null;
-    RandomAccessFile accessFile = null;
-    try {
-        zipFile = new ZipFile(file);
-        String zipComment = zipFile.getComment();
-        // 判断comment区域是否已经有数据了
-        if (zipComment != null)
-            return;
-        byte[] byteComment = comment.getBytes();
-        outputStream = new ByteArrayOutputStream();
-        // 将数据写入输出流
-        outputStream.write(byteComment);
-        // 紧接着写入数据大小
-        outputStream.write(short2Stream((short) byteComment.length));
-            byte[] data = outputStream.toByteArray();
-        accessFile = new RandomAccessFile(file, &quot;rw&quot;);
-        // 跳到comment区域
-        accessFile.seek(file.length() - 2);
-        // 先写入数据大小
-        accessFile.write(short2Stream((short) data.length));
-        // 写入数据
-        accessFile.write(data);
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        try {
-            if (zipFile != null)
-                zipFile.close();
-            if (outputStream != null)
-                outputStream.close();
-            if (accessFile != null)
-                accessFile.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
-private static byte[] short2Stream(short data) {
-    ByteBuffer buffer = ByteBuffer.allocate(2);
-    buffer.order(ByteOrder.LITTLE_ENDIAN);
-    buffer.putShort(data);
-    buffer.flip();
-    return buffer.array();
-}
-</code></pre><h3 id="客户端解析apk数据："><a href="#客户端解析apk数据：" class="headerlink" title="客户端解析apk数据："></a>客户端解析apk数据：</h3><pre><code>private static String readApk(Context context) {
-    // 获取文件路径
-    File file = new File(context.getPackageCodePath());
-    byte[] bytes = null;
-    RandomAccessFile accessFile = null;
-    try {
-        accessFile = new RandomAccessFile(file, &quot;r&quot;);
-        long index = accessFile.length();
-        bytes = new byte[2];
-        // 获取comment文件的位置
-        index = index - bytes.length;
-        accessFile.seek(index);
-        // 获取comment中写入数据的大小byte类型
-        accessFile.readFully(bytes);
-        // 将byte转换成大小
-        int contentLength = stream2Short(bytes, 0);
-        // 创建byte[]数据大小来存储写入的数据
-        bytes = new byte[contentLength];
-        index = index - bytes.length;
-        accessFile.seek(index);
-        // 读取数据
-        accessFile.readFully(bytes);
-        return new String(bytes, &quot;utf-8&quot;);
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        if (accessFile != null) {
-            try {
-                accessFile.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    return null;
-}
-
-
-private static short stream2Short(byte[] stream, int offset) {
-    ByteBuffer buffer = ByteBuffer.allocate(2);
-    buffer.order(ByteOrder.LITTLE_ENDIAN);
-    buffer.put(stream[offset]);
-    buffer.put(stream[offset + 1]);
-    return buffer.getShort(0);
-}
-</code></pre><h1 id="apk的安装过程"><a href="#apk的安装过程" class="headerlink" title="apk的安装过程"></a>apk的安装过程</h1><ol>
-<li>复制APK安装包到data/app目录下（所以安装完成后，即使把sd卡中的apk删除也没关系）;</li>
-<li>解压并扫描安装包，把dex文件(Dalvik字节码)保存到dalvik-cache目录;</li>
-<li>并data/data目录下创建对应的应用数据目录。</li>
-</ol>
-<h2 id="应用安装涉及到如下几个目录："><a href="#应用安装涉及到如下几个目录：" class="headerlink" title="应用安装涉及到如下几个目录："></a>应用安装涉及到如下几个目录：</h2><p>system/app —————系统自带的应用程序，获得adb root权限才能删除</p>
-<p>data/app  —————用户程序安装的目录。安装时把                                                                                                      apk文件复制到此目录<br>data/data —————存放应用程序的数据<br>data/dalvik-cache——–将apk中的dex文件安装到dalvik-cache目录下(dex文件是dalvik虚拟机的可执行文件,其大小约为原始apk文件大小的四分之一)</p>
-<h2 id="app卸载"><a href="#app卸载" class="headerlink" title="app卸载"></a>app卸载</h2><p>删除安装过程中在上述三个目录下创建的文件及目录。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/ios学习笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/ios学习笔记/" itemprop="url">
-                  iOS入门
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="第一课：熟悉OC语法"><a href="#第一课：熟悉OC语法" class="headerlink" title="第一课：熟悉OC语法"></a>第一课：熟悉OC语法</h1><h1 id="第二课：storyboard和-手写View"><a href="#第二课：storyboard和-手写View" class="headerlink" title="第二课：storyboard和 手写View"></a>第二课：storyboard和 手写View</h1><p>storyboard;</p>
-<p>直接往上面拖放控件，然后按住ctr  把控件拖动到   @implementation，就相当于自动findview了，可以直接使用是这个控件了  </p>
-<p>   @property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;</p>
-<p>还有一种就是直接关联上点击事件<br>把控件直接拖动到这个申明方法上就可以了</p>
-<pre><code>- (IBAction)showAlert:(id)sender;
-</code></pre><p>这个的原理可以看看storyboard的文件内容就可以明白了，大致和android的类似</p>
-<p>图片资源文件两种放法</p>
-<ol>
-<li><p>在Supporting  Files 同级添加一个Resources的包，里面直接放图片进去（可以只放三倍图）   </p>
-<pre><code>UIImageView *imageView = [[UIImageView alloc] init];
-   imageView.image = [UIImage imageNamed:@&quot;home_banner.png&quot;];    // 正常显示的图片
-</code></pre></li>
-<li><p>在Assets.xcaseset里面右键新建New image set，然后手动把图片拖动到右边的一倍两倍三倍的框框中去 </p>
-</li>
-</ol>
-<p>storyboard  改成手写UI类型  </p>
-<ol>
-<li>第一步： </li>
-</ol>
-<ul>
-<li>删除storyboard文件  </li>
-<li>编辑Supporting Files目录下的 .plist文件,<br>删除Main storyboard  file name这一项</li>
-</ul>
-<ol>
-<li>第二步：<br> 编辑AppDelegate</li>
-</ol>
-<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    [self.window makeKeyAndVisible];
-
-    ViewController *__rootController = [[ViewController alloc] init];
-    UINavigationController *__navCtrler = [[UINavigationController alloc] initWithRootViewController:__rootController];
-    __navCtrler.navigationBarHidden = YES;
-    self.window.rootViewController = __navCtrler;
-  // Override point for customization after application launch.
-    return YES;
-}
-</code></pre><p>这个相当于Application的oncreate,在这里加载Entry activity</p>
-<p>在ViewController里面手动往根View里面添加控件</p>
-<pre><code>- (void)viewDidLoad {
-    [super viewDidLoad];
-
-    UILabel *firstLable=[[UILabel alloc]init];
-    firstLable.frame=CGRectMake(0, 0, 100, 100);
-    firstLable.backgroundColor = [UIColor whiteColor]; //设置lable背景颜色为黑色
-
-    firstLable.text=@&quot;第一级&quot;;
-    firstLable.userInteractionEnabled = YES;
-
-    [firstLable setTextColor:[UIColor greenColor]]; //设置文本字体颜色为白色
-
-    [self.view addSubview:firstLable];
-    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapLable:)];
-    [firstLable addGestureRecognizer:singleTap];
-
-    // Do any additional setup after loading the view, typically from a nib.
-}
-</code></pre><p>viewDidLoad 相当于Activity的oncreate，这里我们就是手写View，然后加到根View里面去 self.view<br>    [self.view addSubview:firstLable];</p>
-<h1 id="第三课：Viewcontroller-之间的跳转"><a href="#第三课：Viewcontroller-之间的跳转" class="headerlink" title="第三课：Viewcontroller  之间的跳转"></a>第三课：Viewcontroller  之间的跳转</h1><p>在ViewController从一个Viewcontroller跳到另外一个SecondViewController</p>
-<pre><code>-(void) tapLable:(UILabel *)sender{
-    NSLog(@&quot;进入第二级Controller&quot;);
-
-    SecondViewController *controller = [[SecondViewController alloc] init];
-    [self.navigationController pushViewController:controller animated:YES];
-}
-</code></pre><p>在SecondViewController也是一样的写法</p>
-<p> 返回第一个VIewCOntroller的方法</p>
-<pre><code>[self.navigationController popViewControllerAnimated:YES];
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/混淆写法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/混淆写法/" itemprop="url">
-                  混淆写法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/打包/" itemprop="url" rel="index">
-                    <span itemprop="name">打包</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>-keepclassmembers class <strong> {<br>    public void onEvent*(</strong>);<br>}</p>
-<p>只保护 public void onEvent<em>(*</em>)的方法不被重命名</p>
-<p>-keepattributes Signature</p>
-<p>-keep class okio.<em>* {</em>;}</p>
-<p>-keep class android.support.v4.app.NotificationCompat<em>*{<br>    public </em>;<br>}</p>
-<p>-keep class com.veda.lyc.Utils{ static *;}<br>保持里面的静态方法不被混淆</p>
-<p>keep的几个选项</p>
-<table>
-<thead>
-<tr>
-<th>Keep</th>
-<th style="text-align:right">From being removed or renamed</th>
-<th style="text-align:center">From being renamed</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Classes and class members</td>
-<td style="text-align:right">-keep</td>
-<td style="text-align:center">-keepnames</td>
-</tr>
-<tr>
-<td>Class members only</td>
-<td style="text-align:right">-keepclassmembers</td>
-<td style="text-align:center">-keepclassmembernames</td>
-</tr>
-<tr>
-<td>-keepclassmembers    -keepclassmembernames</td>
-</tr>
-</tbody>
-</table>
-<p>Classes and class members, if class members present       |    -keepclasseswithmembers    |  -keepclasseswithmembernames  |</p>
-<p>参考资料<br><a href="http://blog.csdn.net/sudic_niu/article/details/7921548" target="_blank" rel="external">http://blog.csdn.net/sudic_niu/article/details/7921548</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/git教程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/git教程/" itemprop="url">
-                  Github 教程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="本地工程上传github"><a href="#本地工程上传github" class="headerlink" title="本地工程上传github"></a>本地工程上传github</h2><ol>
-<li>首先在github上创建一个resp</li>
-<li>在本地工程里面引入 .gitignore<ul>
-<li>在androidstudio 安装一个ignore 插件，可以生成部分ignore</li>
-<li>对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore</li>
-<li>.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）<a href="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore" target="_blank" rel="external">原文件</a> </li>
-</ul>
-</li>
-</ol>
-<pre><code>.gradle
-/local.properties
-/gradle.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-bin
-gen
-.settings
-.idea
-target
-*.iml
-*.key
-</code></pre><ol>
-<li><p>touch README.md  》》生成 reamdme文件</p>
-</li>
-<li><p>git init当前工程 》》生成 git信息</p>
-</li>
-<li><p>git add -A 》》把当前工程除了ingore的添加到git里面</p>
-</li>
-<li><p>git commit 》》生成第一次的commit信息</p>
-</li>
-<li><p>git remote add origin git@github.com:liuyicheng3/NewRepo.git   》》设置当前git工程的远程分支</p>
-</li>
-<li><p>git push -u origin master 》》push 到github上去</p>
-</li>
-<li><p>Attention:一般android studio的默认ssh是 androidstudio自己的，所以这时候用android studio会提交不上去<br>需要在settiings&gt;vertion control&gt; git里面吧 SSH excutable 由built-in 改成 native</p>
-</li>
-</ol>
-<p>##维护git文档方法</p>
-<ul>
-<li>可以网页里面直接弄，就不要通本地修改再提交，太麻烦。</li>
-<li>涉及到外部链接的图片文件，git库里面建对应的文件夹统一维护。</li>
-<li>对于图片贴的地址一定要是raw的，不要那个github上显示的地址<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="string">原文件</span>](<span class="link">https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore</span>)</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="一般的git工作流程"><a href="#一般的git工作流程" class="headerlink" title="一般的git工作流程"></a>一般的git工作流程</h2><h3 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h3><h3 id="按featrue-开发"><a href="#按featrue-开发" class="headerlink" title="按featrue 开发"></a>按featrue 开发</h3><h3 id="codereview及合并"><a href="#codereview及合并" class="headerlink" title="codereview及合并"></a>codereview及合并</h3><h2 id="Markdown-快捷键"><a href="#Markdown-快捷键" class="headerlink" title="Markdown 快捷键"></a>Markdown 快捷键</h2><ol>
-<li>空两行，让后代码区域两个TAB</li>
-<li>shift tab  收回一个tab</li>
-</ol>
-<h2 id="Git-常见场景"><a href="#Git-常见场景" class="headerlink" title="Git 常见场景"></a>Git 常见场景</h2><h3 id="1-不小心提交错了分支，把修改直接提交到master里面了"><a href="#1-不小心提交错了分支，把修改直接提交到master里面了" class="headerlink" title="1. 不小心提交错了分支，把修改直接提交到master里面了"></a>1. 不小心提交错了分支，把修改直接提交到master里面了</h3><p>  git log  查到提交前的versioncode<br>  git revert 123dadafa     revert到这个节点<br>    git push –force   强制用本地的版本覆盖git上的版本</p>
-<p>git  reset  和 git revert区别 <a href="http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html" target="_blank" rel="external">http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html</a></p>
-<h3 id="2-git-舍弃本地的修改"><a href="#2-git-舍弃本地的修改" class="headerlink" title="2. git 舍弃本地的修改"></a>2. git 舍弃本地的修改</h3><pre><code>git checkout . &amp;&amp; git clean -xdf
-</code></pre><h3 id="3-git-合并分支的冲突"><a href="#3-git-合并分支的冲突" class="headerlink" title="3. git 合并分支的冲突"></a>3. git 合并分支的冲突</h3><p>解决冲突后需要   </p>
-<pre><code>git rebase --continue   
-</code></pre><h3 id="4-git-生成patch"><a href="#4-git-生成patch" class="headerlink" title="4. git 生成patch"></a>4. git 生成patch</h3><p>当前还没提交，生成当前修改的patch </p>
-<pre><code>git diff  &gt; 1.patch    
-</code></pre><p>生成已经提交的几次记录的patch   </p>
-<pre><code>git log    //查看需要生成到那个提交日志的patch
-git format-patch -3     // 从master往前3个提交的内容，可修改为你想要的数值
-git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
-</code></pre><h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a href="http://blog.csdn.net/kevinx_xu/article/details/11660915" target="_blank" rel="external">http://blog.csdn.net/kevinx_xu/article/details/11660915</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/" itemprop="url">
-                  AS和Xcode快捷键
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Xcode"><a href="#Xcode" class="headerlink" title="Xcode"></a>Xcode</h1><p>XCode   不能直接修改文件名，需要找到本文件对应的申明或者实现的名称，右键refactor&gt;rename  修改<br>（记得勾选 Rename related files）</p>
-<p>在 Xcode里面所有的窗口控制显示与否都可以通过右上角的来控制  </p>
-<p>定位类的位置  shift  commoand  j</p>
-<p>commond  6 </p>
-<p>option 然后点击方法位置</p>
-<p>commond   T</p>
-<p>shift  commoand  O</p>
-<p>shift  commoand  F</p>
-<p> commoand  F</p>
-<p>esc  查看方法参数   </p>
-<p>快捷键位置方法   XCode&gt;preferences&gt;Key Bindings</p>
-<p>显示主题颜色设置   XCode&gt;preferences&gt;Font &amp; Colors   从Default  改成   Dusk<br>窗口显示和隐藏的button（其中代码下面的debug和log窗口在他们的右下角又有单独的控制显示和隐藏的button）  </p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E8%AE%BE%E7%BD%AE.png?raw=true" alt="image"></p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E5%BF%AB%E6%8D%B7%E9%94%AE.jpg?raw=true" alt="image">  </p>
-<p>参考资料：<a href="http://www.cocoachina.com/ios/20141224/10752.html" target="_blank" rel="external">http://www.cocoachina.com/ios/20141224/10752.html</a></p>
-<h1 id="AndroidStudio"><a href="#AndroidStudio" class="headerlink" title="AndroidStudio"></a>AndroidStudio</h1><p>快捷键位置方法   AndroidStudio&gt;preferences&gt;Keymap  （把Mac  OS X 复制一份，然后修改）</p>
-<p>显示主题颜色设置   AndroidStudio&gt;preferences&gt;Editor&gt;Colors &amp; Font   从Default  改成   Darcula  (然后点击 save as  ，再把字体调大一点，不能直接修改) </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Android模块化方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2358,7 +2298,7 @@ compile project(&apos;:Module_common&apos;)
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/gradle坑/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Android分包/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -2380,8 +2320,8 @@ compile project(&apos;:Module_common&apos;)
             
               
                 
-                <a class="post-title-link" href="/2015/11/01/gradle坑/" itemprop="url">
-                  AS 踩坑日记
+                <a class="post-title-link" href="/2015/11/01/Android分包/" itemprop="url">
+                  Android分包
                 </a>
               
             
@@ -2420,8 +2360,8 @@ compile project(&apos;:Module_common&apos;)
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
                   </a>
                 </span>
 
@@ -2457,15 +2397,27 @@ compile project(&apos;:Module_common&apos;)
       
         
           
-            <p>升级instant run时候的报错<br>Error:Access to the dex task is now impossible, starting with 1.4.0<br>1.4.0 introduces a new Transform API allowing manipulation of the .class files.<br>See more information: <a href="http://tools.android.com/tech-docs/new-build-system/transform-api" target="_blank" rel="external">http://tools.android.com/tech-docs/new-build-system/transform-api</a></p>
-<p>解决方案：</p>
-<p>buildscript {<br>    repositories {<br>        jcenter()<br>    }<br>    dependencies {<br>        classpath ‘com.android.tools.build:gradle:2.0.0’</p>
-<pre><code>}
-</code></pre><p>}</p>
-<p>改成1.3.0</p>
-<p>项目根目录的gradle的<br>grade.property</p>
-<p>distributionUrl=https\://services.gradle.org/distributions/gradle-2.2-all.zip</p>
+            <h2 id="第一步：-gradle引入以及配置"><a href="#第一步：-gradle引入以及配置" class="headerlink" title="第一步：  gradle引入以及配置"></a>第一步：  gradle引入以及配置</h2><pre><code>compile &apos;com.android.support:multidex:1.0.1&apos;
 
+defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
+    versionCode 5210
+    versionName &quot;5.2.1&quot;
+    //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
+    multiDexEnabled true
+    multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
+    // resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; 暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
+}
+</code></pre><h2 id="第二步：修改Application"><a href="#第二步：修改Application" class="headerlink" title="第二步：修改Application"></a>第二步：修改Application</h2><pre><code>@Override
+protected void attachBaseContext(Context base) {
+    super.attachBaseContext(base);
+    MultiDex.install(base);
+}
+</code></pre><h2 id="第三步：保证关键类在主dex中"><a href="#第三步：保证关键类在主dex中" class="headerlink" title="第三步：保证关键类在主dex中"></a>第三步：保证关键类在主dex中</h2><p> 就是通过multiDexKeep.pro文件控制的<br> 个推 sdk强制在主dex 中</p>
+<pre><code>-dontwarn com.igexin.**
+-keep class com.igexin.**{*;}
+</code></pre>
           
         
       
