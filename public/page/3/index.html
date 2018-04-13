@@ -247,7 +247,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Android模块化方案/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/01/沉浸式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -269,8 +269,8 @@
             
               
                 
-                <a class="post-title-link" href="/2015/11/01/Android模块化方案/" itemprop="url">
-                  Android模块化方案
+                <a class="post-title-link" href="/2016/10/01/沉浸式/" itemprop="url">
+                  沉浸式的实现方案
                 </a>
               
             
@@ -286,8 +286,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-01T08:00:00+08:00">
+                2016-10-01
               </time>
             
 
@@ -346,91 +346,57 @@
       
         
           
-            <h2 id="AAR模块化方案"><a href="#AAR模块化方案" class="headerlink" title="AAR模块化方案"></a>AAR模块化方案</h2><p>1、首先 按照应用分层（common  view），注意每个module最好配置一下resourcePrefix “mc_”<br>2、上层再按照功能模块比如  信用卡和个人中心</p>
-<p>这样每个都会打出一个aar，府工程引入所有的aar就可以引入这个模块</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>但是这个距离一个可以发布出去的aar还有距离，有以下几个问题需要解决：  </p>
-<ol>
-<li>本地jar依赖（主工程很有可能也公用这个jar）；  </li>
-<li>混淆的问题；  </li>
-<li>多个aar合并；   </li>
-<li>兄弟模块互相调用，基模块调用父模块的方法；</li>
-</ol>
-<h3 id="问题1"><a href="#问题1" class="headerlink" title="问题1:"></a>问题1:</h3><p>Android dependency的几种方法：<br>eg：  </p>
-<pre><code>    testCompile &apos;junit:junit:4.12&apos;
-//compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])  
-provided fileTree(dir: &apos;libs&apos;,include: [&apos;*.jar&apos;])  
-compile &apos;com.android.support:support-v4:23.0.1&apos;  
-compile project(&apos;:Module_common&apos;)   
-</code></pre><ul>
-<li>testCompile ：  debug 会编译  正式打包不会编译</li>
-<li>compile ： 除去”compile jar”会编译进arr，其余的都不会编译进去</li>
-<li>provided：编译时候不会把jar编译进去</li>
-</ul>
-<p>传递依赖的问题<br>（例如 modle A 依赖 Module B，Module B 又依赖Module  C ）   jar  都放在C里面，Module A不引入jar 也能引用到jar。</p>
-<p>但是正式打包时候不需要这些jar，本地的jar必须以provided方式引入，这样aar里面就不会打进去这些jar了。</p>
-<p>这会引入另外一个问题：C改成provide 这些jar后，A和B找不到这些依赖的jar 会编译失败</p>
-<p>解决方案：<br>把jar单独成一个module D，写成provided<br>（也可在module A  和 B里面  把这些jar 都拷贝进去，然后统统写成provided）</p>
-<h3 id="问题2"><a href="#问题2" class="headerlink" title="问题2"></a>问题2</h3><p>首先要明白，我们要去混淆的是A和主工程的接口，而A和B以及C直接的调用都需要混淆，但是不能在B和C里面混淆，因为这样一混淆的话，A与B、C调用的接口也混淆了</p>
-<p>所以混淆只能在A里面打开，A和B都不能打开混淆</p>
-<h3 id="问题3"><a href="#问题3" class="headerlink" title="问题3"></a>问题3</h3><p>默认会打出三个aar，但是我们只能发布一个aar出去，所以必须使用到 <a href="https://github.com/adwiv/android-fat-aar" target="_blank" rel="external">https://github.com/adwiv/android-fat-aar</a> 写的合并aar的gradle</p>
-<p>方法：<br>1、拷贝 fat-aar.gradle到build.gradle 同级目录<br>2、module的build.gradle新增<br>apply from: ‘fat-aar.gradle’  ，</p>
-<p>compile project(‘:Module_common’)<br>改成<br>embedded project(‘:Module_common’)</p>
-<p>这样在打B的aar时候，会把基moduel的aar合并进来</p>
-<p>如果这个模块工程就一个工程，就只需要解决问题1，同时配置一下混淆就行</p>
-<h2 id="问题4"><a href="#问题4" class="headerlink" title="问题4"></a>问题4</h2><p>通过hook调用<br>基模块：</p>
-<pre><code>public class CommonModuleDataEngine {
-
-    private static CommonModuleDataEngine INSTANCE;
-
-    private AppInfo appInfo;//这个必须要父模块或者兄弟模块
-    public static CommonModuleDataEngine getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new CommonModuleDataEngine();
-        }
-        return INSTANCE;
-    }
-
-    private CommonModuleDataEngine() {
-    }
-
-    public String getAppInfo() {
-        return appInfo.getAppInfo();
-    }
-
-    public static class Builder {
-        private AppInfo appInfo;
-
-        public Builder setAppInfo(AppInfo appInfo) {
-            this.appInfo = appInfo;
-            return this;
-        }
-        public void build() {
-            CommonModuleDataEngine engin = CommonModuleDataEngine.getInstance();
-            engin.appInfo = this.appInfo;
-
+            <h1 id="Step-1："><a href="#Step-1：" class="headerlink" title="Step 1："></a>Step 1：</h1><p>把状态栏设置为透明</p>
+<pre><code>    if(Build.VERSION.SDK_INT&gt;=Build.VERSION_CODES.LOLLIPOP&amp;&amp;!Build.BRAND.equalsIgnoreCase(&quot;huawei&quot;)){/**5.0及以上且不是华为,
+            因为华为5.0以上系统已经全屏但是状态栏黑色改不掉*/
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if(Build.VERSION.SDK_INT&gt;= Build.VERSION_CODES.M){
+            window.setStatusBarColor(Color.TRANSPARENT);
+            if(Build.MANUFACTURER.toLowerCase().contains(&quot;xiaomi&quot;)) {
+                setMiuiStatusBarDarkMode(true);
+            }
+        }else{
+            window.setStatusBarColor(Color.argb(0x80,0x00,0x00,0x00));
         }
 
+    }else{/**5.0以下，4.0及以上*/
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        winParams.flags |= bits;
+        win.setAttributes(winParams);
     }
-    public interface AppInfo {
-
-        String getAppInfo();
-
+    /**由于MIUI 6修改过所以系统方法无法设置状态栏字体颜色无效，需要使用该方法设置
+    *ps:mui上设置状态栏字体颜色为深色
+    *
+    */
+    public void setMiuiStatusBarDarkMode(boolean isdarkmode) {
+    Class&lt;? extends Window&gt; clazz = this.getWindow().getClass();
+    try {
+        int darkModeFlag = 0;
+        Class&lt;?&gt; layoutParams = Class.forName(&quot;android.view.MiuiWindowManager$LayoutParams&quot;);
+        Field field = layoutParams.getField(&quot;EXTRA_FLAG_STATUS_BAR_DARK_MODE&quot;);
+        darkModeFlag = field.getInt(layoutParams);
+        Method extraFlagField = clazz.getMethod(&quot;setExtraFlags&quot;, int.class, int.class);
+        extraFlagField.invoke(this.getWindow(), isdarkmode ? darkModeFlag : 0, darkModeFlag);
+    } catch (Exception e) {
+        e.printStackTrace();
     }
-
 }
-</code></pre><p>主工程  </p>
-<p>在Application初始化的时候初始几个基类CommonModuleDataEngine，</p>
-<p>ps：内部类的去混淆  </p>
-<pre><code>    -keepclasseswithmembers  class CommonModuleDataEngine {*;}
--keepclasseswithmembers  class CommonModuleDataEngine$* {*;}
-</code></pre><h3 id="其它注意事项"><a href="#其它注意事项" class="headerlink" title="其它注意事项"></a>其它注意事项</h3><p>1、主程序和Module里面的Manifest里面的一些配置同名。必须在manifest  中的相应的配置里面 添加  </p>
-<pre><code>tools:replace=&quot;android:icon,theme,label&quot;
-</code></pre><p>例如基module和主程序都包含了高德定位，manifest必然也有相同的配置信息</p>
-<pre><code>&lt;meta-data
-    tools:replace=&quot;android:value&quot;
-    android:name=&quot;com.amap.api.v2.apikey&quot;
-    android:value=&quot;*******&quot; /&gt;
-</code></pre><p>App组件化与业务拆分: <a href="http://www.jianshu.com/p/60c1b9ddd8ab" target="_blank" rel="external">http://www.jianshu.com/p/60c1b9ddd8ab</a><br>安卓组件化相关开源方案最全总结：<br><a href="https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww" target="_blank" rel="external">https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww</a><br><a href="https://juejin.im/post/5a7ab8846fb9a0634514a2f5" target="_blank" rel="external">https://juejin.im/post/5a7ab8846fb9a0634514a2f5</a></p>
+</code></pre><h2 id="Step-2："><a href="#Step-2：" class="headerlink" title="Step 2："></a>Step 2：</h2><p>设置绘制区域</p>
+<pre><code>rootView.setFitsSystemWindows(true);
+rootView.setClipToPadding(true);
+</code></pre><p>这样rootView就顶上头部去了，但是有个副作用就是界面显示区域也扩展下面的虚拟按键后面了，所以要对于alignparentbottom的功能栏，就不能直接放到rootView里面，必须放到与rootView外面。这样功能栏就不会被底部的虚拟按键盖住（这里不要考虑计算虚拟按键的高度，已经是否有虚拟按键，华为手机可以通过手势动态展开或者收起虚拟按键）</p>
+<h2 id="注意机型："><a href="#注意机型：" class="headerlink" title="注意机型："></a>注意机型：</h2><ol>
+<li>nexus固定死的虚拟按键</li>
+<li>华为和小米Mix可以使用手势控制的虚拟按键</li>
+</ol>
 
           
         
@@ -725,7 +691,7 @@ private static short stream2Short(byte[] stream, int offset) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Android分包/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -747,8 +713,8 @@ private static short stream2Short(byte[] stream, int offset) {
             
               
                 
-                <a class="post-title-link" href="/2015/11/01/Android分包/" itemprop="url">
-                  Android分包
+                <a class="post-title-link" href="/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/" itemprop="url">
+                  AS和Xcode快捷键
                 </a>
               
             
@@ -787,8 +753,8 @@ private static short stream2Short(byte[] stream, int offset) {
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
                   </a>
                 </span>
 
@@ -824,27 +790,24 @@ private static short stream2Short(byte[] stream, int offset) {
       
         
           
-            <h2 id="第一步：-gradle引入以及配置"><a href="#第一步：-gradle引入以及配置" class="headerlink" title="第一步：  gradle引入以及配置"></a>第一步：  gradle引入以及配置</h2><pre><code>compile &apos;com.android.support:multidex:1.0.1&apos;
+            <h1 id="Xcode"><a href="#Xcode" class="headerlink" title="Xcode"></a>Xcode</h1><p>XCode   不能直接修改文件名，需要找到本文件对应的申明或者实现的名称，右键refactor&gt;rename  修改<br>（记得勾选 Rename related files）</p>
+<p>在 Xcode里面所有的窗口控制显示与否都可以通过右上角的来控制  </p>
+<p>定位类的位置  shift  commoand  j</p>
+<p>commond  6 </p>
+<p>option 然后点击方法位置</p>
+<p>commond   T</p>
+<p>shift  commoand  O</p>
+<p>shift  commoand  F</p>
+<p> commoand  F</p>
+<p>esc  查看方法参数   </p>
+<p>快捷键位置方法   XCode&gt;preferences&gt;Key Bindings</p>
+<p>显示主题颜色设置   XCode&gt;preferences&gt;Font &amp; Colors   从Default  改成   Dusk<br>窗口显示和隐藏的button（其中代码下面的debug和log窗口在他们的右下角又有单独的控制显示和隐藏的button）  </p>
+<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E8%AE%BE%E7%BD%AE.png?raw=true" alt="image"></p>
+<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/Xcode%E5%BF%AB%E6%8D%B7%E9%94%AE.jpg?raw=true" alt="image">  </p>
+<p>参考资料：<a href="http://www.cocoachina.com/ios/20141224/10752.html" target="_blank" rel="external">http://www.cocoachina.com/ios/20141224/10752.html</a></p>
+<h1 id="AndroidStudio"><a href="#AndroidStudio" class="headerlink" title="AndroidStudio"></a>AndroidStudio</h1><p>快捷键位置方法   AndroidStudio&gt;preferences&gt;Keymap  （把Mac  OS X 复制一份，然后修改）</p>
+<p>显示主题颜色设置   AndroidStudio&gt;preferences&gt;Editor&gt;Colors &amp; Font   从Default  改成   Darcula  (然后点击 save as  ，再把字体调大一点，不能直接修改) </p>
 
-defaultConfig {
-    minSdkVersion 14
-    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
-    versionCode 5210
-    versionName &quot;5.2.1&quot;
-    //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
-    multiDexEnabled true
-    multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
-    // resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; 暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
-}
-</code></pre><h2 id="第二步：修改Application"><a href="#第二步：修改Application" class="headerlink" title="第二步：修改Application"></a>第二步：修改Application</h2><pre><code>@Override
-protected void attachBaseContext(Context base) {
-    super.attachBaseContext(base);
-    MultiDex.install(base);
-}
-</code></pre><h2 id="第三步：保证关键类在主dex中"><a href="#第三步：保证关键类在主dex中" class="headerlink" title="第三步：保证关键类在主dex中"></a>第三步：保证关键类在主dex中</h2><p> 就是通过multiDexKeep.pro文件控制的<br> 个推 sdk强制在主dex 中</p>
-<pre><code>-dontwarn com.igexin.**
--keep class com.igexin.**{*;}
-</code></pre>
           
         
       
@@ -1092,7 +1055,7 @@ git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/deep_link设计方案/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/ios学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -1114,8 +1077,8 @@ git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
             
               
                 
-                <a class="post-title-link" href="/2015/11/01/deep_link设计方案/" itemprop="url">
-                  Deeplink 设计
+                <a class="post-title-link" href="/2015/11/01/ios学习笔记/" itemprop="url">
+                  iOS入门
                 </a>
               
             
@@ -1154,8 +1117,8 @@ git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
                   </a>
                 </span>
 
@@ -1191,202 +1154,75 @@ git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
       
         
           
-            <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>deeplink指的是在第三方客户端/浏览器中，打开一个APP的H5页面时候，如果发现本地安装了这个APP，就会使用本地APP打开。<br>需要前端和客户端互相配合来实现本功能。</p>
-<h1 id="服务器端："><a href="#服务器端：" class="headerlink" title="服务器端："></a>服务器端：</h1><pre><code>&lt;html&gt;
-&lt;head&gt;
-&lt;meta property=&quot;al:ios:url&quot; content=&quot;applinks://docs&quot; /&gt;
-&lt;meta property=&quot;al:ios:app_store_id&quot; content=&quot;12345&quot; /&gt;
-&lt;meta property=&quot;al:ios:app_name&quot; content=&quot;App Links&quot; /&gt;
-&lt;meta property=&quot;al:android:url&quot; content=&quot;applinks://docs&quot; /&gt;
-&lt;meta property=&quot;al:android:app_name&quot; content=&quot;App Links&quot; /&gt;
-&lt;meta property=&quot;al:android:package&quot; content=&quot;org.applinks&quot; /&gt;
-&lt;meta property=&quot;al:web:url&quot;
-content=&quot;http://applinks.org/documentation&quot; /&gt;
-&lt;/head&gt;
-&lt;body&gt;
-Hello, world!
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre><h1 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h1><p>客户端deeplink的实现需要依靠jump系统。ps:jump系统可以通过URI 实现在app中的定向跳转 ，比如我们的app叫“天上人间”（缩写tsrj）。 </p>
+            <h1 id="第一课：熟悉OC语法"><a href="#第一课：熟悉OC语法" class="headerlink" title="第一课：熟悉OC语法"></a>第一课：熟悉OC语法</h1><h1 id="第二课：storyboard和-手写View"><a href="#第二课：storyboard和-手写View" class="headerlink" title="第二课：storyboard和 手写View"></a>第二课：storyboard和 手写View</h1><p>storyboard;</p>
+<p>直接往上面拖放控件，然后按住ctr  把控件拖动到   @implementation，就相当于自动findview了，可以直接使用是这个控件了  </p>
+<p>   @property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;</p>
+<p>还有一种就是直接关联上点击事件<br>把控件直接拖动到这个申明方法上就可以了</p>
+<pre><code>- (IBAction)showAlert:(id)sender;
+</code></pre><p>这个的原理可以看看storyboard的文件内容就可以明白了，大致和android的类似</p>
+<p>图片资源文件两种放法</p>
 <ol>
-<li>需要先在menifest中注册相应的scheme的filter。<br>ps:一般加载主页上面.</li>
+<li><p>在Supporting  Files 同级添加一个Resources的包，里面直接放图片进去（可以只放三倍图）   </p>
+<pre><code>UIImageView *imageView = [[UIImageView alloc] init];
+   imageView.image = [UIImage imageNamed:@&quot;home_banner.png&quot;];    // 正常显示的图片
+</code></pre></li>
+<li><p>在Assets.xcaseset里面右键新建New image set，然后手动把图片拖动到右边的一倍两倍三倍的框框中去 </p>
+</li>
 </ol>
-<pre><code>&lt;intent-filter&gt;
-&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
-&lt;!-- Accepts URIs that begin with &quot;tsrj://&quot; --&gt;
-&lt;data android:scheme=&quot;tsrj&quot;/&gt;
-&lt;/intent-filter&gt;
-&lt;intent-filter&gt;
-&lt;action android:name=&quot;android.intent.action.VIEW&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
-&lt;category android:name=&quot;android.intent.category.BROWSABLE&quot;/&gt;
-&lt;!-- Accepts URIs that begin with &quot;http://m.tsrj.com/&quot; --&gt;
-&lt;data
-android:host=&quot;m.tsrj.com&quot;
-android:pathPrefix=&quot;/&quot;
-android:scheme=&quot;http&quot;/&gt;
-&lt;data
-android:host=&quot;m.tsrj.com&quot;
-android:pathPrefix=&quot;/&quot;
-android:scheme=&quot;https&quot;/&gt;
-&lt;/intent-filter&gt;
-</code></pre><ol>
-<li>在MainActivity新增解析jump信息的方法</li>
+<p>storyboard  改成手写UI类型  </p>
+<ol>
+<li>第一步： </li>
 </ol>
-<pre><code>private void jump(Intent intent) {
-/** 根据传过来的参数 进行jump跳转 **/
-String action_url = intent.getDataString();
-MLog.i(&quot;启动Main_action_url:&quot; + action_url);
-if (!TextUtils.isEmpty(action_url)) {
-JumpManager.jump(this, action_url);
-} 
-}
-
-JumpManger就实现解析数据然后根据URI跳转的功能
-public static boolean jump(Context ctx, String action_url) {
-
-if (TextUtils.isEmpty(action_url)) {
-return false;
-}
-
-MLog.d(&quot;JumpManager  url:&quot; + action_url);
-
-Uri uri = null;
-
-/**如果不是一个标准的uri格式说明传入的数据无效的 可以直接忽视*/
-
-try {
-uri = Uri.parse(action_url);
-} catch (Exception e) {
-return false;
-}
-
-if (uri == null) {
-return false;
-}
-
-/**检测到是一个合法的uri 先判断是否是满足跳转需求的头部 如果是 开始进行跳转检测 如果不是 直接往内置浏览器跳*/
-
-if (!action_url.startsWith(JumpUriFactory.JUM_URL_HEAD) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_S) &amp;&amp; !action_url.startsWith(JumpUriFactory.JUMP_URL_HEAD_CUSTOM)) {
-
-return false;
-}
-
-Intent jumpintent = null;
-
-List&lt;String&gt; paths = uri.getPathSegments();
-
-/**只有头没有页面参数就返回*/
-if (paths == null || paths.size() &lt;= 0) {
-
-return false;
-}
-
-/**有path 但是path里面为空值 直接打开*/
-String action = paths.get(0);
-if (TextUtils.isEmpty(action)) {
-if (!isFromWebView) {
-jumpToInteriorPageActivity(ctx, uri);
-}
-return false;
-}
-
-/** 使用系统浏览器打开 */
-if (action.equals(&quot;web_system&quot;)) {
-jumpToSystemWebPage(ctx, uri);
-return true;
-}
-
-
-/*else if (action.equals(JumpPageSet.detail)) {
-goWaitress(ctx, action_url);
-return true;
-}*/
-
-/** city */
-else if (action.equals(JumpPageSet.city)) {
-goCity(ctx, action_url);
-return true;
-}
-
-/** usercenter */
-else if (action.equals(JumpPageSet.personal_info)) {
-goUserCenter(ctx, action_url);
-return true;
-}
-</code></pre><ol>
-<li>处理uri解析出里面的参数,放入intent，并跳往相应的主页</li>
+<ul>
+<li>删除storyboard文件  </li>
+<li>编辑Supporting Files目录下的 .plist文件,<br>删除Main storyboard  file name这一项</li>
+</ul>
+<ol>
+<li>第二步：<br> 编辑AppDelegate</li>
 </ol>
-<pre><code>/**
- * 将url的数据进行解析 得到一个存放所有参数的集合
- */
-public static Set&lt;String&gt; getMyQueryParameterNames(Uri uri) {
-    String query = uri.getEncodedQuery();
-    if (query == null) {
-        return Collections.emptySet();
-    }
-    Set&lt;String&gt; names = new LinkedHashSet&lt;String&gt;();
-    int start = 0;
-    do {
-        int next = query.indexOf(&apos;&amp;&apos;, start);
-        int end = (next == -1) ? query.length() : next;
-        int separator = query.indexOf(&apos;=&apos;, start);
-        if (separator &gt; end || separator == -1) {
-            separator = end;
-        }
-        String name = query.substring(start, separator);
-        names.add(Uri.decode(name));
-        // Move start to end of name.
-        start = end + 1;
-    } while (start &lt; query.length());
-    return Collections.unmodifiableSet(names);
-}
-private static void goWaitress(final Context ctx, String actionUrl) {
-    MLog.i(&quot;actionUrl&quot;+actionUrl);
-    Uri  uri;
-    uri=Uri.parse(actionUrl);
-    Set&lt;String&gt;  parameters=JumpManager.getMyQueryParameterNames(uri);
-    Hashtable&lt;String,String&gt; params=new Hashtable&lt;&gt;();
-    if(parameters!=null&amp;&amp;parameters.size()&gt;0){
-        for(String key:parameters){
-            String value=uri.getQueryParameter(key);
-            if(!TextUtils.isEmpty(value)){
-                params.put(key,value);
-            }
-        }
-    }
-    Intent it= new Intent(act, WaitressPage.class);
-    Set&lt;String&gt;  keySet=params.keySet();
-    for (String k:keySet){
-        it.putExtra(k,params.get(k));
-    }
-    startActivity(it);
-    }
-</code></pre><h1 id="DeepLink的坑："><a href="#DeepLink的坑：" class="headerlink" title="DeepLink的坑："></a>DeepLink的坑：</h1><ol>
-<li>由于有些页面有权限限制，所以要跳页面时候，要判断在当前账户当前版本是否可以打开</li>
-<li>如果从H5页面带过来的信息带有登录状态，而且当前app的账号信息和H5页面的不一致，可能需要一个账号切换工作</li>
-</ol>
-<p>#微信里面的deeplink：<br>微信里面的主要就是二维码加上linkme，linkme和微信有合作可以直接把分享的内容通过里面的二维码倒回到app，不过这里要注意一个问题<br>微信里面的图片对size 是有要求的</p>
-<p>图片size越大被压的越厉害，，这个即使通过以下方式绕过微信sdk也无法避免被压缩</p>
-<pre><code>try {
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.setAction(Intent.ACTION_VIEW);
-    intent.addCategory(Intent.CATEGORY_DEFAULT);
-    ComponentName cmp = new ComponentName(&quot;com.tencent.mm&quot;, &quot;com.tencent.mm.ui.tools.ShareScreenImgUI&quot;);
-    intent.setComponent(cmp);
-    String path = localImgPath;
-    if (!TextUtils.isEmpty(path) &amp;&amp; !path.startsWith(&quot;file://&quot;)) {
-        path = &quot;file://&quot; + path;
-    }
-    intent.setDataAndType(Uri.parse(path), &quot;image/jpeg&quot;);
-    act.startActivity(intent);
-} catch (Exception e) {
-    ELog.e(&quot;wechat share failed&quot;);
-}
-</code></pre><p> 所以只有自己先压缩图片到一定的size，  再在这张压缩过的图片上绘制真正的二维码才行，（如果遇到好心的UI把二维码设计的很大就，可以跳过这个坑）</p>
+<pre><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window makeKeyAndVisible];
 
+    ViewController *__rootController = [[ViewController alloc] init];
+    UINavigationController *__navCtrler = [[UINavigationController alloc] initWithRootViewController:__rootController];
+    __navCtrler.navigationBarHidden = YES;
+    self.window.rootViewController = __navCtrler;
+  // Override point for customization after application launch.
+    return YES;
+}
+</code></pre><p>这个相当于Application的oncreate,在这里加载Entry activity</p>
+<p>在ViewController里面手动往根View里面添加控件</p>
+<pre><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    UILabel *firstLable=[[UILabel alloc]init];
+    firstLable.frame=CGRectMake(0, 0, 100, 100);
+    firstLable.backgroundColor = [UIColor whiteColor]; //设置lable背景颜色为黑色
+
+    firstLable.text=@&quot;第一级&quot;;
+    firstLable.userInteractionEnabled = YES;
+
+    [firstLable setTextColor:[UIColor greenColor]]; //设置文本字体颜色为白色
+
+    [self.view addSubview:firstLable];
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapLable:)];
+    [firstLable addGestureRecognizer:singleTap];
+
+    // Do any additional setup after loading the view, typically from a nib.
+}
+</code></pre><p>viewDidLoad 相当于Activity的oncreate，这里我们就是手写View，然后加到根View里面去 self.view<br>    [self.view addSubview:firstLable];</p>
+<h1 id="第三课：Viewcontroller-之间的跳转"><a href="#第三课：Viewcontroller-之间的跳转" class="headerlink" title="第三课：Viewcontroller  之间的跳转"></a>第三课：Viewcontroller  之间的跳转</h1><p>在ViewController从一个Viewcontroller跳到另外一个SecondViewController</p>
+<pre><code>-(void) tapLable:(UILabel *)sender{
+    NSLog(@&quot;进入第二级Controller&quot;);
+
+    SecondViewController *controller = [[SecondViewController alloc] init];
+    [self.navigationController pushViewController:controller animated:YES];
+}
+</code></pre><p>在SecondViewController也是一样的写法</p>
+<p> 返回第一个VIewCOntroller的方法</p>
+<pre><code>[self.navigationController popViewControllerAnimated:YES];
+</code></pre>
           
         
       
@@ -2108,7 +1944,7 @@ buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/AS导入工程配置/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Android模块化方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -2130,8 +1966,8 @@ buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
             
               
                 
-                <a class="post-title-link" href="/2015/11/01/AS导入工程配置/" itemprop="url">
-                  AS工程导入
+                <a class="post-title-link" href="/2015/11/01/Android模块化方案/" itemprop="url">
+                  Android模块化方案
                 </a>
               
             
@@ -2207,35 +2043,91 @@ buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
       
         
           
-            <h1 id="1-工程导入"><a href="#1-工程导入" class="headerlink" title="1.工程导入"></a>1.工程导入</h1><h2 id="1-1-普通eclipse-工程导入"><a href="#1-1-普通eclipse-工程导入" class="headerlink" title="1.1 普通eclipse  工程导入"></a>1.1 普通eclipse  工程导入</h2><p>直接import，AS会提示转成eclipse工程</p>
-<h2 id="1-2-github上的工程导入"><a href="#1-2-github上的工程导入" class="headerlink" title="1.2 github上的工程导入"></a>1.2 github上的工程导入</h2><p>用AS打开top level的settings.gradle选择进行配置导入<br>ps：如果这一步直接导入的话就会报   Could not find method android() for arguments   </p>
-<p>可能遇到的问题：  </p>
+            <h2 id="AAR模块化方案"><a href="#AAR模块化方案" class="headerlink" title="AAR模块化方案"></a>AAR模块化方案</h2><p>1、首先 按照应用分层（common  view），注意每个module最好配置一下resourcePrefix “mc_”<br>2、上层再按照功能模块比如  信用卡和个人中心</p>
+<p>这样每个都会打出一个aar，府工程引入所有的aar就可以引入这个模块</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>但是这个距离一个可以发布出去的aar还有距离，有以下几个问题需要解决：  </p>
 <ol>
-<li><p>配置sdk位置（顶层build.gradle同级）<br>local.properties（建议从已有工程拷贝一个）<br>sdk.dir=/Users/lyc/codeTools/android-sdk  </p>
-</li>
-<li><p>配置模块的build.gradle的gradletoolVersion版本<br>buildToolsVersion ‘23.0.2’</p>
-</li>
+<li>本地jar依赖（主工程很有可能也公用这个jar）；  </li>
+<li>混淆的问题；  </li>
+<li>多个aar合并；   </li>
+<li>兄弟模块互相调用，基模块调用父模块的方法；</li>
 </ol>
-<p>建议从已有工程的里面找一个可用的版本填上去</p>
-<p>查看自己已经有哪些版本的buildTools的方法，</p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B01.png?raw=true" alt="see">  </p>
-<ol>
-<li>modle配置模块的工程compileSdkVersionversion<br>为一个已有版本的</li>
-</ol>
-<ol>
-<li>配置<br>dependencies中的com.android.support的版本，要求是于compileSdkVersionversion的版本一直<br>，但是这个不好处理</li>
-</ol>
-<p>compile ‘com.android.support:design:25.1.1’<br>compile ‘com.android.support:appcompat-v7:25.1.1’<br>compile ‘com.android.support:cardview-v7:25.1.1’</p>
-<p>英文有子序列号<br>建议按照以下方法写<br>compile ‘com.android.support:cardview-v7:25.+’<br>这样就会取本版本号下面最大的一个</p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B02.png?raw=true" alt="see">   </p>
-<p>5.配置本地Gradel版本<br>这个常见于直接从别人那里拷贝的工程（也就是带有gradle/wrapper/**）的工程</p>
-<pre><code>distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip 
-</code></pre><p>gradle会去找这个版本的gradle，如果找不到就会重新下载<br>gradle的默认下载目录在用户目录的.gradle/wrapper/dists文件夹中（隐藏的）  里面会有所有已经下载的gradle 版本，可以把它改成一个已经有的版本就行</p>
-<h2 id="1-3-本地工程导入"><a href="#1-3-本地工程导入" class="headerlink" title="1.3 本地工程导入"></a>1.3 本地工程导入</h2><p>直接import</p>
+<h3 id="问题1"><a href="#问题1" class="headerlink" title="问题1:"></a>问题1:</h3><p>Android dependency的几种方法：<br>eg：  </p>
+<pre><code>    testCompile &apos;junit:junit:4.12&apos;
+//compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])  
+provided fileTree(dir: &apos;libs&apos;,include: [&apos;*.jar&apos;])  
+compile &apos;com.android.support:support-v4:23.0.1&apos;  
+compile project(&apos;:Module_common&apos;)   
+</code></pre><ul>
+<li>testCompile ：  debug 会编译  正式打包不会编译</li>
+<li>compile ： 除去”compile jar”会编译进arr，其余的都不会编译进去</li>
+<li>provided：编译时候不会把jar编译进去</li>
+</ul>
+<p>传递依赖的问题<br>（例如 modle A 依赖 Module B，Module B 又依赖Module  C ）   jar  都放在C里面，Module A不引入jar 也能引用到jar。</p>
+<p>但是正式打包时候不需要这些jar，本地的jar必须以provided方式引入，这样aar里面就不会打进去这些jar了。</p>
+<p>这会引入另外一个问题：C改成provide 这些jar后，A和B找不到这些依赖的jar 会编译失败</p>
+<p>解决方案：<br>把jar单独成一个module D，写成provided<br>（也可在module A  和 B里面  把这些jar 都拷贝进去，然后统统写成provided）</p>
+<h3 id="问题2"><a href="#问题2" class="headerlink" title="问题2"></a>问题2</h3><p>首先要明白，我们要去混淆的是A和主工程的接口，而A和B以及C直接的调用都需要混淆，但是不能在B和C里面混淆，因为这样一混淆的话，A与B、C调用的接口也混淆了</p>
+<p>所以混淆只能在A里面打开，A和B都不能打开混淆</p>
+<h3 id="问题3"><a href="#问题3" class="headerlink" title="问题3"></a>问题3</h3><p>默认会打出三个aar，但是我们只能发布一个aar出去，所以必须使用到 <a href="https://github.com/adwiv/android-fat-aar" target="_blank" rel="external">https://github.com/adwiv/android-fat-aar</a> 写的合并aar的gradle</p>
+<p>方法：<br>1、拷贝 fat-aar.gradle到build.gradle 同级目录<br>2、module的build.gradle新增<br>apply from: ‘fat-aar.gradle’  ，</p>
+<p>compile project(‘:Module_common’)<br>改成<br>embedded project(‘:Module_common’)</p>
+<p>这样在打B的aar时候，会把基moduel的aar合并进来</p>
+<p>如果这个模块工程就一个工程，就只需要解决问题1，同时配置一下混淆就行</p>
+<h2 id="问题4"><a href="#问题4" class="headerlink" title="问题4"></a>问题4</h2><p>通过hook调用<br>基模块：</p>
+<pre><code>public class CommonModuleDataEngine {
+
+    private static CommonModuleDataEngine INSTANCE;
+
+    private AppInfo appInfo;//这个必须要父模块或者兄弟模块
+    public static CommonModuleDataEngine getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new CommonModuleDataEngine();
+        }
+        return INSTANCE;
+    }
+
+    private CommonModuleDataEngine() {
+    }
+
+    public String getAppInfo() {
+        return appInfo.getAppInfo();
+    }
+
+    public static class Builder {
+        private AppInfo appInfo;
+
+        public Builder setAppInfo(AppInfo appInfo) {
+            this.appInfo = appInfo;
+            return this;
+        }
+        public void build() {
+            CommonModuleDataEngine engin = CommonModuleDataEngine.getInstance();
+            engin.appInfo = this.appInfo;
+
+        }
+
+    }
+    public interface AppInfo {
+
+        String getAppInfo();
+
+    }
+
+}
+</code></pre><p>主工程  </p>
+<p>在Application初始化的时候初始几个基类CommonModuleDataEngine，</p>
+<p>ps：内部类的去混淆  </p>
+<pre><code>    -keepclasseswithmembers  class CommonModuleDataEngine {*;}
+-keepclasseswithmembers  class CommonModuleDataEngine$* {*;}
+</code></pre><h3 id="其它注意事项"><a href="#其它注意事项" class="headerlink" title="其它注意事项"></a>其它注意事项</h3><p>1、主程序和Module里面的Manifest里面的一些配置同名。必须在manifest  中的相应的配置里面 添加  </p>
+<pre><code>tools:replace=&quot;android:icon,theme,label&quot;
+</code></pre><p>例如基module和主程序都包含了高德定位，manifest必然也有相同的配置信息</p>
+<pre><code>&lt;meta-data
+    tools:replace=&quot;android:value&quot;
+    android:name=&quot;com.amap.api.v2.apikey&quot;
+    android:value=&quot;*******&quot; /&gt;
+</code></pre><p>App组件化与业务拆分: <a href="http://www.jianshu.com/p/60c1b9ddd8ab" target="_blank" rel="external">http://www.jianshu.com/p/60c1b9ddd8ab</a><br>安卓组件化相关开源方案最全总结：<br><a href="https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww" target="_blank" rel="external">https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww</a><br><a href="https://juejin.im/post/5a7ab8846fb9a0634514a2f5" target="_blank" rel="external">https://juejin.im/post/5a7ab8846fb9a0634514a2f5</a></p>
 
           
         
@@ -2514,7 +2406,7 @@ mRes = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getCon
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-count">33</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2525,7 +2417,7 @@ mRes = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getCon
             
             <div class="site-state-item site-state-categories">
               
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">分类</span>
               
             </div>
@@ -2536,7 +2428,7 @@ mRes = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getCon
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>

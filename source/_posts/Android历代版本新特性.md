@@ -1,17 +1,24 @@
 title: Android版本更新特性 	    
     
+    
 date: 2017-10-11         
+    
     
 categories:            
     
+    
 - Android           
     
+    
 tags:           
+    
     
 - 版本        
     
     
+    
 - Android        
+    
     
            
 ---
@@ -30,6 +37,7 @@ tags:
 ## 4. Android 5  
 * Android Runtime (ART)默认运行平台设置  
 * 引入Material Design设计
+* 转场动画
 
 ## Android 6.0
 * 运行时请求权限
