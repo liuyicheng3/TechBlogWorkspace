@@ -95,7 +95,22 @@ EventBus 3由于使用了注解，比起使用反射来遍历方法的2.4版本�
 	}
 
 
-所以又倒退回了EventBus2.4时不能混淆onEvent开头的方法一样的处境了。所以这里就得权衡一下利弊：使用了注解不用索引加速，则只需要keep住EventBus相关的代码，现有的代码可以正常的进行混淆。而使用了索引加速的话，则需要keep住相关的方法和类。
+所以又倒退回了EventBus2.4时不能混淆onEvent开头的方法一样的处境了。所以这里就得权衡一下利弊：使用了注解不用索引加速，则只需要keep住EventBus相关的代码，现有的代码可以正常的进行混淆。而使用了索引加速的话，则需要keep住相关的方法和类。   
+
+生成的索引的 gradle配置:  
+
+			apt {
+			    arguments {
+			        eventBusIndex "com.example.myapp.MyEventBusIndex"
+			    }
+			}   
+
+生成的索引demo：  
+
+ putIndex(new SimpleSubscriberInfo(com.lyc.MainActivity.class, true, new SubscriberMethodInfo[] {
+            new SubscriberMethodInfo("helloEventBus", com.lyc.eventbus.UserReLoginEvent.class),
+        }));
+
 
 ## Android APT
   参考资料：https://segmentfault.com/a/1190000005100468

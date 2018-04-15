@@ -1,0 +1,1198 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,图片," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="1.请求流程GlideApp.with(mActivity)
+    .load(thumbnail)
+    .placeholder(defaultResId)
+    .into(this); 
+
+GlideApp.with(mActivity) 获取RequestManager  
+into(this)   
+Request previous = target.getReques">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Glide源码解析">
+<meta property="og:url" content="http://yoursite.com/2018/04/15/Glide源码解析/index.html">
+<meta property="og:site_name" content="Nico随笔">
+<meta property="og:description" content="1.请求流程GlideApp.with(mActivity)
+    .load(thumbnail)
+    .placeholder(defaultResId)
+    .into(this); 
+
+GlideApp.with(mActivity) 获取RequestManager  
+into(this)   
+Request previous = target.getReques">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_10.jpg?raw=true">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_8.png?raw=true">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_0.png?raw=true">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_1.png?raw=true">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_3.png?raw=true">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_2.png?raw=true">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_5.png?raw=true">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_6.png?raw=true">
+<meta property="og:updated_time" content="2018-04-15T15:21:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Glide源码解析">
+<meta name="twitter:description" content="1.请求流程GlideApp.with(mActivity)
+    .load(thumbnail)
+    .placeholder(defaultResId)
+    .into(this); 
+
+GlideApp.with(mActivity) 获取RequestManager  
+into(this)   
+Request previous = target.getReques">
+<meta name="twitter:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_10.jpg?raw=true">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/15/Glide源码解析/"/>
+
+
+
+
+
+  <title> Glide源码解析 | Nico随笔 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Nico随笔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/15/Glide源码解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Glide源码解析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-15T23:21:31+08:00">
+                2018-04-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_10.jpg?raw=true" alt="see">    </p>
+<h1 id="1-请求流程"><a href="#1-请求流程" class="headerlink" title="1.请求流程"></a>1.请求流程</h1><pre><code>GlideApp.with(mActivity)
+    .load(thumbnail)
+    .placeholder(defaultResId)
+    .into(this); 
+</code></pre><ol>
+<li>GlideApp.with(mActivity) 获取RequestManager  </li>
+<li><p>into(this)   </p>
+<pre><code>Request previous = target.getRequest();
+
+if (previous != null) {
+ requestManager.clear(target);
+}
+
+requestOptions.lock();
+Request request = buildRequest(target);
+target.setRequest(request);
+requestManager.track(target, request);  
+</code></pre></li>
+<li><p>com.bumptech.glide.request.SingleRequest#begin  开始量尺寸</p>
+<pre><code>if (Util.isValidDimensions(overrideWidth, overrideHeight)) {
+  onSizeReady(overrideWidth, overrideHeight);
+} else {
+  target.getSize(this);
+}
+</code></pre></li>
+</ol>
+<p>onSizeReady后engine正式启动请求 </p>
+<pre><code>loadStatus = engine.load(
+glideContext,
+model,
+requestOptions.getSignature(),
+this.width,
+this.height,
+requestOptions.getResourceClass(),
+transcodeClass,
+priority,
+requestOptions.getDiskCacheStrategy(),
+requestOptions.getTransformations(),
+requestOptions.isTransformationRequired(),
+requestOptions.isScaleOnlyOrNoTransform(),
+requestOptions.getOptions(),
+requestOptions.isMemoryCacheable(),
+requestOptions.getUseUnlimitedSourceGeneratorsPool(),
+requestOptions.getUseAnimationPool(),
+requestOptions.getOnlyRetrieveFromCache(),
+this);
+</code></pre><ol>
+<li><p>尝试重cache 和activeResource里面获取资源 </p>
+<p>EngineKey key = keyFactory.buildKey(model, signature, width, height, transformations,</p>
+<pre><code>resourceClass, transcodeClass, options);
+</code></pre><p> EngineResource&lt;?&gt; active = loadFromActiveResources(key, isMemoryCacheable);<br> if (active != null) {<br>   cb.onResourceReady(active, DataSource.MEMORY_CACHE);<br>   if (Log.isLoggable(TAG, Log.VERBOSE)) {</p>
+<pre><code>logWithTimeAndKey(&quot;Loaded resource from active resources&quot;, startTime, key);
+</code></pre><p>   }<br>   return null;<br> }</p>
+<p> EngineResource&lt;?&gt; cached = loadFromCache(key, isMemoryCacheable);<br> if (cached != null) {<br>   cb.onResourceReady(cached, DataSource.MEMORY_CACHE);<br>   if (Log.isLoggable(TAG, Log.VERBOSE)) {</p>
+<pre><code>logWithTimeAndKey(&quot;Loaded resource from cache&quot;, startTime, key);
+</code></pre><p>   }<br>   return null;<br> }</p>
+</li>
+</ol>
+<ol>
+<li>从sd卡和网络获取数据  </li>
+</ol>
+<pre><code>EngineJob&lt;?&gt; current = jobs.get(key, onlyRetrieveFromCache);
+if (current != null) {
+  current.addCallback(cb);
+  if (Log.isLoggable(TAG, Log.VERBOSE)) {
+    logWithTimeAndKey(&quot;Added to existing load&quot;, startTime, key);
+  }
+  return new LoadStatus(cb, current);
+}
+
+EngineJob&lt;R&gt; engineJob =
+    engineJobFactory.build(
+        key,
+        isMemoryCacheable,
+        useUnlimitedSourceExecutorPool,
+        useAnimationPool,
+        onlyRetrieveFromCache);
+
+DecodeJob&lt;R&gt; decodeJob =
+    decodeJobFactory.build(
+        glideContext,
+        model,
+        key,
+        signature,
+        width,
+        height,
+        resourceClass,
+        transcodeClass,
+        priority,
+        diskCacheStrategy,
+        transformations,
+        isTransformationRequired,
+        isScaleOnlyOrNoTransform,
+        onlyRetrieveFromCache,
+        options,
+        engineJob);
+
+jobs.put(key, engineJob);
+
+engineJob.addCallback(cb);
+engineJob.start(decodeJob);
+</code></pre><p>最终会通过Glide里面定义的executor 获取数据  </p>
+<pre><code>public void start(DecodeJob&lt;R&gt; decodeJob) {
+  this.decodeJob = decodeJob;
+  GlideExecutor executor = decodeJob.willDecodeFromCache()
+      ? diskCacheExecutor
+      : getActiveSourceExecutor();
+  executor.execute(decodeJob);
+}
+</code></pre><ol>
+<li>获取数据的过程    </li>
+</ol>
+<p>最开进来时候是在 GlideExecutor diskCacheExecutor   </p>
+<p>com.bumptech.glide.load.engine.DecodeJob#runWrapped  </p>
+<pre><code>private void runWrapped() {
+    switch (runReason) {
+     case INITIALIZE:
+       stage = getNextStage(Stage.INITIALIZE);
+       currentGenerator = getNextGenerator();
+       runGenerators();
+       break;
+     case SWITCH_TO_SOURCE_SERVICE:
+       runGenerators();
+       break;
+     case DECODE_DATA:
+       decodeFromRetrievedData();
+       break;
+     default:
+       throw new IllegalStateException(&quot;Unrecognized run reason: &quot; + runReason);
+   }
+ }
+
+       private void runGenerators() {
+           currentThread = Thread.currentThread();
+           startFetchTime = LogTime.getLogTime();
+           boolean isStarted = false;
+           while (!isCancelled &amp;&amp; currentGenerator != null
+               &amp;&amp; !(isStarted = currentGenerator.startNext())) {
+             stage = getNextStage(stage);
+             currentGenerator = getNextGenerator();
+
+             if (stage == Stage.SOURCE) {
+               reschedule();
+               return;
+             }
+           }
+           // We&apos;ve run out of stages and generators, give up.
+           if ((stage == Stage.FINISHED || isCancelled) &amp;&amp; !isStarted) {
+             notifyFailed();
+           }
+         }
+</code></pre><p>这个地方实际上就是不断的生成NextGenerator ，在里面DataFetcherGenerator里面的startNext执行下一个操作，最后当NextStage为Stage.SOURCE时候切换回  GlideExecutor sourceExecutor;</p>
+<pre><code>private Stage getNextStage(Stage current) {
+   switch (current) {
+     case INITIALIZE:
+       return diskCacheStrategy.decodeCachedResource()
+           ? Stage.RESOURCE_CACHE : getNextStage(Stage.RESOURCE_CACHE);
+     case RESOURCE_CACHE:
+       return diskCacheStrategy.decodeCachedData()
+           ? Stage.DATA_CACHE : getNextStage(Stage.DATA_CACHE);
+     case DATA_CACHE:
+       // Skip loading from source if the user opted to only retrieve the resource from cache.
+       return onlyRetrieveFromCache ? Stage.FINISHED : Stage.SOURCE;
+     case SOURCE:
+     case FINISHED:
+       return Stage.FINISHED;
+     default:
+       throw new IllegalArgumentException(&quot;Unrecognized stage: &quot; + current);
+   }
+ }
+</code></pre><p>PS：判断使用何种ModuleLoader就是在SourceGenerator里实现的 </p>
+<ol>
+<li>数据获取到后回调 </li>
+</ol>
+<p>可能是直接从DecodeJob切回主线程 ，也可能是从SourceGenerator切回去的   </p>
+<p>com.bumptech.glide.load.engine.DecodeJob#notifyComplete  </p>
+<pre><code>callback.onResourceReady(resource, dataSource);
+</code></pre><p>com.bumptech.glide.load.engine.SourceGenerator#onDataReady  </p>
+<pre><code>DiskCacheStrategy diskCacheStrategy = helper.getDiskCacheStrategy();
+    if (data != null &amp;&amp; diskCacheStrategy.isDataCacheable(loadData.fetcher.getDataSource())) {
+      dataToCache = data;
+
+      cb.reschedule();
+    } else {
+      cb.onDataFetcherReady(loadData.sourceKey, data, loadData.fetcher,
+          loadData.fetcher.getDataSource(), originalKey);
+    }
+</code></pre><p>具体切换的实现逻辑：  </p>
+<pre><code>@Override
+public void onResourceReady(Resource&lt;R&gt; resource, DataSource dataSource) {
+    this.resource = resource;
+    this.dataSource = dataSource;
+    MAIN_THREAD_HANDLER.obtainMessage(MSG_COMPLETE, this).sendToTarget();
+  }
+
+ @Override
+ public void onLoadFailed(GlideException e) {
+    this.exception = e;
+    MAIN_THREAD_HANDLER.obtainMessage(MSG_EXCEPTION, this).sendToTarget();
+  }
+</code></pre><p>子线程转回主线程的方法： </p>
+<pre><code>   private static final Handler MAIN_THREAD_HANDLER =
+         new Handler(Looper.getMainLooper(), new MainThreadCallback());   
+
+private static class MainThreadCallback implements Handler.Callback {
+
+       @Synthetic
+       @SuppressWarnings(&quot;WeakerAccess&quot;)
+       MainThreadCallback() { }
+
+       @Override
+       public boolean handleMessage(Message message) {
+         EngineJob&lt;?&gt; job = (EngineJob&lt;?&gt;) message.obj;
+         switch (message.what) {
+           case MSG_COMPLETE:
+             job.handleResultOnMainThread();
+             break;
+           case MSG_EXCEPTION:
+             job.handleExceptionOnMainThread();
+             break;
+           case MSG_CANCELLED:
+             job.handleCancelledOnMainThread();
+             break;
+           default:
+             throw new IllegalStateException(&quot;Unrecognized message: &quot; + message.what);
+         }
+         return true;
+       }
+     }
+</code></pre><ol>
+<li><p>显示数据及缓存 </p>
+<pre><code>com.bumptech.glide.load.engine.EngineJob#handleResultOnMainThread  {
+
+   ..... 
+   engineResource.acquire();
+    listener.onEngineJobComplete(this, key, engineResource);
+
+    int size = cbs.size();
+    for (int i = 0; i &lt; size; i++) {
+      ResourceCallback cb = cbs.get(i);
+      if (!isInIgnoredCallbacks(cb)) {
+        engineResource.acquire();
+        cb.onResourceReady(engineResource, dataSource);
+      }
+    }
+    // Our request is complete, so we can release the resource.
+    engineResource.release();
+
+    release(false /*isRemovedFromQueue*/);
+}
+</code></pre></li>
+</ol>
+<p>ps: 其实在cb.onResourceReady(engineResource, dataSource); 里面有release();</p>
+<h1 id="2-核心技术点"><a href="#2-核心技术点" class="headerlink" title="2.核心技术点"></a>2.核心技术点</h1><h2 id="2-1-AppGlideModule和ModuleLoader"><a href="#2-1-AppGlideModule和ModuleLoader" class="headerlink" title="2.1 AppGlideModule和ModuleLoader"></a>2.1 AppGlideModule和ModuleLoader</h2><p>AppGlideModule#applyOptions 配置builder参数   </p>
+<pre><code>@Override
+public void applyOptions(Context context, GlideBuilder builder) {
+    final int diskCacheSizeBytes = 200 * 1024 * 1024; // 200 MB
+    builder.setDiskCache(new DiskLruCacheFactory(MidData.ImageDir, diskCacheSizeBytes));
+    judgeIfIsLowDevice(context,builder);
+    super.applyOptions(context, builder);
+}
+</code></pre><p>根据尺寸加载不同的url  </p>
+<pre><code> @Override
+    public void registerComponents(Context context, Glide glide, Registry registry) {
+        registry.append(GlideUrl.class, InputStream.class, new SizeCompatLoader.SizeCompatFactory());
+
+//        registry.prepend(String.class, ByteBuffer.class, new Base64ModelLoaderFactory());
+    }
+</code></pre><p>moudleloader的定义demo</p>
+<pre><code>public class SizeCompatLoader extends OkHttpUrlLoader {
+
+    public SizeCompatLoader(Call.Factory client) {
+        super(client);
+    }
+
+    @Override
+    public boolean handles(GlideUrl url) {
+        return super.handles(url);
+    }
+
+    @Override
+    public LoadData&lt;InputStream&gt; buildLoadData(GlideUrl model, int width, int height, Options options) {
+        ELog.e(&quot;url:&quot;+model.toStringUrl());
+        return super.buildLoadData(model, width, height, options);
+    }
+    ........
+
+    public static class SizeCompatFactory extends  OkHttpUrlLoader.Factory{
+    private static volatile Call.Factory internalClient;
+    private Call.Factory client;
+
+    private static Call.Factory getInternalClient() {
+        if (internalClient == null) {
+            synchronized (Factory.class) {
+                if (internalClient == null) {
+                    internalClient = new OkHttpClient();
+                }
+            }
+        }
+        return internalClient;
+    }
+
+    /**
+     * Constructor for a new Factory that runs requests using a static singleton client.
+     */
+    public SizeCompatFactory() {
+        this(getInternalClient());
+    }
+
+    /**
+     * Constructor for a new Factory that runs requests using given client.
+     *
+     * @param client this is typically an instance of {@code OkHttpClient}.
+     */
+    public SizeCompatFactory(Call.Factory client) {
+        this.client = client;
+    }
+
+    @Override
+    public ModelLoader&lt;GlideUrl, InputStream&gt; build(MultiModelLoaderFactory multiFactory) {
+        return new SizeCompatLoader(client);
+    }
+
+    @Override
+    public void teardown() {
+        // Do nothing, this instance doesn&apos;t own the client.
+    }
+    }
+}  
+</code></pre><p>实际上可以注册多个moudleloader,使用过程中，通过handle(GlideUrl url) 决定是否可以使用这个加载器<br>在请求流程里面是在SourceGenerator判断moudleloader使用哪一个的： </p>
+<pre><code>public boolean startNext() {
+  if (dataToCache != null) {
+    Object data = dataToCache;
+    dataToCache = null;
+    cacheData(data);
+  }
+
+  if (sourceCacheGenerator != null &amp;&amp; sourceCacheGenerator.startNext()) {
+    return true;
+  }
+  sourceCacheGenerator = null;
+
+  loadData = null;
+  boolean started = false;
+  while (!started &amp;&amp; hasNextModelLoader()) {
+    loadData = helper.getLoadData().get(loadDataListIndex++);
+    if (loadData != null
+        &amp;&amp; (helper.getDiskCacheStrategy().isDataCacheable(loadData.fetcher.getDataSource())
+        || helper.hasLoadPath(loadData.fetcher.getDataClass()))) {
+      started = true;
+      loadData.fetcher.loadData(helper.getPriority(), this);
+    }
+  }
+  return started;
+}
+</code></pre><p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_8.png?raw=true" alt="see">    </p>
+<h2 id="2-2-内存缓存"><a href="#2-2-内存缓存" class="headerlink" title="2.2 内存缓存"></a>2.2 内存缓存</h2><ul>
+<li><p>cache （LRUCache）  :不在使用的会放入到 cache里面 （因为每次从resource.acquire 会导致计数器加1，不再使用时候resource.release 会导致计数器减1，当计数器的值减为0时候就会放入cache中）</p>
+</li>
+<li><p>activeresource（HashMap+WeakPreference） ： 正在使用的会放入到activeresource里面  </p>
+</li>
+</ul>
+<h4 id="内存缓存的读取"><a href="#内存缓存的读取" class="headerlink" title="内存缓存的读取"></a>内存缓存的读取</h4><p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_0.png?raw=true" alt="see"><br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_1.png?raw=true" alt="see">  </p>
+<h3 id="activeresource的put"><a href="#activeresource的put" class="headerlink" title="activeresource的put"></a>activeresource的put</h3><ol>
+<li>在最后onEngenJobComplete时候<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_3.png?raw=true" alt="see">    </li>
+</ol>
+<h3 id="activeresource的移除"><a href="#activeresource的移除" class="headerlink" title="activeresource的移除"></a>activeresource的移除</h3><ol>
+<li><p>在从activeresource里面获取资源后  </p>
+<pre><code>WeakReference&lt;EngineResource&lt;?&gt;&gt; activeRef = activeResources.get(key);
+    if (activeRef != null) {
+      active = activeRef.get();
+      if (active != null) {
+        active.acquire();
+      } else {
+        activeResources.remove(key);
+      }
+    }
+</code></pre></li>
+<li><p>当资源被释放后</p>
+<pre><code>public void onResourceReleased(Key cacheKey, EngineResource resource) {
+  Util.assertMainThread();
+  activeResources.remove(cacheKey);
+  if (resource.isCacheable()) {
+    cache.put(cacheKey, resource);
+  } else {
+    resourceRecycler.recycle(resource);
+  }
+}
+</code></pre></li>
+</ol>
+<p>有两种原因导致资源被立即释放   </p>
+<p>a. 最后 handleResultOnMainThread时候 每次enginResource计数器减1，当为0，时候会移入cache，同时从activeresource移除<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_2.png?raw=true" alt="see">      </p>
+<p>b. 当into（Target）时候判断上一个还有绑定的资源时候的clear过程<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_5.png?raw=true" alt="see">      </p>
+<p>最终会导致realease过程<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/glide_6.png?raw=true" alt="see">   </p>
+<h3 id="cache的put操作"><a href="#cache的put操作" class="headerlink" title="cache的put操作"></a>cache的put操作</h3><ol>
+<li><p>读取内存时候从activeresource获取到了元素：   </p>
+</li>
+<li><p>当resource的计数器变成0的时候   </p>
+</li>
+</ol>
+<h2 id="2-3-生命周期的绑定（通过一个隐形的fragment与activity的生命周期绑定）"><a href="#2-3-生命周期的绑定（通过一个隐形的fragment与activity的生命周期绑定）" class="headerlink" title="2.3 生命周期的绑定（通过一个隐形的fragment与activity的生命周期绑定）"></a>2.3 生命周期的绑定（通过一个隐形的fragment与activity的生命周期绑定）</h2><p>com.bumptech.glide.manager.RequestManagerRetriever#get(android.content.Context)</p>
+<pre><code>public RequestManager get(Activity activity) {
+    if (Util.isOnBackgroundThread()) {
+      return get(activity.getApplicationContext());
+    } else {
+      assertNotDestroyed(activity);
+      android.app.FragmentManager fm = activity.getFragmentManager();
+      return fragmentGet(activity, fm, null /*parentHint*/);
+    }
+  }
+
+private RequestManager fragmentGet(Context context, android.app.FragmentManager fm,
+android.app.Fragment parentHint) {
+        RequestManagerFragment current = getRequestManagerFragment(fm, parentHint);
+        RequestManager requestManager = current.getRequestManager();
+        if (requestManager == null) {
+        // TODO(b/27524013): Factor out this Glide.get() call.
+        Glide glide = Glide.get(context);
+        requestManager =
+        factory.build(glide, current.getGlideLifecycle(), current.getRequestManagerTreeNode());
+        current.setRequestManager(requestManager);
+}
+return requestManager;
+}
+</code></pre><p>其中RequestManagerFragment hook了所有的Fragment的生命周期  </p>
+<p>关键属性ActivityFragmentLifecycle lifecycle：会在这里面pause request     </p>
+<h2 id="2-3-自定自定义transform"><a href="#2-3-自定自定义transform" class="headerlink" title="2.3 自定自定义transform"></a>2.3 自定自定义transform</h2><pre><code>GlideApp.with(activity)
+        .load(thumbnail)
+        .transition(new DrawableTransitionOptions().crossFade()) //自定义 淡入淡出效果
+        .transform(new MultiTransformation&lt;Bitmap&gt;(new CenterCrop(), new BlurTransformation())) //自定义图片后续处理比如 缩放、旋转、蒙灰 、或者高斯模糊
+        .into(this);
+</code></pre><p>高斯模糊BlurTransformation:  </p>
+<pre><code>public class BlurTransformation extends BitmapTransformation {
+
+.....
+
+@Override
+protected Bitmap transform(@NonNull Context context, @NonNull BitmapPool pool,
+                           @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+
+    int width = toTransform.getWidth();
+    int height = toTransform.getHeight();
+    int scaledWidth = width / sampling;
+    int scaledHeight = height / sampling;
+
+    Bitmap bitmap = pool.get(scaledWidth, scaledHeight, Bitmap.Config.ARGB_8888);
+
+    Canvas canvas = new Canvas(bitmap);
+    canvas.scale(1 / (float) sampling, 1 / (float) sampling);
+    Paint paint = new Paint();
+    paint.setFlags(Paint.FILTER_BITMAP_FLAG);
+    canvas.drawBitmap(toTransform, 0, 0, paint);
+
+    if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        try {
+            bitmap = BlurRS.blur(context, bitmap, radius);
+        } catch (RSRuntimeException e) {
+            bitmap = BlurFast.blur(bitmap, radius, true);
+        }
+    } else {
+        bitmap = BlurFast.blur(bitmap, radius, true);
+    }
+
+    return bitmap;
+}
+
+......
+</code></pre><p>}</p>
+<h2 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3 参考资料"></a>3 参考资料</h2><p>Glide整体流程： <a href="http://www.cnblogs.com/android-blogs/p/5735655.html" target="_blank" rel="external">http://www.cnblogs.com/android-blogs/p/5735655.html</a>   </p>
+<p>Glide缓存： <a href="http://www.cnblogs.com/android-blogs/p/5737611.html" target="_blank" rel="external">http://www.cnblogs.com/android-blogs/p/5737611.html</a>  </p>
+<p>Glide绑定activity生命周期： <a href="http://www.jishux.com/plus/view-662982-1.html" target="_blank" rel="external">http://www.jishux.com/plus/view-662982-1.html</a>  </p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/图片/" rel="tag"># 图片</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/13/项目经历/" rel="next" title="My Son">
+                <i class="fa fa-chevron-left"></i> My Son
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true"
+               alt="Liuycheng" />
+          <p class="site-author-name" itemprop="name">Liuycheng</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-请求流程"><span class="nav-number">1.</span> <span class="nav-text">1.请求流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-核心技术点"><span class="nav-number">2.</span> <span class="nav-text">2.核心技术点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-AppGlideModule和ModuleLoader"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 AppGlideModule和ModuleLoader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-内存缓存"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 内存缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#内存缓存的读取"><span class="nav-number">2.2.0.1.</span> <span class="nav-text">内存缓存的读取</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#activeresource的put"><span class="nav-number">2.2.1.</span> <span class="nav-text">activeresource的put</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#activeresource的移除"><span class="nav-number">2.2.2.</span> <span class="nav-text">activeresource的移除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cache的put操作"><span class="nav-number">2.2.3.</span> <span class="nav-text">cache的put操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-生命周期的绑定（通过一个隐形的fragment与activity的生命周期绑定）"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 生命周期的绑定（通过一个隐形的fragment与activity的生命周期绑定）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-自定自定义transform"><span class="nav-number">2.4.</span> <span class="nav-text">2.3 自定自定义transform</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-参考资料"><span class="nav-number">2.5.</span> <span class="nav-text">3 参考资料</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liuycheng</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
