@@ -57,6 +57,18 @@ tags:
 因为 输入框在最上面，键盘输入法只要弹出时不盖住输入框，就不会顶起这个Activity的内容，而内容区域调整也是延迟于键盘弹起速度的，但是由于键盘盖住了所以视觉感觉不出来    
 
 
+#### 虚拟按键
+注意android的虚拟按键有两种：  
+一种是N5 N6一类的固定在底部的虚拟按键  
+
+一种是华为 小米mix 一类的的  可以通过手势动态控制底部虚拟按键显示还隐藏   
+这种就需要动态计算高度  
+
+为了解决A问题，需要在顶部放置一个fake EditText ，点击目标EditText时候先让顶部的fakeEditText获得焦点，待键盘完全弹出来后再把焦点转移给目标EditText   
+具体方案：目标EditText监控ontouch事件，在TouchUp时候消耗掉这个事件，这样就不会触发键盘直接弹出来了，这时候，顶部的 fake EditText先获取焦点，延迟一段时间 待键盘完全弹出后再让目标EditText获取焦点
+
+
+
 ## 2.方案二   
 JkeyboardSwitch （https://github.com/Jacksgong/JKeyboardPanelSwitch）  
 
