@@ -247,6 +247,660 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/01/数据库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/04/01/数据库/" itemprop="url">
+                  数据库踩坑和调试
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-01T00:00:00+08:00">
+                2017-04-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><h2 id="Android数据库设计"><a href="#Android数据库设计" class="headerlink" title="Android数据库设计"></a>Android数据库设计</h2><ol>
+<li>冗余字段设计，表设计要空出2到3个冗余字段  </li>
+<li>不要过多的关联查询，外键约束不要多了  </li>
+<li>设计要优先考虑易用性 ，容易升级，性能方面主要要通过应用层来掌控  </li>
+<li>适当的分库可以有效避免数据库被锁住。（sqlite的文件锁） </li>
+</ol>
+<h2 id="Android-DB操作技巧"><a href="#Android-DB操作技巧" class="headerlink" title="Android DB操作技巧"></a>Android DB操作技巧</h2><ol>
+<li>对于经常要使用的DB不需要关闭，一般全局保存一个静态的SQLiteDatabase（Writable的），而且是在Application oncreate 就初始化好.  </li>
+<li>由于Application  没有destroy的回调，这里我们一般会做一个ActivityStack，然后在Activity初始化和destory 时候入栈和出栈来控制界面的显示逻辑,当检测到栈为空的时候就可以认为要退出应用了。</li>
+<li>能一次取完数据，不要分次取（虽然可能取得数据量有一定优化，但是分次太耗时，尽量交给上层做）</li>
+<li>DataBase is locked，导致数据取不出来。 解决方向有以下几点：<br>第1点：在获取databse时候加一个锁<br>第2点：分库，对于相互关联若的数据进行分库处理<br>第3点：数据库不要关闭,并且尝试分开存writeable 和 readable两个静态的DB    <h2 id="数据库调试"><a href="#数据库调试" class="headerlink" title="数据库调试"></a>数据库调试</h2><h3 id="第一步通过AS自带的Android-monitor-把数据库导出来"><a href="#第一步通过AS自带的Android-monitor-把数据库导出来" class="headerlink" title="第一步通过AS自带的Android monitor  把数据库导出来"></a>第一步通过AS自带的Android monitor  把数据库导出来</h3><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9501.png?raw=true" alt="see"><h3 id="第二步通过Sqlite-professional"><a href="#第二步通过Sqlite-professional" class="headerlink" title="第二步通过Sqlite professional"></a>第二步通过Sqlite professional</h3>查看数据库的结构可以具体查看到每一张表的详细信息<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9502.png?raw=true" alt="see"><br>也可以通过query工具栏，执行基本的命令行操作。</li>
+</ol>
+<p>Sqlite基本命令：<a href="http://www.runoob.com/sqlite/sqlite-trigger.html" target="_blank" rel="external">http://www.runoob.com/sqlite/sqlite-trigger.html</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/01/Okhttp核心流程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/11/01/Okhttp核心流程/" itemprop="url">
+                  Okhttp核心流程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-01T20:10:33+08:00">
+                2016-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Interface：OkhttpClient（singleton）-Request-Response"><a href="#Interface：OkhttpClient（singleton）-Request-Response" class="headerlink" title="Interface：OkhttpClient（singleton）  Request  Response"></a>Interface：OkhttpClient（singleton）  Request  Response</h2><h2 id="主要由以下三部分-组成"><a href="#主要由以下三部分-组成" class="headerlink" title="主要由以下三部分 组成"></a>主要由以下三部分 组成</h2><h3 id="1-任务调度：-核心类disruptor（singleton）"><a href="#1-任务调度：-核心类disruptor（singleton）" class="headerlink" title="1. 任务调度： 核心类disruptor（singleton）"></a>1. 任务调度： 核心类disruptor（singleton）</h3><p>a. 线程池<br>b. 队列</p>
+<pre><code>/** Ready async calls in the order they&apos;ll be run. */
+private final Deque&lt;AsyncCall&gt; readyAsyncCalls = new ArrayDeque&lt;&gt;();
+
+/** Running asynchronous calls. Includes canceled calls that haven&apos;t finished yet. */
+private final Deque&lt;AsyncCall&gt; runningAsyncCalls = new ArrayDeque&lt;&gt;();
+
+/** Running synchronous calls. Includes canceled calls that haven&apos;t finished yet. */
+ private final Deque&lt;RealCall&gt; runningSyncCalls = new ArrayDeque&lt;&gt;();
+</code></pre><p>(由于okhttp两种 运行模式   sync  和async）</p>
+<h3 id="2-网络请求"><a href="#2-网络请求" class="headerlink" title="2. 网络请求"></a>2. 网络请求</h3><ul>
+<li>核心类RealCall HttpEngine StreamAllocation   Interceptor (及其中的内部类  Chain） </li>
+<li>每个请求会生成一个Request  </li>
+<li>然后根据 request  和httpclieant  生成唯一的 RealCall(在real里面会构造出一个httpengine)  </li>
+</ul>
+<p>okhttp一个请求的完整流程图<br> <img src="http://blog.piasy.com/img/201607/okhttp_full_process.png" alt="image"></p>
+<p>在realcall的execute方法中会调用     </p>
+<pre><code>client.dispatcher().executed(this);//问题1  
+Response result = getResponseWithInterceptorChain(false);//问题2  
+</code></pre><p>获得请求结果.<br>现在看问题1  在这里面干了写什么<br>其实就是 dispatcher记录任务而已 ，没有任何执行方法<br>核心在问题2中<br>她会  </p>
+<pre><code>Interceptor.Chain chain = new ApplicationInterceptorChain(0, originalRequest, forWebSocket);
+return chain.proceed(originalRequest);
+</code></pre><p>也就是生成拦截器 ，并用这个拦截器启动这个请求<br>继续进入proceed 可以看到<br>进入了ApplicationInterceptorChain的getresponse方法<br>开始构造HttpEngine    </p>
+<pre><code>engine.sendRequest();//问题21
+engine.readResponse();//问题22
+</code></pre><p>在问题21中其实就是  Rfc 标准的一种 实现  </p>
+<pre><code>InternalCache responseCache = Internal.instance.internalCache(client);
+Response cacheCandidate = responseCache != null
+    ? responseCache.get(request)
+    : null;
+</code></pre><p>就是看当前是否配置了cache   如果有cache   则在responseCache.get找 当前request的cache<br>这个过程 就是根据 Util.md5Hex(request.url().toString())的从map中取值cacheCandidate的过程<br>当取到值后还要根据http cache的rfc标准  判断  是否合理能使用<br>new CacheStrategy.Factory(now, request, cacheCandidate).get();<br>在CacheStrategy中 这里会真正的判断和并处理当前的reponse cache和request（处理request是为了  当cache过期后还可以通过304  机制实现重用）；  </p>
+<p>这里需要判断  当前的  cacheCOntrol    Expires等  （尤其要处理一种情况就是当cache过期了  要根据 etag和Last-Modified  等等  要在request 中添加参数）</p>
+<pre><code>if (etag != null) {
+  conditionalRequestBuilder.header(&quot;If-None-Match&quot;, etag);
+} else if (lastModified != null) {
+  conditionalRequestBuilder.header(&quot;If-Modified-Since&quot;, lastModifiedString);
+} else if (servedDate != null) {
+  conditionalRequestBuilder.header(&quot;If-Modified-Since&quot;, servedDateString);
+}
+
+Request conditionalRequest = conditionalRequestBuilder.build();
+</code></pre><p>这是请求前的工作<br>现在开始发送请求</p>
+<pre><code>httpStream = connect();
+httpStream.setHttpEngine(this);
+</code></pre><p>这一部分的核心是StreamAllaction（辅助是ConnectionPool 和Route  RouteSelector）</p>
+<pre><code>streamAllocation.newStream(client.connectTimeoutMillis(),
+client.readTimeoutMillis(), client.writeTimeoutMillis(),
+client.retryOnConnectionFailure(), doExtensiveHealthChecks);
+</code></pre><p>解决的问题 是socket连接重用和  route<br>先是从连接池中找</p>
+<pre><code>// Attempt to get a connection from the pool.
+ RealConnection pooledConnection = Internal.instance.get(connectionPool, address, this);
+ if (pooledConnection != null) {
+   this.connection = pooledConnection;
+   return pooledConnection;
+ }
+</code></pre><p>如果没有的话就看route可以重用嘛</p>
+<pre><code> if (selectedRoute == null) {
+  selectedRoute = routeSelector.next();
+  synchronized (connectionPool) {
+    route = selectedRoute;
+  }
+}
+RealConnection newConnection = new RealConnection(selectedRoute);
+acquire(newConnection);
+</code></pre><p>（这其实和一个dns解析 有关系也就是 一个域名对应多个ip  而且不一定所有的ip都是通的  建立连接的时候会尝试 所有的  直到通了为止</p>
+<pre><code>RouteDatabase里的Set&lt;Route&gt; failedRoutes = new LinkedHashSet&lt;&gt;()）
+</code></pre><p>弄完之后就是放如   </p>
+<pre><code>Internal.instance.put(connectionPool, newConnection);
+</code></pre><p>连接池中  方便下次继续使用<br>下一步 就是建立socket连接的过程</p>
+<pre><code> newConnection.connect(connectTimeout, readTimeout, writeTimeout, address.connectionSpecs(),
+    connectionRetryEnabled);
+routeDatabase().connected(newConnection.route());
+</code></pre><p>跟进去 就是</p>
+<pre><code>connectSocket(connectTimeout, readTimeout, writeTimeout, connectionSpecSelector);
+</code></pre><p>继续</p>
+<pre><code> try {
+  Platform.get().connectSocket(rawSocket, route.socketAddress(), connectTimeout);
+} catch (ConnectException e) {
+  throw new ConnectException(&quot;Failed to connect to &quot; + route.socketAddress());
+}
+source = Okio.buffer(Okio.source(rawSocket));
+sink = Okio.buffer(Okio.sink(rawSocket));
+</code></pre><p>连接socket（返回连接 是以Http1xStream Http2xStream）形式返回回来的<br>然后才是真正发送这个请求的过程   </p>
+<pre><code>httpStream.writeRequestHeaders(networkRequest);
+requestBodyOut = httpStream.createRequestBody(networkRequest, contentLength);
+</code></pre><p>继续跟进   </p>
+<pre><code> httpEngine.writingRequestHeaders();
+  String requestLine = RequestLine.get(
+    request, httpEngine.getConnection().route().proxy().type());
+writeRequest(request.headers(), requestLine);
+</code></pre><p>》》</p>
+<pre><code>** Returns bytes of a request header for sending on an HTTP transport. */
+public void writeRequest(Headers headers, String requestLine) throws IOException {
+if (state != STATE_IDLE) throw new IllegalStateException(&quot;state: &quot; + state);
+sink.writeUtf8(requestLine).writeUtf8(&quot;\r\n&quot;);
+for (int i = 0, size = headers.size(); i &lt; size; i++) {
+  sink.writeUtf8(headers.name(i))
+      .writeUtf8(&quot;: &quot;)
+      .writeUtf8(headers.value(i))
+      .writeUtf8(&quot;\r\n&quot;);
+}
+sink.writeUtf8(&quot;\r\n&quot;);
+state = STATE_OPEN_REQUEST_BODY;
+}
+</code></pre><p>读过程<br>就是通过这个stream构造出 newChunkedSink 或者newFixedLengthSink  </p>
+<p>到此 请求reponse的工作做完了<br>现在 如果是需要真正发送网络请求就也就是问题22</p>
+<pre><code>networkResponse = new NetworkInterceptorChain(0, networkRequest).proceed(networkRequest);
+</code></pre><p>》》</p>
+<pre><code>engin.readResponse
+</code></pre><p>》》</p>
+<pre><code>// Write the request body to the socket.
+if (requestBodyOut != null) {
+  if (bufferedRequestBody != null) {
+    // This also closes the wrapped requestBodyOut.
+    bufferedRequestBody.close();
+  } else {
+    requestBodyOut.close();
+  }
+  if (requestBodyOut instanceof RetryableSink) {
+    httpStream.writeRequestBody((RetryableSink) requestBodyOut);
+  }
+}
+
+networkResponse = readNetworkResponse();
+</code></pre><p>》》</p>
+<pre><code>Response readNetworkResponse() throws IOException {
+httpStream.finishRequest();
+
+Response networkResponse = httpStream.readResponseHeaders()
+    .request(networkRequest)
+    .handshake(streamAllocation.connection().handshake())
+    .header(OkHeaders.SENT_MILLIS, Long.toString(sentRequestMillis))
+    .header(OkHeaders.RECEIVED_MILLIS, Long.toString(System.currentTimeMillis()))
+    .build();
+
+if (!forWebSocket) {
+  networkResponse = networkResponse.newBuilder()
+      .body(httpStream.openResponseBody(networkResponse))
+      .build();
+}
+
+if (&quot;close&quot;.equalsIgnoreCase(networkResponse.request().header(&quot;Connection&quot;))
+    || &quot;close&quot;.equalsIgnoreCase(networkResponse.header(&quot;Connection&quot;))) {
+  streamAllocation.noNewStreams();
+}
+
+return networkResponse;
+</code></pre><p>  }</p>
+<p>解析和返回</p>
+<pre><code> Response response = engine.getResponse();
+
+
+//tobe continue（已经 cache过程 请求重试过程）
+ Request followUp = engine.followUpRequest();
+</code></pre><h3 id="4-Interceptor-Chain-请求链路"><a href="#4-Interceptor-Chain-请求链路" class="headerlink" title="4. Interceptor.Chain  请求链路"></a>4. Interceptor.Chain  请求链路</h3><h4 id="4-1-chain的初始化"><a href="#4-1-chain的初始化" class="headerlink" title="4.1 chain的初始化"></a>4.1 chain的初始化</h4><p>第一个拦截器RetryAndFollowUpInterceptor 是在初始化RealCall 时候new的</p>
+<pre><code>RealCall(OkHttpClient client, Request originalRequest, boolean forWebSocket) {
+   final EventListener.Factory eventListenerFactory = client.eventListenerFactory();
+
+   this.client = client;
+   this.originalRequest = originalRequest;
+   this.forWebSocket = forWebSocket;
+   this.retryAndFollowUpInterceptor = new RetryAndFollowUpInterceptor(client, forWebSocket);
+
+   // TODO(jwilson): this is unsafe publication and not threadsafe.
+   this.eventListener = eventListenerFactory.create(this);
+ }
+</code></pre><p> 后面再真正执行时候创建了其他拦截器   </p>
+<pre><code>@Override public Response execute() throws IOException {
+  try {
+    client.dispatcher().executed(this);
+    Response result = getResponseWithInterceptorChain();
+    if (result == null) throw new IOException(&quot;Canceled&quot;);
+    return result;
+  } finally {
+    client.dispatcher().finished(this);
+  }
+}
+
+      Response getResponseWithInterceptorChain() throws IOException {
+         // Build a full stack of interceptors.
+         List&lt;Interceptor&gt; interceptors = new ArrayList&lt;&gt;();
+         interceptors.addAll(client.interceptors());
+         interceptors.add(retryAndFollowUpInterceptor);
+         interceptors.add(new BridgeInterceptor(client.cookieJar()));
+         interceptors.add(new CacheInterceptor(client.internalCache()));
+         interceptors.add(new ConnectInterceptor(client));
+         if (!forWebSocket) {
+           interceptors.addAll(client.networkInterceptors());
+         }
+         interceptors.add(new CallServerInterceptor(forWebSocket));
+
+         Interceptor.Chain chain = new RealInterceptorChain(
+             interceptors, null, null, null, 0, originalRequest);
+         return chain.proceed(originalRequest);
+       }   
+</code></pre><p>我们经常自定义的   </p>
+<pre><code>Applicationinterceptor 》》 client.interceptors() 
+NetWorkclientepter 》》client.networkInterceptors()    
+</code></pre><p>责任链的实现 是需要通过 在每个层级Interceptor里面new RealInterceptorChain  实现的   </p>
+<p>每次new的时候都是在当前index+1， 而且里面传入所有的interceptors</p>
+<pre><code>// Call the next interceptor in the chain.
+RealInterceptorChain next = new RealInterceptorChain(
+    interceptors, streamAllocation, httpCodec, connection, index + 1, request);
+Interceptor interceptor = interceptors.get(index);
+Response response = interceptor.intercept(next);
+</code></pre><p>RealInterceptorChain  中的</p>
+<pre><code>proceed(Request request, StreamAllocation streamAllocation, HttpCodec httpCodec,
+    RealConnection connection)
+</code></pre><p>最后会调用  interceptor.intercept(next)  </p>
+<pre><code>response = ((RealInterceptorChain) chain).proceed(request, streamAllocation, null, null);
+</code></pre><p>每个interceptor 都会在intercept方法里面调用本层级的 ((RealInterceptorChain) chain).proceed  进而递归到最后一层    </p>
+<p>最后递归到 CallServerInterceptor 的intercept方法：   </p>
+<pre><code>@Override public Response intercept(Chain chain) throws IOException {
+  RealInterceptorChain realChain = (RealInterceptorChain) chain;
+  HttpCodec httpCodec = realChain.httpStream();
+  StreamAllocation streamAllocation = realChain.streamAllocation();
+  RealConnection connection = (RealConnection) realChain.connection();
+  Request request = realChain.request();
+
+  if (HttpMethod.permitsRequestBody(request.method()) &amp;&amp; request.body() != null) {
+
+    if (&quot;100-continue&quot;.equalsIgnoreCase(request.header(&quot;Expect&quot;))) {
+      httpCodec.flushRequest();
+      responseBuilder = httpCodec.readResponseHeaders(true);
+    }
+
+    if (responseBuilder == null) {
+      // Write the request body if the &quot;Expect: 100-continue&quot; expectation was met.
+      Sink requestBodyOut = httpCodec.createRequestBody(request, request.body().contentLength());
+      BufferedSink bufferedRequestBody = Okio.buffer(requestBodyOut);
+      request.body().writeTo(bufferedRequestBody);
+      bufferedRequestBody.close();
+    } 
+
+  Response response = responseBuilder
+      .request(request)
+      .handshake(streamAllocation.connection().handshake())
+      .sentRequestAtMillis(sentRequestMillis)
+      .receivedResponseAtMillis(System.currentTimeMillis())
+      .build();
+       ......
+  return response;
+}
+</code></pre><p>  最后在每一个IntercepterChain里面的 </p>
+<p>  Response response = interceptor.intercept(next);</p>
+<p>  拿到里面一层的intercepter的response 然后加工最后返回给上一层的intercepter  </p>
+<p>   例如BridgeInterceptor里面会拿到CacheInterpceter里面返回的response 然后处理一下返回给上一层的RetryAndFollowUpInterceptor  </p>
+<pre><code> Response networkResponse = chain.proceed(requestBuilder.build());
+ Response response = interceptor.intercept(next);
+ HttpHeaders.receiveHeaders(cookieJar, userRequest.url(), networkResponse.headers());
+Response.Builder responseBuilder = networkResponse.newBuilder()
+    .request(userRequest);
+
+if (transparentGzip
+    &amp;&amp; &quot;gzip&quot;.equalsIgnoreCase(networkResponse.header(&quot;Content-Encoding&quot;))
+    &amp;&amp; HttpHeaders.hasBody(networkResponse)) {
+  GzipSource responseBody = new GzipSource(networkResponse.body().source());
+  Headers strippedHeaders = networkResponse.headers().newBuilder()
+      .removeAll(&quot;Content-Encoding&quot;)
+      .removeAll(&quot;Content-Length&quot;)
+      .build();
+  responseBuilder.headers(strippedHeaders);
+  responseBuilder.body(new RealResponseBody(strippedHeaders, Okio.buffer(responseBody)));
+}
+
+return responseBuilder.build();
+</code></pre><p>PS：这些intercepter大多数都在okhttp3.internal.http包下面 。   </p>
+<h4 id="4-3"><a href="#4-3" class="headerlink" title="4.3"></a>4.3</h4><p>虽然在ConnectInterceptor分配了Connection 但是却是在CallServerInterceptor发起的网络请求<br>（这里涉及到 HTTP1.1的长连接，一次建立TCP连接后，下一次请求同一域名，继续用这个通道传输数据）</p>
+<pre><code>@Override public Response intercept(Chain chain) throws IOException {
+    RealInterceptorChain realChain = (RealInterceptorChain) chain;
+    Request request = realChain.request();
+    StreamAllocation streamAllocation = realChain.streamAllocation();
+
+    // We need the network to satisfy this request. Possibly for validating a conditional GET.
+    boolean doExtensiveHealthChecks = !request.method().equals(&quot;GET&quot;);
+    HttpCodec httpCodec = streamAllocation.newStream(client, doExtensiveHealthChecks);
+    RealConnection connection = streamAllocation.connection();
+
+    return realChain.proceed(request, streamAllocation, httpCodec, connection);
+  }
+</code></pre><h4 id="4-2-这里的每个intercepter-都需要new-一个RealInterceptorChain-可以参考-Fresco的方案改进"><a href="#4-2-这里的每个intercepter-都需要new-一个RealInterceptorChain-可以参考-Fresco的方案改进" class="headerlink" title="4.2 这里的每个intercepter 都需要new 一个RealInterceptorChain 可以参考 Fresco的方案改进"></a>4.2 这里的每个intercepter 都需要new 一个RealInterceptorChain 可以参考 Fresco的方案改进</h4><p>RetryAndFollowUpInterceptor（BridgeInterceptor（CacheInterceptor(ConnectInterceptor(CallServerInterceptor()))）)</p>
+<p>这样一层嵌套一层，就可以直接不借助RealInterceptorChain实现责任链</p>
+<h4 id="4-3-日志"><a href="#4-3-日志" class="headerlink" title="4.3  日志"></a>4.3  日志</h4><ul>
+<li><p>请求结果日志  </p>
+<pre><code>  compile &apos;com.squareup.okhttp3:logging-interceptor:3.8.1&apos;   
+
+public class HttpLogger implements HttpLoggingInterceptor.Logger {
+  @Override
+  public void log(String message) {
+    Log.d(&quot;HttpLogInfo&quot;, message);
+  }
+}  
+
+HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor(new HttpLogger());
+logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);   
+
+OkHttpClient client = new OkHttpClient.Builder()
+              .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
+              .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+    .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+    .addNetworkInterceptor(logInterceptor)
+</code></pre></li>
+</ul>
+<ul>
+<li>请求时长日志  </li>
+</ul>
+<p>在okhttp里面打印：</p>
+<pre><code>class LoggingInterceptor implements Interceptor {
+  @Override public Response intercept(Interceptor.Chain chain) throws IOException {
+    Request request = chain.request();
+
+    //请求前--打印请求信息
+    long t1 = System.nanoTime();
+    logger.info(String.format(&quot;Sending request %s on %s%n%s&quot;,
+        request.url(), chain.connection(), request.headers()));
+
+    //网络请求
+    Response response = chain.proceed(request);
+
+    //网络响应后--打印响应信息
+    long t2 = System.nanoTime();
+    logger.info(String.format(&quot;Received response for %s in %.1fms%n%s&quot;,
+        response.request().url(), (t2 - t1) / 1e6d, response.headers()));
+
+    return response;
+  }
+}   
+</code></pre><p>在volley里面打印：  </p>
+<p>在GsonRequest里面 打印请求响应时间和请求日志  </p>
+<pre><code>protected Response&lt;T&gt; parseNetworkResponse(NetworkResponse response) 
+</code></pre><p>请求响应时长：可以在new GsonRequest时候记录开始时间，在parseNetworkResponse时候后打印最终响应时间<br>请求日志：直接打印response.data的结果就行了   </p>
+<ul>
+<li>日志打印框架<br><a href="https://github.com/orhanobut/logger" target="_blank" rel="external">https://github.com/orhanobut/logger</a></li>
+</ul>
+<p>参考资料：<a href="https://www.jianshu.com/p/d04b463806c8" target="_blank" rel="external">https://www.jianshu.com/p/d04b463806c8</a>    </p>
+<h3 id="3-cache管理"><a href="#3-cache管理" class="headerlink" title="3. cache管理"></a>3. cache管理</h3><p>最后附上 相关的http请求cache的rfc内容<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/http_cache.jpg" alt="image"></p>
+<h3 id="每个状态的详细说明如下："><a href="#每个状态的详细说明如下：" class="headerlink" title="每个状态的详细说明如下："></a>每个状态的详细说明如下：</h3><h4 id="1-Last-Modified"><a href="#1-Last-Modified" class="headerlink" title="1. Last-Modified"></a>1. Last-Modified</h4><p>在浏览器第一次请求某一个URL时，服务器端的返回状态会是200，内容是你请求的资源，同时有一个Last-Modified的属性标记(HttpReponse Header)此文件在服务期端最后被修改的时间，格式类似这样：<br>Last-Modified:Tue, 24 Feb 2009 08:01:04 GMT<br>客户端第二次请求此URL时，根据HTTP协议的规定，浏览器会向服务器传送If-Modified-Since报头(HttpRequest Header)，询问该时间之后文件是否有被修改过：<br>If-Modified-Since:Tue, 24 Feb 2009 08:01:04 GMT<br>如果服务器端的资源没有变化，则自动返回HTTP304（NotChanged.）状态码，内容为空，这样就节省了传输数据量。当服务器端代码发生改变或者重启服务器时，则重新发出资源，返回和第一次请求时类似。从而保证不向客户端重复发出资源，也保证当服务器有变化时，客户端能够得到最新的资源。<br>注：如果If-Modified-Since的时间比服务器当前时间(当前的请求时间request_time)还晚，会认为是个非法请求  </p>
+<h4 id="2-Etag工作原理"><a href="#2-Etag工作原理" class="headerlink" title="2. Etag工作原理"></a>2. Etag工作原理</h4><p>HTTP协议规格说明定义ETag为“被请求变量的实体标记”（参见14.19）。简单点即服务器响应时给请求URL标记，并在HTTP响应头中将其传送到客户端，类似服务器端返回的格式：<br>Etag:“5d8c72a5edda8d6a:3239″<br>客户端的查询更新格式是这样的：<br>If-None-Match:“5d8c72a5edda8d6a:3239″<br>如果ETag没改变，则返回状态304。<br>即:在客户端发出请求后，HttpReponse Header中包含Etag:“5d8c72a5edda8d6a:3239″<br>标识，等于告诉Client端，你拿到的这个的资源有表示ID：5d8c72a5edda8d6a:3239。当下次需要发Request索要同一个URI的时候，浏览器同时发出一个If-None-Match报头(Http RequestHeader)此时包头中信息包含上次访问得到的Etag:“5d8c72a5edda8d6a:3239″标识。<br>If-None-Match:“5d8c72a5edda8d6a:3239“<br>,这样，Client端等于Cache了两份，服务器端就会比对2者的etag。如果If-None-Match为False，不返回200，返回304(Not Modified) Response。  </p>
+<h4 id="3-Expires"><a href="#3-Expires" class="headerlink" title="3. Expires"></a>3. Expires</h4><p>给出的日期/时间后，被响应认为是过时。如Expires:Thu, 02 Apr 2009 05:14:08 GMT<br>需和Last-Modified结合使用。用于控制请求文件的有效时间，当请求数据在有效期内时客户端浏览器从缓存请求数据而不是服务器端.当缓存中数据失效或过期，才决定从服务器更新数据。  </p>
+<h4 id="4-Last-Modified和Expires"><a href="#4-Last-Modified和Expires" class="headerlink" title="4. Last-Modified和Expires"></a>4. Last-Modified和Expires</h4><p>Last-Modified标识能够节省一点带宽，但是还是逃不掉发一个HTTP请求出去，而且要和Expires一起用。而Expires标识却使得浏览器干脆连HTTP请求都不用发，比如当用户F5或者点击Refresh按钮的时候就算对于有Expires的URI，一样也会发一个HTTP请求出去，所以，Last-Modified还是要用的，而且要和Expires一起用。  </p>
+<h4 id="5-Etag和Expires"><a href="#5-Etag和Expires" class="headerlink" title="5. Etag和Expires"></a>5. Etag和Expires</h4><p>如果服务器端同时设置了Etag和Expires时，Etag原理同样，即与Last-Modified/Etag对应的HttpRequestHeader:If-Modified-Since和If-None-Match。我们可以看到这两个Header的值和WebServer发出的Last-Modified,Etag值完全一样；在完全匹配If-Modified-Since和If-None-Match即检查完修改时间和Etag之后，服务器才能返回304.  </p>
+<h4 id="6-Last-Modified和Etag"><a href="#6-Last-Modified和Etag" class="headerlink" title="6. Last-Modified和Etag"></a>6. Last-Modified和Etag</h4><p>分布式系统里多台机器间文件的last-modified必须保持一致，以免负载均衡到不同机器导致比对失败<br>分布式系统尽量关闭掉Etag(每台机器生成的etag都会不一样)<br>Last-Modified和ETags请求的http报头一起使用，服务器首先产生Last-Modified/Etag标记，服务器可在稍后使用它来判断页面是否已经被修改，来决定文件是否继续缓存<br>过程如下:  </p>
+<ul>
+<li>客户端请求一个页面（A）。  </li>
+<li>服务器返回页面A，并在给A加上一个Last-Modified/ETag。  </li>
+<li>客户端展现该页面，并将页面连同Last-Modified/ETag一起缓存。  </li>
+<li>客户再次请求页面A，并将上次请求时服务器返回的Last-Modified/ETag一起传递给服务器。  </li>
+<li>服务器检查该Last-Modified或ETag，并判断出该页面自上次客户端请求之后还未被修改，直接返回响应304和一个空的响应体。  </li>
+</ul>
+<p>备注：   </p>
+<ul>
+<li>Last-Modified和Etag头都是由WebServer发出的HttpReponse Header，WebServer应该同时支持这两种头。  </li>
+<li>WebServer发送完Last-Modified/Etag头给客户端后，客户端会缓存这些头；  </li>
+<li>客户端再次发起相同页面的请求时，将分别发送与Last-Modified/Etag对应的HttpRequestHeader:If-Modified-Since和If-None-Match。我们可以看到这两个Header的值和WebServer发出的Last-Modified,Etag值完全一样；  </li>
+<li>通过上述值到服务器端检查，判断文件是否继续缓存；  </li>
+</ul>
+<h4 id="7-关于-Cache-Control-max-age-秒-和-Expires"><a href="#7-关于-Cache-Control-max-age-秒-和-Expires" class="headerlink" title="7.关于 Cache-Control: max-age=秒 和 Expires"></a>7.关于 Cache-Control: max-age=秒 和 Expires</h4><p>Expires = 时间，HTTP 1.0 版本，缓存的载止时间，允许客户端在这个时间之前不去检查（发请求）<br>max-age = 秒，HTTP 1.1版本，资源在本地缓存多少秒。<br>如果max-age和Expires同时存在，则被Cache-Control的max-age覆盖。<br>Expires 的一个缺点就是，返回的到期时间是服务器端的时间，这样存在一个问题，如果客户端的时间与服务器的时间相差很大，那么误差就很大，所以在HTTP 1.1版开始，使用Cache-Control: max-age=秒替代。<br>Expires =max-age +   “每次下载时的当前的request时间”<br>所以一旦重新下载的页面后，expires就重新计算一次，但last-modified不会变化   </p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/10/01/沉浸式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -397,6 +1051,536 @@ rootView.setClipToPadding(true);
 <li>nexus固定死的虚拟按键</li>
 <li>华为和小米Mix可以使用手势控制的虚拟按键</li>
 </ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/gradle坑/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/gradle坑/" itemprop="url">
+                  AS 踩坑日记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>升级instant run时候的报错<br>Error:Access to the dex task is now impossible, starting with 1.4.0<br>1.4.0 introduces a new Transform API allowing manipulation of the .class files.<br>See more information: <a href="http://tools.android.com/tech-docs/new-build-system/transform-api" target="_blank" rel="external">http://tools.android.com/tech-docs/new-build-system/transform-api</a></p>
+<p>解决方案：</p>
+<p>buildscript {<br>    repositories {<br>        jcenter()<br>    }<br>    dependencies {<br>        classpath ‘com.android.tools.build:gradle:2.0.0’</p>
+<pre><code>}
+</code></pre><p>}</p>
+<p>改成1.3.0</p>
+<p>项目根目录的gradle的<br>grade.property</p>
+<p>distributionUrl=https\://services.gradle.org/distributions/gradle-2.2-all.zip</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/git教程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/git教程/" itemprop="url">
+                  Github 教程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="本地工程上传github"><a href="#本地工程上传github" class="headerlink" title="本地工程上传github"></a>本地工程上传github</h2><ol>
+<li>首先在github上创建一个resp</li>
+<li>在本地工程里面引入 .gitignore<ul>
+<li>在androidstudio 安装一个ignore 插件，可以生成部分ignore</li>
+<li>对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore</li>
+<li>.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）<a href="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore" target="_blank" rel="external">原文件</a> </li>
+</ul>
+</li>
+</ol>
+<pre><code>.gradle
+/local.properties
+/gradle.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+bin
+gen
+.settings
+.idea
+target
+*.iml
+*.key
+</code></pre><ol>
+<li><p>touch README.md  》》生成 reamdme文件</p>
+</li>
+<li><p>git init当前工程 》》生成 git信息</p>
+</li>
+<li><p>git add -A 》》把当前工程除了ingore的添加到git里面</p>
+</li>
+<li><p>git commit 》》生成第一次的commit信息</p>
+</li>
+<li><p>git remote add origin git@github.com:liuyicheng3/NewRepo.git   》》设置当前git工程的远程分支</p>
+</li>
+<li><p>git push -u origin master 》》push 到github上去</p>
+</li>
+<li><p>Attention:一般android studio的默认ssh是 androidstudio自己的，所以这时候用android studio会提交不上去<br>需要在settiings&gt;vertion control&gt; git里面吧 SSH excutable 由built-in 改成 native</p>
+</li>
+</ol>
+<p>##维护git文档方法</p>
+<ul>
+<li>可以网页里面直接弄，就不要通本地修改再提交，太麻烦。</li>
+<li>涉及到外部链接的图片文件，git库里面建对应的文件夹统一维护。</li>
+<li>对于图片贴的地址一定要是raw的，不要那个github上显示的地址<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="string">原文件</span>](<span class="link">https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore</span>)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="一般的git工作流程"><a href="#一般的git工作流程" class="headerlink" title="一般的git工作流程"></a>一般的git工作流程</h2><h3 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h3><h3 id="按featrue-开发"><a href="#按featrue-开发" class="headerlink" title="按featrue 开发"></a>按featrue 开发</h3><h3 id="codereview及合并"><a href="#codereview及合并" class="headerlink" title="codereview及合并"></a>codereview及合并</h3><h2 id="Markdown-快捷键"><a href="#Markdown-快捷键" class="headerlink" title="Markdown 快捷键"></a>Markdown 快捷键</h2><ol>
+<li>空两行，让后代码区域两个TAB</li>
+<li>shift tab  收回一个tab</li>
+</ol>
+<h2 id="Git-常见场景"><a href="#Git-常见场景" class="headerlink" title="Git 常见场景"></a>Git 常见场景</h2><h3 id="1-不小心提交错了分支，把修改直接提交到master里面了"><a href="#1-不小心提交错了分支，把修改直接提交到master里面了" class="headerlink" title="1. 不小心提交错了分支，把修改直接提交到master里面了"></a>1. 不小心提交错了分支，把修改直接提交到master里面了</h3><p>  git log  查到提交前的versioncode<br>  git revert 123dadafa     revert到这个节点<br>    git push –force   强制用本地的版本覆盖git上的版本</p>
+<p>git  reset  和 git revert区别 <a href="http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html" target="_blank" rel="external">http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html</a></p>
+<h3 id="2-git-舍弃本地的修改"><a href="#2-git-舍弃本地的修改" class="headerlink" title="2. git 舍弃本地的修改"></a>2. git 舍弃本地的修改</h3><pre><code>git checkout . &amp;&amp; git clean -xdf
+</code></pre><h3 id="3-git-合并分支的冲突"><a href="#3-git-合并分支的冲突" class="headerlink" title="3. git 合并分支的冲突"></a>3. git 合并分支的冲突</h3><p>解决冲突后需要   </p>
+<pre><code>git rebase --continue   
+</code></pre><h3 id="4-git-生成patch"><a href="#4-git-生成patch" class="headerlink" title="4. git 生成patch"></a>4. git 生成patch</h3><p>当前还没提交，生成当前修改的patch </p>
+<pre><code>git diff  &gt; 1.patch    
+</code></pre><p>生成已经提交的几次记录的patch   </p>
+<pre><code>git log    //查看需要生成到那个提交日志的patch
+git format-patch -3     // 从master往前3个提交的内容，可修改为你想要的数值
+git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
+</code></pre><h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a href="http://blog.csdn.net/kevinx_xu/article/details/11660915" target="_blank" rel="external">http://blog.csdn.net/kevinx_xu/article/details/11660915</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/混淆写法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/混淆写法/" itemprop="url">
+                  混淆写法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/打包/" itemprop="url" rel="index">
+                    <span itemprop="name">打包</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>-keepclassmembers class <strong> {<br>    public void onEvent*(</strong>);<br>}</p>
+<p>只保护 public void onEvent<em>(*</em>)的方法不被重命名</p>
+<p>-keepattributes Signature</p>
+<p>-keep class okio.<em>* {</em>;}</p>
+<p>-keep class android.support.v4.app.NotificationCompat<em>*{<br>    public </em>;<br>}</p>
+<p>-keep class com.veda.lyc.Utils{ static *;}<br>保持里面的静态方法不被混淆</p>
+<p>keep的几个选项</p>
+<table>
+<thead>
+<tr>
+<th>Keep</th>
+<th style="text-align:right">From being removed or renamed</th>
+<th style="text-align:center">From being renamed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Classes and class members</td>
+<td style="text-align:right">-keep</td>
+<td style="text-align:center">-keepnames</td>
+</tr>
+<tr>
+<td>Class members only</td>
+<td style="text-align:right">-keepclassmembers</td>
+<td style="text-align:center">-keepclassmembernames</td>
+</tr>
+<tr>
+<td>-keepclassmembers    -keepclassmembernames</td>
+</tr>
+</tbody>
+</table>
+<p>Classes and class members, if class members present       |    -keepclasseswithmembers    |  -keepclasseswithmembernames  |</p>
+<p>参考资料<br><a href="http://blog.csdn.net/sudic_niu/article/details/7921548" target="_blank" rel="external">http://blog.csdn.net/sudic_niu/article/details/7921548</a></p>
 
           
         
@@ -777,783 +1961,6 @@ private static void goWaitress(final Context ctx, String actionUrl) {
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/动态往apk写入信息/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/动态往apk写入信息/" itemprop="url">
-                  快速打包方案
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android快速打包/" itemprop="url" rel="index">
-                    <span itemprop="name">Android快速打包</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="往apk文件里面动态添加信息的两种方法。"><a href="#往apk文件里面动态添加信息的两种方法。" class="headerlink" title="往apk文件里面动态添加信息的两种方法。"></a>往apk文件里面动态添加信息的两种方法。</h1><p>（都需要保留安装时候的apk文件）</p>
-<ol>
-<li>方案一：往meta_info里面添加文件,写入参数信息</li>
-<li>方案二：在apk这个文件的comment信息里面添加需要传入的信息  </li>
-</ol>
-<h2 id="方案一："><a href="#方案一：" class="headerlink" title="方案一："></a>方案一：</h2><p>参考：<a href="http://tech.meituan.com/mt-apk-packaging.html" target="_blank" rel="external">http://tech.meituan.com/mt-apk-packaging.html</a><br>主要代表：美团<br>原理：meta_info（里面存的就是签名信息）里面的文件不参与签名，修改后，apk不需要签名 </p>
-<h2 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h2><p>参考：<a href="http://blog.csdn.net/kongpinde/article/details/51518466" target="_blank" rel="external">http://blog.csdn.net/kongpinde/article/details/51518466</a><br>主要代表：天猫、豌豆荚<br>原理：apk就是一个zip压缩包。而zip包有个comment区域，可以往里面写入信息，而不对apk的安装产生影响<br>zip 文件的末尾有一个 Central Directory Record 区域，其末尾包含一个 File comment 区域，可以存放一些数据，所以 File comment 是 zip 文件一部分，如果可以正确的修改这个部分，就可以在不破坏压缩包、不用重新打包的的前提下快速的给 Apk 文件写入自己想要的数据。</p>
-<p>comment 是在 Central Directory Record 末尾储存的，可以将数据直接写在这里，下表是 header 末尾的结构。<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment.png" alt="image"><br>从表中可以看到定义 comment 长度的字段位于 comment 之前。</p>
-<p>这里我们需要自定义 comment，在自定义 comment 内容的后面添加一个区域储存 comment 的长度，结构如下图。<br><img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment_structure.png" alt="image"></p>
-<h3 id="Server动态生成apk"><a href="#Server动态生成apk" class="headerlink" title="Server动态生成apk"></a>Server动态生成apk</h3><p>这一部分可以在本地或服务端进行，需要定义一个长度为 2 的 byte[] 来储存 comment 的长度，直接使用 Java 的 api 就可以把 comment 和 comment 的长度写到 Apk 的末尾，代码如下：</p>
-<pre><code>public static void writeApk(File file, String comment) {
-    ZipFile zipFile = null;
-    ByteArrayOutputStream outputStream = null;
-    RandomAccessFile accessFile = null;
-    try {
-        zipFile = new ZipFile(file);
-        String zipComment = zipFile.getComment();
-        // 判断comment区域是否已经有数据了
-        if (zipComment != null)
-            return;
-        byte[] byteComment = comment.getBytes();
-        outputStream = new ByteArrayOutputStream();
-        // 将数据写入输出流
-        outputStream.write(byteComment);
-        // 紧接着写入数据大小
-        outputStream.write(short2Stream((short) byteComment.length));
-            byte[] data = outputStream.toByteArray();
-        accessFile = new RandomAccessFile(file, &quot;rw&quot;);
-        // 跳到comment区域
-        accessFile.seek(file.length() - 2);
-        // 先写入数据大小
-        accessFile.write(short2Stream((short) data.length));
-        // 写入数据
-        accessFile.write(data);
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        try {
-            if (zipFile != null)
-                zipFile.close();
-            if (outputStream != null)
-                outputStream.close();
-            if (accessFile != null)
-                accessFile.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
-private static byte[] short2Stream(short data) {
-    ByteBuffer buffer = ByteBuffer.allocate(2);
-    buffer.order(ByteOrder.LITTLE_ENDIAN);
-    buffer.putShort(data);
-    buffer.flip();
-    return buffer.array();
-}
-</code></pre><h3 id="客户端解析apk数据："><a href="#客户端解析apk数据：" class="headerlink" title="客户端解析apk数据："></a>客户端解析apk数据：</h3><pre><code>private static String readApk(Context context) {
-    // 获取文件路径
-    File file = new File(context.getPackageCodePath());
-    byte[] bytes = null;
-    RandomAccessFile accessFile = null;
-    try {
-        accessFile = new RandomAccessFile(file, &quot;r&quot;);
-        long index = accessFile.length();
-        bytes = new byte[2];
-        // 获取comment文件的位置
-        index = index - bytes.length;
-        accessFile.seek(index);
-        // 获取comment中写入数据的大小byte类型
-        accessFile.readFully(bytes);
-        // 将byte转换成大小
-        int contentLength = stream2Short(bytes, 0);
-        // 创建byte[]数据大小来存储写入的数据
-        bytes = new byte[contentLength];
-        index = index - bytes.length;
-        accessFile.seek(index);
-        // 读取数据
-        accessFile.readFully(bytes);
-        return new String(bytes, &quot;utf-8&quot;);
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        if (accessFile != null) {
-            try {
-                accessFile.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    return null;
-}
-
-
-private static short stream2Short(byte[] stream, int offset) {
-    ByteBuffer buffer = ByteBuffer.allocate(2);
-    buffer.order(ByteOrder.LITTLE_ENDIAN);
-    buffer.put(stream[offset]);
-    buffer.put(stream[offset + 1]);
-    return buffer.getShort(0);
-}
-</code></pre><h1 id="apk的安装过程"><a href="#apk的安装过程" class="headerlink" title="apk的安装过程"></a>apk的安装过程</h1><ol>
-<li>复制APK安装包到data/app目录下（所以安装完成后，即使把sd卡中的apk删除也没关系）;</li>
-<li>解压并扫描安装包，把dex文件(Dalvik字节码)保存到dalvik-cache目录;</li>
-<li>并data/data目录下创建对应的应用数据目录。</li>
-</ol>
-<h2 id="应用安装涉及到如下几个目录："><a href="#应用安装涉及到如下几个目录：" class="headerlink" title="应用安装涉及到如下几个目录："></a>应用安装涉及到如下几个目录：</h2><p>system/app —————系统自带的应用程序，获得adb root权限才能删除</p>
-<p>data/app  —————用户程序安装的目录。安装时把                                                                                                      apk文件复制到此目录<br>data/data —————存放应用程序的数据<br>data/dalvik-cache——–将apk中的dex文件安装到dalvik-cache目录下(dex文件是dalvik虚拟机的可执行文件,其大小约为原始apk文件大小的四分之一)</p>
-<h2 id="app卸载"><a href="#app卸载" class="headerlink" title="app卸载"></a>app卸载</h2><p>删除安装过程中在上述三个目录下创建的文件及目录。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/git教程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/git教程/" itemprop="url">
-                  Github 教程
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="本地工程上传github"><a href="#本地工程上传github" class="headerlink" title="本地工程上传github"></a>本地工程上传github</h2><ol>
-<li>首先在github上创建一个resp</li>
-<li>在本地工程里面引入 .gitignore<ul>
-<li>在androidstudio 安装一个ignore 插件，可以生成部分ignore</li>
-<li>对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore</li>
-<li>.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）<a href="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore" target="_blank" rel="external">原文件</a> </li>
-</ul>
-</li>
-</ol>
-<pre><code>.gradle
-/local.properties
-/gradle.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-bin
-gen
-.settings
-.idea
-target
-*.iml
-*.key
-</code></pre><ol>
-<li><p>touch README.md  》》生成 reamdme文件</p>
-</li>
-<li><p>git init当前工程 》》生成 git信息</p>
-</li>
-<li><p>git add -A 》》把当前工程除了ingore的添加到git里面</p>
-</li>
-<li><p>git commit 》》生成第一次的commit信息</p>
-</li>
-<li><p>git remote add origin git@github.com:liuyicheng3/NewRepo.git   》》设置当前git工程的远程分支</p>
-</li>
-<li><p>git push -u origin master 》》push 到github上去</p>
-</li>
-<li><p>Attention:一般android studio的默认ssh是 androidstudio自己的，所以这时候用android studio会提交不上去<br>需要在settiings&gt;vertion control&gt; git里面吧 SSH excutable 由built-in 改成 native</p>
-</li>
-</ol>
-<p>##维护git文档方法</p>
-<ul>
-<li>可以网页里面直接弄，就不要通本地修改再提交，太麻烦。</li>
-<li>涉及到外部链接的图片文件，git库里面建对应的文件夹统一维护。</li>
-<li>对于图片贴的地址一定要是raw的，不要那个github上显示的地址<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="string">原文件</span>](<span class="link">https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore</span>)</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h2 id="一般的git工作流程"><a href="#一般的git工作流程" class="headerlink" title="一般的git工作流程"></a>一般的git工作流程</h2><h3 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h3><h3 id="按featrue-开发"><a href="#按featrue-开发" class="headerlink" title="按featrue 开发"></a>按featrue 开发</h3><h3 id="codereview及合并"><a href="#codereview及合并" class="headerlink" title="codereview及合并"></a>codereview及合并</h3><h2 id="Markdown-快捷键"><a href="#Markdown-快捷键" class="headerlink" title="Markdown 快捷键"></a>Markdown 快捷键</h2><ol>
-<li>空两行，让后代码区域两个TAB</li>
-<li>shift tab  收回一个tab</li>
-</ol>
-<h2 id="Git-常见场景"><a href="#Git-常见场景" class="headerlink" title="Git 常见场景"></a>Git 常见场景</h2><h3 id="1-不小心提交错了分支，把修改直接提交到master里面了"><a href="#1-不小心提交错了分支，把修改直接提交到master里面了" class="headerlink" title="1. 不小心提交错了分支，把修改直接提交到master里面了"></a>1. 不小心提交错了分支，把修改直接提交到master里面了</h3><p>  git log  查到提交前的versioncode<br>  git revert 123dadafa     revert到这个节点<br>    git push –force   强制用本地的版本覆盖git上的版本</p>
-<p>git  reset  和 git revert区别 <a href="http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html" target="_blank" rel="external">http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html</a></p>
-<h3 id="2-git-舍弃本地的修改"><a href="#2-git-舍弃本地的修改" class="headerlink" title="2. git 舍弃本地的修改"></a>2. git 舍弃本地的修改</h3><pre><code>git checkout . &amp;&amp; git clean -xdf
-</code></pre><h3 id="3-git-合并分支的冲突"><a href="#3-git-合并分支的冲突" class="headerlink" title="3. git 合并分支的冲突"></a>3. git 合并分支的冲突</h3><p>解决冲突后需要   </p>
-<pre><code>git rebase --continue   
-</code></pre><h3 id="4-git-生成patch"><a href="#4-git-生成patch" class="headerlink" title="4. git 生成patch"></a>4. git 生成patch</h3><p>当前还没提交，生成当前修改的patch </p>
-<pre><code>git diff  &gt; 1.patch    
-</code></pre><p>生成已经提交的几次记录的patch   </p>
-<pre><code>git log    //查看需要生成到那个提交日志的patch
-git format-patch -3     // 从master往前3个提交的内容，可修改为你想要的数值
-git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
-</code></pre><h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a href="http://blog.csdn.net/kevinx_xu/article/details/11660915" target="_blank" rel="external">http://blog.csdn.net/kevinx_xu/article/details/11660915</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/gradle坑/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/gradle坑/" itemprop="url">
-                  AS 踩坑日记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>升级instant run时候的报错<br>Error:Access to the dex task is now impossible, starting with 1.4.0<br>1.4.0 introduces a new Transform API allowing manipulation of the .class files.<br>See more information: <a href="http://tools.android.com/tech-docs/new-build-system/transform-api" target="_blank" rel="external">http://tools.android.com/tech-docs/new-build-system/transform-api</a></p>
-<p>解决方案：</p>
-<p>buildscript {<br>    repositories {<br>        jcenter()<br>    }<br>    dependencies {<br>        classpath ‘com.android.tools.build:gradle:2.0.0’</p>
-<pre><code>}
-</code></pre><p>}</p>
-<p>改成1.3.0</p>
-<p>项目根目录的gradle的<br>grade.property</p>
-<p>distributionUrl=https\://services.gradle.org/distributions/gradle-2.2-all.zip</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/AS导入工程配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/AS导入工程配置/" itemprop="url">
-                  AS工程导入
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="1-工程导入"><a href="#1-工程导入" class="headerlink" title="1.工程导入"></a>1.工程导入</h1><h2 id="1-1-普通eclipse-工程导入"><a href="#1-1-普通eclipse-工程导入" class="headerlink" title="1.1 普通eclipse  工程导入"></a>1.1 普通eclipse  工程导入</h2><p>直接import，AS会提示转成eclipse工程</p>
-<h2 id="1-2-github上的工程导入"><a href="#1-2-github上的工程导入" class="headerlink" title="1.2 github上的工程导入"></a>1.2 github上的工程导入</h2><p>用AS打开top level的settings.gradle选择进行配置导入<br>ps：如果这一步直接导入的话就会报   Could not find method android() for arguments   </p>
-<p>可能遇到的问题：  </p>
-<ol>
-<li><p>配置sdk位置（顶层build.gradle同级）<br>local.properties（建议从已有工程拷贝一个）<br>sdk.dir=/Users/lyc/codeTools/android-sdk  </p>
-</li>
-<li><p>配置模块的build.gradle的gradletoolVersion版本<br>buildToolsVersion ‘23.0.2’</p>
-</li>
-</ol>
-<p>建议从已有工程的里面找一个可用的版本填上去</p>
-<p>查看自己已经有哪些版本的buildTools的方法，</p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B01.png?raw=true" alt="see">  </p>
-<ol>
-<li>modle配置模块的工程compileSdkVersionversion<br>为一个已有版本的</li>
-</ol>
-<ol>
-<li>配置<br>dependencies中的com.android.support的版本，要求是于compileSdkVersionversion的版本一直<br>，但是这个不好处理</li>
-</ol>
-<p>compile ‘com.android.support:design:25.1.1’<br>compile ‘com.android.support:appcompat-v7:25.1.1’<br>compile ‘com.android.support:cardview-v7:25.1.1’</p>
-<p>英文有子序列号<br>建议按照以下方法写<br>compile ‘com.android.support:cardview-v7:25.+’<br>这样就会取本版本号下面最大的一个</p>
-<p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B02.png?raw=true" alt="see">   </p>
-<p>5.配置本地Gradel版本<br>这个常见于直接从别人那里拷贝的工程（也就是带有gradle/wrapper/**）的工程</p>
-<pre><code>distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip 
-</code></pre><p>gradle会去找这个版本的gradle，如果找不到就会重新下载<br>gradle的默认下载目录在用户目录的.gradle/wrapper/dists文件夹中（隐藏的）  里面会有所有已经下载的gradle 版本，可以把它改成一个已经有的版本就行</p>
-<h2 id="1-3-本地工程导入"><a href="#1-3-本地工程导入" class="headerlink" title="1.3 本地工程导入"></a>1.3 本地工程导入</h2><p>直接import</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1670,535 +2077,6 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip
 <p>参考资料：<a href="http://www.cocoachina.com/ios/20141224/10752.html" target="_blank" rel="external">http://www.cocoachina.com/ios/20141224/10752.html</a></p>
 <h1 id="AndroidStudio"><a href="#AndroidStudio" class="headerlink" title="AndroidStudio"></a>AndroidStudio</h1><p>快捷键位置方法   AndroidStudio&gt;preferences&gt;Keymap  （把Mac  OS X 复制一份，然后修改）</p>
 <p>显示主题颜色设置   AndroidStudio&gt;preferences&gt;Editor&gt;Colors &amp; Font   从Default  改成   Darcula  (然后点击 save as  ，再把字体调大一点，不能直接修改) </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/混淆写法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/混淆写法/" itemprop="url">
-                  混淆写法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/打包/" itemprop="url" rel="index">
-                    <span itemprop="name">打包</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>-keepclassmembers class <strong> {<br>    public void onEvent*(</strong>);<br>}</p>
-<p>只保护 public void onEvent<em>(*</em>)的方法不被重命名</p>
-<p>-keepattributes Signature</p>
-<p>-keep class okio.<em>* {</em>;}</p>
-<p>-keep class android.support.v4.app.NotificationCompat<em>*{<br>    public </em>;<br>}</p>
-<p>-keep class com.veda.lyc.Utils{ static *;}<br>保持里面的静态方法不被混淆</p>
-<p>keep的几个选项</p>
-<table>
-<thead>
-<tr>
-<th>Keep</th>
-<th style="text-align:right">From being removed or renamed</th>
-<th style="text-align:center">From being renamed</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Classes and class members</td>
-<td style="text-align:right">-keep</td>
-<td style="text-align:center">-keepnames</td>
-</tr>
-<tr>
-<td>Class members only</td>
-<td style="text-align:right">-keepclassmembers</td>
-<td style="text-align:center">-keepclassmembernames</td>
-</tr>
-<tr>
-<td>-keepclassmembers    -keepclassmembernames</td>
-</tr>
-</tbody>
-</table>
-<p>Classes and class members, if class members present       |    -keepclasseswithmembers    |  -keepclasseswithmembernames  |</p>
-<p>参考资料<br><a href="http://blog.csdn.net/sudic_niu/article/details/7921548" target="_blank" rel="external">http://blog.csdn.net/sudic_niu/article/details/7921548</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Gradle小结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/Gradle小结/" itemprop="url">
-                  Gradle配置分析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/android/" itemprop="url" rel="index">
-                    <span itemprop="name">android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>TopicLevel的gradle    </p>
-<pre><code>buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath &apos;com.android.tools.build:gradle:2.2.2&apos;
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
-allprojects {
-    repositories {
-        jcenter()
-    }
-}
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-</code></pre><p>Mudule level的build.gradle  </p>
-<pre><code>apply plugin: &apos;com.android.application&apos;
-
-android {
-    compileSdkVersion 20
-    buildToolsVersion &quot;24.0.0&quot;
-
-
-    compileOptions{
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    defaultConfig {
-        applicationId &quot;com.lyc.study&quot;
-        minSdkVersion 15
-        targetSdkVersion 20
-        versionCode 1
-        versionName &quot;1.0&quot;
-        jackOptions{
-            enabled true
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile(&apos;proguard-android.txt&apos;), &apos;proguard-rules.pro&apos;
-        }
-    }
-}
-
-dependencies {
-    compile fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)
-    compile &apos;com.android.support:support-v4:+&apos;
-    compile &apos;com.android.support:support-annotations:22.2.0&apos;
-    compile &apos;com.android.support:support-v13:20.1.1&apos;
-}
-</code></pre><p>以上是标准的打包方式,下面是常用的我们自定义的内容   </p>
-<pre><code>dependencies {
-    compile fileTree(include: &apos;*.jar&apos;, dir: &apos;libs&apos;)
-    compile project(&apos;:google_services&apos;)
-
-    // compile &apos;com.android.support:multidex:1.0.1&apos;
-    compile &apos;top.zibin:Luban:1.0.9&apos;
-    debugCompile &apos;com.bugtags.library:bugtags-lib:latest.integration&apos;
-
-    testCompile &apos;junit:junit:4.12&apos;
-
-}
-
-android {
-    compileSdkVersion 21
-    buildToolsVersion &apos;23.0.2&apos;
-
-    sourceSets {
-        main {
-            manifest.srcFile &apos;AndroidManifest.xml&apos;
-            java.srcDirs = [&apos;src&apos;]
-            resources.srcDirs = [&apos;src&apos;]
-            aidl.srcDirs = [&apos;src&apos;]
-            renderscript.srcDirs = [&apos;src&apos;]
-            res.srcDirs = [&apos;res&apos;]
-            assets.srcDirs = [&apos;assets&apos;]
-            jniLibs.srcDirs = [&apos;libs&apos;]
-        }
-
-        test.setRoot(&apos;test&apos;)
-
-        debug.setRoot(&apos;build-types/debug&apos;)
-        release.setRoot(&apos;build-types/release&apos;)
-    }
-
-    signingConfigs {
-        debug {
-            // 请配置好pub.key及其密码，或者改为使用debug.keystore
-            storeFile file(&apos;pub.key&apos;) // storeFile file(&apos;debug.keystore&apos;)
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
-        release {
-            storeFile file(&apos;pub.key&apos;)
-            storePassword STORE_PASSWORD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-        }
-    }
-
-    buildTypes {
-        debug {
-            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
-            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
-            signingConfig signingConfigs.debug
-
-            ndk{
-                abiFilters &apos;armeabi&apos;, &apos;armeabi-v7a&apos;, &apos;x86&apos; //,&apos;arm64-v8a&apos;, &apos;x86_64&apos;, &apos;mips&apos;, &apos;mips64&apos;
-            }
-        }
-        release {
-            buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;2017/1/1\&quot;&quot; //  发布时修改为当天日期
-            buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;false&quot; // 关闭开发者模式
-            proguardFiles &apos;proguard.cfg&apos;
-            minifyEnabled true
-            shrinkResources true
-            debuggable false
-            jniDebuggable false
-            signingConfig signingConfigs.release
-
-            applicationVariants.all { variant -&gt;
-                variant.outputs.each { output -&gt;
-                    def outputFile = output.outputFile
-                    if (outputFile != null &amp;&amp; outputFile.name.endsWith(&apos;.apk&apos;)) {
-                        // APK命名格式 Going-release.apk TODO 发布时使用
-                        def fileName = &quot;Going-v${defaultConfig.versionName}-${defaultConfig.versionCode}-release.apk&quot;
-//                         def fileName = &quot;Going.apk&quot;
-                        output.outputFile = new File(outputFile.parent, fileName)
-                    }
-                }
-            }
-        }
-    }
-
-    defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
-        versionCode 1000
-        versionName &quot;1.0.0&quot;
-        //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
-        multiDexEnabled false
-        multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
-        resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; //暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
-    }
-
-    productFlavors {
-          own {}
-          googleMarket {}
-
-          tencent {}
-          baidu {}
-
-
-    }
-
-//    productFlavors.all { flavor -&gt;
-//        flavor.manifestPlaceholders = [ UMENG_CHANNEL_VALUE:name ]
-//    }
-
-    packagingOptions {
-        exclude &apos;META-INF/LICENSE.txt&apos;
-    }
-
-    // 可以适当的打开Lint，检查是否存在隐藏问题
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-
-    android.dexOptions {
-        jumboMode = true
-        javaMaxHeapSize &quot;2g&quot;
-        maxProcessCount 8
-    }
-
-}
-
-// 替换编码方式，否则编译可能有中文乱码
-tasks.withType(org.gradle.api.tasks.compile.JavaCompile) {
-    options.encoding = &quot;UTF-8&quot;
-}
-</code></pre><p>相对于标准的我们在 android Task中新增了sourceSets这个Task制定了一些文件夹的目录，如果工程目录是标注的就不需要设置了</p>
-<p>在build.gradle同级新建一个gradle.properties<br>里面可以用来存放build.gradle里面的一些参数<br>STORE_PASSWORD=nico<br>KEY_ALIAS=nick<br>KEY_PASSWORD=nico</p>
-<p>这个地方对应的脚本是signingConfigs》debug里面的参数 </p>
-<p> buildTypes 》debug 中的buildConfigField参数则会在编译时候  </p>
-<p> <img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/gradle%E5%88%86%E6%9E%9001.png?raw=true" alt="gradle01"></p>
-<pre><code>buildConfigField &quot;String&quot;, &quot;RELEASE_TIME&quot;, &quot;\&quot;Not yet\&quot;&quot;
-buildConfigField &quot;boolean&quot;, &quot;DEVELOP_MODE&quot;, &quot;true&quot;
-</code></pre><p>会在编译时候生成并存放在build/generated/source/buildConfig/…BuildConfig.java   </p>
-<pre><code>public final class BuildConfig {
-  public static final boolean DEBUG = Boolean.parseBoolean(&quot;true&quot;);
-  public static final String APPLICATION_ID = &quot;com.lyc.study&quot;;
-  public static final String BUILD_TYPE = &quot;debug&quot;;
-  public static final String FLAVOR = &quot;own&quot;;
-  public static final int VERSION_CODE = 100;
-  public static final String VERSION_NAME = &quot;1.0.0&quot;;
-  // Fields from build type: debug
-  public static final boolean DEVELOP_MODE = true;
-  public static final String RELEASE_TIME = &quot;Not yet&quot;;
-}
-</code></pre><p>可以参考友盟的多渠道打包（github）</p>
-<p>一个介绍gradle比较好的网站<br><a href="http://stormzhang.com/posts/" target="_blank" rel="external">http://stormzhang.com/posts/</a></p>
-<p><a href="https://segmentfault.com/a/1190000006915937" target="_blank" rel="external">https://segmentfault.com/a/1190000006915937</a></p>
-<p>这两个网站都是一系列的教程，建议一个一个的看</p>
 
           
         
@@ -2427,6 +2305,168 @@ compile project(&apos;:Module_common&apos;)
     android:value=&quot;*******&quot; /&gt;
 </code></pre><p>App组件化与业务拆分: <a href="http://www.jianshu.com/p/60c1b9ddd8ab" target="_blank" rel="external">http://www.jianshu.com/p/60c1b9ddd8ab</a><br>安卓组件化相关开源方案最全总结：<br><a href="https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww" target="_blank" rel="external">https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww</a><br><a href="https://juejin.im/post/5a7ab8846fb9a0634514a2f5" target="_blank" rel="external">https://juejin.im/post/5a7ab8846fb9a0634514a2f5</a></p>
 
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Android分包/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/Android分包/" itemprop="url">
+                  Android分包
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="第一步：-gradle引入以及配置"><a href="#第一步：-gradle引入以及配置" class="headerlink" title="第一步：  gradle引入以及配置"></a>第一步：  gradle引入以及配置</h2><pre><code>compile &apos;com.android.support:multidex:1.0.1&apos;
+
+defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 22  // 请勿随意改动 //Android 6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限
+    versionCode 5210
+    versionName &quot;5.2.1&quot;
+    //manifestPlaceholders = [ UMENG_CHANNEL_VALUE:&quot;googleMarket&quot; ]
+    multiDexEnabled true
+    multiDexKeepProguard file(&apos;multiDexKeep.pro&apos;)
+    // resConfigs &quot;en&quot;, &quot;zh_CN&quot;, &quot;zh_TW&quot; 暂时限定语言, 当前情况下缩小大概 0.2M TODO googlePlay 版本取消限制
+}
+</code></pre><h2 id="第二步：修改Application"><a href="#第二步：修改Application" class="headerlink" title="第二步：修改Application"></a>第二步：修改Application</h2><pre><code>@Override
+protected void attachBaseContext(Context base) {
+    super.attachBaseContext(base);
+    MultiDex.install(base);
+}
+</code></pre><h2 id="第三步：保证关键类在主dex中"><a href="#第三步：保证关键类在主dex中" class="headerlink" title="第三步：保证关键类在主dex中"></a>第三步：保证关键类在主dex中</h2><p> 就是通过multiDexKeep.pro文件控制的<br> 个推 sdk强制在主dex 中</p>
+<pre><code>-dontwarn com.igexin.**
+-keep class com.igexin.**{*;}
+</code></pre>
           
         
       
