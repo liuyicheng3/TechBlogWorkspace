@@ -583,7 +583,10 @@ Glide整体流程： http://www.cnblogs.com/android-blogs/p/5735655.html  
 
 Glide缓存： http://www.cnblogs.com/android-blogs/p/5737611.html  
 
-Glide绑定activity生命周期： http://www.jishux.com/plus/view-662982-1.html  
+Glide绑定activity生命周期： http://www.jishux.com/plus/view-662982-1.html   
+
+关于图片所占内存的大小  http://dev.qq.com/topic/591d61f56793d26660901b4e
+
 
 
 

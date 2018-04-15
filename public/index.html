@@ -983,7 +983,8 @@ protected Bitmap transform(@NonNull Context context, @NonNull BitmapPool pool,
 </code></pre><p>}</p>
 <h2 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3 参考资料"></a>3 参考资料</h2><p>Glide整体流程： <a href="http://www.cnblogs.com/android-blogs/p/5735655.html" target="_blank" rel="external">http://www.cnblogs.com/android-blogs/p/5735655.html</a>   </p>
 <p>Glide缓存： <a href="http://www.cnblogs.com/android-blogs/p/5737611.html" target="_blank" rel="external">http://www.cnblogs.com/android-blogs/p/5737611.html</a>  </p>
-<p>Glide绑定activity生命周期： <a href="http://www.jishux.com/plus/view-662982-1.html" target="_blank" rel="external">http://www.jishux.com/plus/view-662982-1.html</a>  </p>
+<p>Glide绑定activity生命周期： <a href="http://www.jishux.com/plus/view-662982-1.html" target="_blank" rel="external">http://www.jishux.com/plus/view-662982-1.html</a>   </p>
+<p>关于图片所占内存的大小  <a href="http://dev.qq.com/topic/591d61f56793d26660901b4e" target="_blank" rel="external">http://dev.qq.com/topic/591d61f56793d26660901b4e</a></p>
 
           
         
@@ -1896,8 +1897,10 @@ public void helloEventBus(UserReLoginEvent  event){
     }
 }   
 </code></pre><p>生成的索引demo：  </p>
-<p> putIndex(new SimpleSubscriberInfo(com.lyc.MainActivity.class, true, new SubscriberMethodInfo[] {<br>            new SubscriberMethodInfo(“helloEventBus”, com.lyc.eventbus.UserReLoginEvent.class),<br>        }));</p>
-<h2 id="Android-APT"><a href="#Android-APT" class="headerlink" title="Android APT"></a>Android APT</h2><p>  参考资料：<a href="https://segmentfault.com/a/1190000005100468" target="_blank" rel="external">https://segmentfault.com/a/1190000005100468</a></p>
+<pre><code>putIndex(new SimpleSubscriberInfo(com.lyc.MainActivity.class, true, new SubscriberMethodInfo[] {
+           new SubscriberMethodInfo(&quot;helloEventBus&quot;, com.lyc.eventbus.UserReLoginEvent.class),
+       }));
+</code></pre><h2 id="Android-APT"><a href="#Android-APT" class="headerlink" title="Android APT"></a>Android APT</h2><p>  参考资料：<a href="https://segmentfault.com/a/1190000005100468" target="_blank" rel="external">https://segmentfault.com/a/1190000005100468</a></p>
 
           
         

@@ -107,9 +107,9 @@ EventBus 3由于使用了注解，比起使用反射来遍历方法的2.4版本�
 
 生成的索引demo：  
 
- putIndex(new SimpleSubscriberInfo(com.lyc.MainActivity.class, true, new SubscriberMethodInfo[] {
-            new SubscriberMethodInfo("helloEventBus", com.lyc.eventbus.UserReLoginEvent.class),
-        }));
+	 putIndex(new SimpleSubscriberInfo(com.lyc.MainActivity.class, true, new SubscriberMethodInfo[] {
+	            new SubscriberMethodInfo("helloEventBus", com.lyc.eventbus.UserReLoginEvent.class),
+	        }));
 
 
 ## Android APT

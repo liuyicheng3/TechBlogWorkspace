@@ -247,7 +247,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/16/图标跟随主题色方案/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/16/主题皮肤切换方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -269,8 +269,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/10/16/图标跟随主题色方案/" itemprop="url">
-                  图片跟随主题色变化
+                <a class="post-title-link" href="/2017/10/16/主题皮肤切换方案/" itemprop="url">
+                  主题皮肤切换
                 </a>
               
             
@@ -346,10 +346,7 @@
       
         
           
-            <h1 id="Icon图标"><a href="#Icon图标" class="headerlink" title="Icon图标"></a>Icon图标</h1><ol>
-<li>部分是网络图标</li>
-<li>通过已有的图片处理成变色图片，方案就是作图的时候控制显示内容的透明度，   </li>
-</ol>
+            <h1 id="1-一个Icon图标支持两种配色"><a href="#1-一个Icon图标支持两种配色" class="headerlink" title="1. 一个Icon图标支持两种配色"></a>1. 一个Icon图标支持两种配色</h1><h3 id="1-1-通过已有的图片处理成变色图片"><a href="#1-1-通过已有的图片处理成变色图片" class="headerlink" title="1.1 通过已有的图片处理成变色图片"></a>1.1 通过已有的图片处理成变色图片</h3><p>方案就是作图的时候控制显示内容的透明度，   </p>
 <p>第一步：</p>
 <pre><code>Bitmap mColorBitmap = Bitmap.createBitmap(mBitmap.getWidth(), mBitmap.getHeight(), Bitmap.Config.ARGB_8888);
 Canvas mCanvas = new Canvas(mColorBitmap);
@@ -360,13 +357,135 @@ mPaint.setColor(mColor);
 Bitmap alphaBitmap = mBitmap.extractAlpha();
 //在画布上通过透明度的部分控制显示颜色
 mCanvas.drawBitmap(alphaBitmap, 0, 0, mPaint);
-</code></pre><ol>
-<li>使用把图片做成字体<br>其实这和第二种的原理是相同的,只不过是UI和Android系统帮我们做了 </li>
-</ol>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><h1 id="字体颜色"><a href="#字体颜色" class="headerlink" title="字体颜色"></a>字体颜色</h1><p>关于图片所占内存的大小  <a href="http://dev.qq.com/topic/591d61f56793d26660901b4e" target="_blank" rel="external">http://dev.qq.com/topic/591d61f56793d26660901b4e</a></p>
-<p>#ImageBitmap 和倍率的关系</p>
-<p>如果不设置Density  直接把一个bitmap 设置到ImageVIew上去 就是默认density。<br>但是可能图片都是三倍图，这时候如果设置到2倍分辩率的手机上就会出现缩小的情况，这时候就要设置图片的density。<br>bitmap.setDensity(480);<br>然后再设置到imageView上去</p>
+</code></pre><p>ps：使用把图片做成字体，这样可以直接setTextColor<br>其实这和第二种的原理是相同的,只不过是UI和Android系统帮我们做了 </p>
+<h3 id="1-2-ImageBitmap-和倍率的关系"><a href="#1-2-ImageBitmap-和倍率的关系" class="headerlink" title="1.2 ImageBitmap 和倍率的关系"></a>1.2 ImageBitmap 和倍率的关系</h3><p>如果不设置Density  直接把一个bitmap 设置到ImageVIew上去 就是默认density。<br>但是可能图片都是三倍图，这时候如果设置到2倍分辩率的手机上就会出现缩小的情况，这时候就要设置图片的density。<br>bitmap.setDensity(480);<br>然后再设置到imageView上去</p>
 <p>关于图片的缩放系数：<a href="http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/" target="_blank" rel="external">http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/</a></p>
+<h1 id="2-一个轻量级的换肤方案"><a href="#2-一个轻量级的换肤方案" class="headerlink" title="2.一个轻量级的换肤方案"></a>2.一个轻量级的换肤方案</h1><p><a href="https://github.com/hongyangAndroid/AndroidChangeSkin" target="_blank" rel="external">https://github.com/hongyangAndroid/AndroidChangeSkin</a>  </p>
+<p>原理是定义可替换的皮肤时候带上一个后缀 </p>
+<pre><code>&lt;color name=&quot;bg_theme&quot;&gt;#07172d&lt;/color&gt;
+&lt;color name=&quot;bg_theme_light&quot;&gt;@color/color_eeeeee&lt;/color&gt;   
+</code></pre><p>对于自定义drawble和图片资源也是一样  </p>
+<pre><code>discover_icon.png   
+discover_icon_light.png  
+</code></pre><p>使用时候：  </p>
+<pre><code>&lt;ImageView
+android:drawableTop=&quot;@drawable/discover_icon&quot;
+android:tag=&quot;skin:drawableTop:drawableTop|skin:tab_color:textColor&quot;
+/&gt;
+</code></pre><p>原理每次换肤时候遍历所有的activity，找出所有有skin标签的控件  </p>
+<pre><code>private void notifyChangedListeners() {
+
+    long time = System.currentTimeMillis();
+
+    LinkedList&lt;Activity&gt; activityStack = LycApplication.getInstance().getActivityStack();
+
+    for (int i = 0, size = activityStack.size(); i &lt; size; i++) {
+        if (null != activityStack.get(i)) {
+            Activity act= activityStack.get(i);
+            if (act instanceof StoryGroundActivity || act instanceof ReviewActivity
+                    || act instanceof CommentActivity) {
+                apply(activityStack.get(i));
+            }
+        }
+    }
+
+    ELog.w(&quot; Notify ALL SKIN COST: &quot;, (System.currentTimeMillis() - time));
+}
+</code></pre><p>找每个元素的过程:</p>
+<h3 id="1-递归遍历所有的子元素"><a href="#1-递归遍历所有的子元素" class="headerlink" title="1.递归遍历所有的子元素"></a>1.递归遍历所有的子元素</h3><pre><code>public static SkinView getSkinView(View view) {
+    Object tag = view.getTag(R.id.skin_tag_id);
+    if (tag == null) {
+        tag = view.getTag();
+    }
+
+    if (tag == null)
+        return null;
+
+    if (!(tag instanceof String))
+        return null;
+
+    String tagStr = (String) tag;
+
+    List&lt;SkinAttr&gt; skinAttrs = parseTag(tagStr);
+    if (!skinAttrs.isEmpty()) {
+        changeViewTag(view);
+        return new SkinView(view, skinAttrs);
+    }
+    return null;
+}
+</code></pre><h3 id="2-解析出每个SkinView里面的自定义主题-SkinAttr"><a href="#2-解析出每个SkinView里面的自定义主题-SkinAttr" class="headerlink" title="2.解析出每个SkinView里面的自定义主题 SkinAttr"></a>2.解析出每个SkinView里面的自定义主题 SkinAttr</h3><pre><code>    private static List&lt;SkinAttr&gt; parseTag(String tagStr) {
+    List&lt;SkinAttr&gt; skinAttrs = new ArrayList&lt;SkinAttr&gt;();
+    if (TextUtils.isEmpty(tagStr)) return skinAttrs;
+
+    String[] items = tagStr.split(&quot;[|]&quot;);
+    for (String item : items) {
+        if (!item.startsWith(SkinConfig.SKIN_PREFIX))
+            continue;
+        String[] resItems = item.split(&quot;:&quot;);
+        if (resItems.length != 3)
+            continue;
+
+        String resName = resItems[1];
+        String resType = resItems[2];
+
+        SkinAttrType attrType = getSupprotAttrType(resType);
+        if (attrType == null) continue;
+        SkinAttr attr = new SkinAttr(attrType, resName);
+        skinAttrs.add(attr);
+    }
+    return skinAttrs;
+}
+</code></pre><h3 id="3-应用新的主题"><a href="#3-应用新的主题" class="headerlink" title="3.应用新的主题"></a>3.应用新的主题</h3><p>SkinView apply主题的方法：</p>
+<pre><code>public void apply() {
+    if (view == null) return;
+
+    for (SkinAttr attr : attrs) {
+        attr.apply(view);
+    }
+}
+</code></pre><p>SkinAttr 具体设置主题的方法    </p>
+<pre><code>HintCOLOR(&quot;textColorHint&quot;) {
+    @Override
+    public void apply(View view, String resName) {
+        ColorStateList colorlist = getResourceManager().getColorStateList(resName);
+        if (colorlist == null)
+            return;
+
+        ((EditText) view).setHintTextColor(colorlist);
+    }
+},
+</code></pre><p>ps： SkinAttrType写的方式很不错，值得学习</p>
+<h3 id="踩坑笔录"><a href="#踩坑笔录" class="headerlink" title="踩坑笔录"></a>踩坑笔录</h3><ul>
+<li>区别drawable 是color 还是 drawable:</li>
+</ul>
+<pre><code> BACKGROUND(&quot;background&quot;) {
+    @Override
+    public void apply(View view, String resName) {
+
+        String targetResName = getResourceManager().appendSuffix(resName);
+        Resources mResources=view.getContext().getResources();
+        try {
+            int colorResult= mResources.getColor(mResources.getIdentifier(targetResName, &quot;color&quot;, view.getContext().getPackageName()));
+            view.setBackgroundColor(colorResult);
+        }catch ( Exception e1){
+            try {
+                int resId=mResources.getIdentifier(targetResName, &quot;drawable&quot;, view.getContext().getPackageName());
+                Drawable drawableResult= mResources.getDrawable(resId);
+                if (drawableResult == null)
+                    return;
+                view.setBackgroundResource(resId);
+            }catch (Exception e2){
+                ELog.e(&quot;not found:&quot;+targetResName);
+            }
+        }
+
+
+    }
+},
+</code></pre><ul>
+<li>SkinManager 没有保存SkinView的引用  </li>
+</ul>
+<p>实际上每次应用主题时候 都是遍历存在Application的Activity列表然后find 每个SkinView  然后应用主题皮肤</p>
 
           
         
