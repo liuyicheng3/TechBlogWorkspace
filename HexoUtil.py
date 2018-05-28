@@ -83,7 +83,7 @@ class HexoUtil(object):
         return True
 
 
-utils = HexoUtil('/Users/lyc/github/learning-summary','/Users/lyc/TechBlogWorkspace')
+utils = HexoUtil('/Users/liuyc/github/learning-summary','/Users/liuyc/TechBlogWorkspace')
 total,ready_aar = utils.analysis()
 confirm_publish = raw_input('确认发布到 %s 的技术博客?(Y/N)\n'%utils.hexo_workspace_dir)
 if cmp(confirm_publish.lower(),'y') != 0:
