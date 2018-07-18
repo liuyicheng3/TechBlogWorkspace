@@ -87,31 +87,38 @@
 
 
 
-<meta name="description" content="1.工程导入1.1 普通eclipse  工程导入直接import，AS会提示转成eclipse工程
-1.2 github上的工程导入用AS打开top level的settings.gradle选择进行配置导入ps：如果这一步直接导入的话就会报   Could not find method android() for arguments   
-可能遇到的问题：  
+<meta name="description" content="1.gradle版本对应关系
+classpath ‘com.android.tools.build:gradle:2.3.0’
+可以支持gradle-wrapper.properties中的distributionUrl=https\://services.gradle.org/distributions/gradle-3.3-all.zip从3.3 到4.4
 
-配置sdk位置（顶层buil">
+
+
+classpath ‘com.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AS工程导入">
 <meta property="og:url" content="http://yoursite.com/2015/11/01/AS导入工程配置/index.html">
 <meta property="og:site_name" content="Nico随笔">
-<meta property="og:description" content="1.工程导入1.1 普通eclipse  工程导入直接import，AS会提示转成eclipse工程
-1.2 github上的工程导入用AS打开top level的settings.gradle选择进行配置导入ps：如果这一步直接导入的话就会报   Could not find method android() for arguments   
-可能遇到的问题：  
+<meta property="og:description" content="1.gradle版本对应关系
+classpath ‘com.android.tools.build:gradle:2.3.0’
+可以支持gradle-wrapper.properties中的distributionUrl=https\://services.gradle.org/distributions/gradle-3.3-all.zip从3.3 到4.4
 
-配置sdk位置（顶层buil">
+
+
+classpath ‘com.">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS_gradle_setting.jpg?raw=true">
 <meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B01.png?raw=true">
 <meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B02.png?raw=true">
-<meta property="og:updated_time" content="2018-04-15T16:24:23.000Z">
+<meta property="og:updated_time" content="2018-07-18T03:12:13.160Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AS工程导入">
-<meta name="twitter:description" content="1.工程导入1.1 普通eclipse  工程导入直接import，AS会提示转成eclipse工程
-1.2 github上的工程导入用AS打开top level的settings.gradle选择进行配置导入ps：如果这一步直接导入的话就会报   Could not find method android() for arguments   
-可能遇到的问题：  
+<meta name="twitter:description" content="1.gradle版本对应关系
+classpath ‘com.android.tools.build:gradle:2.3.0’
+可以支持gradle-wrapper.properties中的distributionUrl=https\://services.gradle.org/distributions/gradle-3.3-all.zip从3.3 到4.4
 
-配置sdk位置（顶层buil">
-<meta name="twitter:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B01.png?raw=true">
+
+
+classpath ‘com.">
+<meta name="twitter:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS_gradle_setting.jpg?raw=true">
 
 
 
@@ -358,8 +365,36 @@
       
 
       
-        <h1 id="1-工程导入"><a href="#1-工程导入" class="headerlink" title="1.工程导入"></a>1.工程导入</h1><h2 id="1-1-普通eclipse-工程导入"><a href="#1-1-普通eclipse-工程导入" class="headerlink" title="1.1 普通eclipse  工程导入"></a>1.1 普通eclipse  工程导入</h2><p>直接import，AS会提示转成eclipse工程</p>
-<h2 id="1-2-github上的工程导入"><a href="#1-2-github上的工程导入" class="headerlink" title="1.2 github上的工程导入"></a>1.2 github上的工程导入</h2><p>用AS打开top level的settings.gradle选择进行配置导入<br>ps：如果这一步直接导入的话就会报   Could not find method android() for arguments   </p>
+        <h1 id="1-gradle版本对应关系"><a href="#1-gradle版本对应关系" class="headerlink" title="1.gradle版本对应关系"></a>1.gradle版本对应关系</h1><ul>
+<li><p>classpath ‘com.android.tools.build:gradle:2.3.0’</p>
+<p>可以支持gradle-wrapper.properties中的<br>distributionUrl=https\://services.gradle.org/distributions/gradle-3.3-all.zip<br>从3.3 到4.4</p>
+</li>
+</ul>
+<ul>
+<li><p>classpath ‘com.android.tools.build:gradle:2.2.3’  </p>
+<p>可以支持gradle-wrapper.properties中的<br>distributionUrl=https\://services.gradle.org/distributions/gradle-3.0-all.zip  </p>
+<p>从3.0到哪3.2</p>
+</li>
+</ul>
+<ul>
+<li>classpath ‘com.android.tools.build:gradle:1.5.0’  </li>
+</ul>
+<p>可以支持gradle-wrapper.properties中的<br> distributionUrl=https\://services.gradle.org/distributions/gradle-2.4-all.zip   </p>
+<p>  从2.4到哪2.9  </p>
+<h1 id="2-使用离线gradle的方法"><a href="#2-使用离线gradle的方法" class="headerlink" title="2. 使用离线gradle的方法"></a>2. 使用离线gradle的方法</h1><p> gradle的全版本(已经上传到LYC的网盘)：<br> <a href="https://pan.baidu.com/disk/home?#/all?vmode=list&amp;path=%2Fgradlewrapper" target="_blank" rel="external">https://pan.baidu.com/disk/home?#/all?vmode=list&amp;path=%2Fgradlewrapper</a></p>
+<h2 id="2-1-导入新工程"><a href="#2-1-导入新工程" class="headerlink" title="2.1 导入新工程"></a>2.1 导入新工程</h2><p>首先校验里面的/gradle/wrapper/gradle-wrapper.properties<br>如果本地（/Users/liuyc/.gradle/wrapper/dists）没有这个版本的gradle会去下载，<br>这时候会在dists目录生成一个”gradle-2.2-all/<strong>*</strong>/“目录</p>
+<p>使用离线gradle的方法：  </p>
+<ul>
+<li>cancel掉本次gradle编译，并完全退出AS（不只是关闭工程）</li>
+<li>把离线的gradle zip包拷贝进那个随机名的目录，删除这个目录的其他文件</li>
+<li>再次启动AS打开这个Project，这样AS就使用这个Zip包了<h2 id="2-2-命令行打包（gradlew-命令）"><a href="#2-2-命令行打包（gradlew-命令）" class="headerlink" title="2.2 命令行打包（gradlew 命令）"></a>2.2 命令行打包（gradlew 命令）</h2>虽然导入工程时候做了一遍了，但是这个命令还是会额外再下一次gradle版本，同样会在”/Users/liuyc/.gradle/wrapper/dists”目录再生成一个”gradle-2.2-all/<strong>*</strong>/“目录  </li>
+</ul>
+<p>使用离线gradle的方法同上  </p>
+<p>PS：最终每个”/Users/liuyc/.gradle/wrapper/dists/gradle-<em>.</em>.*-all”会有两个随机名的目录<br>(一个对应于编译时候，另外一个对应于gradlew命令行时候的)</p>
+<h2 id="2-3-不要忘了gradle-wrapper-property要和build-gradle里面的配置对应"><a href="#2-3-不要忘了gradle-wrapper-property要和build-gradle里面的配置对应" class="headerlink" title="2.3 不要忘了gradle-wrapper.property要和build.gradle里面的配置对应"></a>2.3 不要忘了gradle-wrapper.property要和build.gradle里面的配置对应</h2><p>对应关系参考上面的  </p>
+<h1 id="3-AS设置里面的离线gradle"><a href="#3-AS设置里面的离线gradle" class="headerlink" title="3. AS设置里面的离线gradle"></a>3. AS设置里面的离线gradle</h1><p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/AS_gradle_setting.jpg?raw=true" alt="see">  </p>
+<h1 id="4-工程导入"><a href="#4-工程导入" class="headerlink" title="4.工程导入"></a>4.工程导入</h1><h2 id="4-1-普通eclipse-工程导入"><a href="#4-1-普通eclipse-工程导入" class="headerlink" title="4.1 普通eclipse  工程导入"></a>4.1 普通eclipse  工程导入</h2><p>直接import，AS会提示转成eclipse工程</p>
+<h2 id="4-2-github上的工程导入"><a href="#4-2-github上的工程导入" class="headerlink" title="4.2 github上的工程导入"></a>4.2 github上的工程导入</h2><p>用AS打开top level的settings.gradle选择进行配置导入<br>ps：如果这一步直接导入的话就会报   Could not find method android() for arguments   </p>
 <p>可能遇到的问题：  </p>
 <ol>
 <li><p>配置sdk位置（顶层build.gradle同级）<br>local.properties（建议从已有工程拷贝一个）<br>sdk.dir=/Users/lyc/codeTools/android-sdk  </p>
@@ -429,8 +464,8 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/11/01/ios学习笔记/" rel="next" title="iOS入门">
-                <i class="fa fa-chevron-left"></i> iOS入门
+              <a href="/2015/11/01/gradle坑/" rel="next" title="AS 踩坑日记">
+                <i class="fa fa-chevron-left"></i> AS 踩坑日记
               </a>
             
           </div>
@@ -439,8 +474,8 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/11/01/Gradle小结/" rel="prev" title="Gradle配置分析">
-                Gradle配置分析 <i class="fa fa-chevron-right"></i>
+              <a href="/2015/11/01/Android分包/" rel="prev" title="Android分包">
+                Android分包 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -513,7 +548,7 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -535,7 +570,7 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -570,7 +605,7 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-工程导入"><span class="nav-number">1.</span> <span class="nav-text">1.工程导入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-普通eclipse-工程导入"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 普通eclipse  工程导入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-github上的工程导入"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 github上的工程导入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-本地工程导入"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 本地工程导入</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-gradle版本对应关系"><span class="nav-number">1.</span> <span class="nav-text">1.gradle版本对应关系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-使用离线gradle的方法"><span class="nav-number">2.</span> <span class="nav-text">2. 使用离线gradle的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-导入新工程"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 导入新工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-命令行打包（gradlew-命令）"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 命令行打包（gradlew 命令）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-不要忘了gradle-wrapper-property要和build-gradle里面的配置对应"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 不要忘了gradle-wrapper.property要和build.gradle里面的配置对应</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-AS设置里面的离线gradle"><span class="nav-number">3.</span> <span class="nav-text">3. AS设置里面的离线gradle</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-工程导入"><span class="nav-number">4.</span> <span class="nav-text">4.工程导入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-普通eclipse-工程导入"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 普通eclipse  工程导入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-github上的工程导入"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 github上的工程导入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-本地工程导入"><span class="nav-number">4.3.</span> <span class="nav-text">1.3 本地工程导入</span></a></li></ol></li></ol></div>
             
 
           </div>

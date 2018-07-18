@@ -247,6 +247,257 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/01/动态往apk写入信息/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/11/01/动态往apk写入信息/" itemprop="url">
+                  快速打包方案
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-01T20:10:33+08:00">
+                2017-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android快速打包/" itemprop="url" rel="index">
+                    <span itemprop="name">Android快速打包</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="往apk文件里面动态添加信息的两种方法。"><a href="#往apk文件里面动态添加信息的两种方法。" class="headerlink" title="往apk文件里面动态添加信息的两种方法。"></a>往apk文件里面动态添加信息的两种方法。</h1><p>（都需要保留安装时候的apk文件）</p>
+<ol>
+<li>方案一：往meta_info里面添加文件,写入参数信息</li>
+<li>方案二：在apk这个文件的comment信息里面添加需要传入的信息  </li>
+</ol>
+<h2 id="方案一："><a href="#方案一：" class="headerlink" title="方案一："></a>方案一：</h2><p>参考：<a href="http://tech.meituan.com/mt-apk-packaging.html" target="_blank" rel="external">http://tech.meituan.com/mt-apk-packaging.html</a><br>主要代表：美团<br>原理：meta_info（里面存的就是签名信息）里面的文件不参与签名，修改后，apk不需要签名 </p>
+<h2 id="方案二："><a href="#方案二：" class="headerlink" title="方案二："></a>方案二：</h2><p>参考：<a href="http://blog.csdn.net/kongpinde/article/details/51518466" target="_blank" rel="external">http://blog.csdn.net/kongpinde/article/details/51518466</a><br>主要代表：天猫、豌豆荚<br>原理：apk就是一个zip压缩包。而zip包有个comment区域，可以往里面写入信息，而不对apk的安装产生影响<br>zip 文件的末尾有一个 Central Directory Record 区域，其末尾包含一个 File comment 区域，可以存放一些数据，所以 File comment 是 zip 文件一部分，如果可以正确的修改这个部分，就可以在不破坏压缩包、不用重新打包的的前提下快速的给 Apk 文件写入自己想要的数据。</p>
+<p>comment 是在 Central Directory Record 末尾储存的，可以将数据直接写在这里，下表是 header 末尾的结构。<br> <img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment.png" alt="image"><br>从表中可以看到定义 comment 长度的字段位于 comment 之前。</p>
+<p>这里我们需要自定义 comment，在自定义 comment 内容的后面添加一个区域储存 comment 的长度，结构如下图。<br><img src="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/images/zip_comment_structure.png" alt="image"></p>
+<h3 id="Server动态生成apk"><a href="#Server动态生成apk" class="headerlink" title="Server动态生成apk"></a>Server动态生成apk</h3><p>这一部分可以在本地或服务端进行，需要定义一个长度为 2 的 byte[] 来储存 comment 的长度，直接使用 Java 的 api 就可以把 comment 和 comment 的长度写到 Apk 的末尾，代码如下：</p>
+<pre><code>public static void writeApk(File file, String comment) {
+    ZipFile zipFile = null;
+    ByteArrayOutputStream outputStream = null;
+    RandomAccessFile accessFile = null;
+    try {
+        zipFile = new ZipFile(file);
+        String zipComment = zipFile.getComment();
+        // 判断comment区域是否已经有数据了
+        if (zipComment != null)
+            return;
+        byte[] byteComment = comment.getBytes();
+        outputStream = new ByteArrayOutputStream();
+        // 将数据写入输出流
+        outputStream.write(byteComment);
+        // 紧接着写入数据大小
+        outputStream.write(short2Stream((short) byteComment.length));
+            byte[] data = outputStream.toByteArray();
+        accessFile = new RandomAccessFile(file, &quot;rw&quot;);
+        // 跳到comment区域
+        accessFile.seek(file.length() - 2);
+        // 先写入数据大小
+        accessFile.write(short2Stream((short) data.length));
+        // 写入数据
+        accessFile.write(data);
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (zipFile != null)
+                zipFile.close();
+            if (outputStream != null)
+                outputStream.close();
+            if (accessFile != null)
+                accessFile.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+private static byte[] short2Stream(short data) {
+    ByteBuffer buffer = ByteBuffer.allocate(2);
+    buffer.order(ByteOrder.LITTLE_ENDIAN);
+    buffer.putShort(data);
+    buffer.flip();
+    return buffer.array();
+}
+</code></pre><h3 id="客户端解析apk数据："><a href="#客户端解析apk数据：" class="headerlink" title="客户端解析apk数据："></a>客户端解析apk数据：</h3><pre><code>private static String readApk(Context context) {
+    // 获取文件路径
+    File file = new File(context.getPackageCodePath());
+    byte[] bytes = null;
+    RandomAccessFile accessFile = null;
+    try {
+        accessFile = new RandomAccessFile(file, &quot;r&quot;);
+        long index = accessFile.length();
+        bytes = new byte[2];
+        // 获取comment文件的位置
+        index = index - bytes.length;
+        accessFile.seek(index);
+        // 获取comment中写入数据的大小byte类型
+        accessFile.readFully(bytes);
+        // 将byte转换成大小
+        int contentLength = stream2Short(bytes, 0);
+        // 创建byte[]数据大小来存储写入的数据
+        bytes = new byte[contentLength];
+        index = index - bytes.length;
+        accessFile.seek(index);
+        // 读取数据
+        accessFile.readFully(bytes);
+        return new String(bytes, &quot;utf-8&quot;);
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (accessFile != null) {
+            try {
+                accessFile.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    return null;
+}
+
+
+private static short stream2Short(byte[] stream, int offset) {
+    ByteBuffer buffer = ByteBuffer.allocate(2);
+    buffer.order(ByteOrder.LITTLE_ENDIAN);
+    buffer.put(stream[offset]);
+    buffer.put(stream[offset + 1]);
+    return buffer.getShort(0);
+}
+</code></pre><h1 id="apk的安装过程"><a href="#apk的安装过程" class="headerlink" title="apk的安装过程"></a>apk的安装过程</h1><ol>
+<li>复制APK安装包到data/app目录下（所以安装完成后，即使把sd卡中的apk删除也没关系）;</li>
+<li>解压并扫描安装包，把dex文件(Dalvik字节码)保存到dalvik-cache目录;</li>
+<li>并data/data目录下创建对应的应用数据目录。</li>
+</ol>
+<h2 id="应用安装涉及到如下几个目录："><a href="#应用安装涉及到如下几个目录：" class="headerlink" title="应用安装涉及到如下几个目录："></a>应用安装涉及到如下几个目录：</h2><p>system/app —————系统自带的应用程序，获得adb root权限才能删除</p>
+<p>data/app  —————用户程序安装的目录。安装时把                                                                                                      apk文件复制到此目录<br>data/data —————存放应用程序的数据<br>data/dalvik-cache——–将apk中的dex文件安装到dalvik-cache目录下(dex文件是dalvik虚拟机的可执行文件,其大小约为原始apk文件大小的四分之一)</p>
+<h2 id="app卸载"><a href="#app卸载" class="headerlink" title="app卸载"></a>app卸载</h2><p>删除安装过程中在上述三个目录下创建的文件及目录。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/20/App核心指标/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -386,6 +637,12 @@
 <li>dCPM</li>
 </ol>
 <p>DSP普遍采用dCPM作为结算体系，dCPM指的是dynamic CPM，与目前网络广告市场长讲的CPM方式（此CPM相应的成为flat CPM）区别。dCPM基于RTB技术诞生，指的是每一次的impression出价是变化的。其每次出价均依据广告主广告投放的效果(一般是CPS）来实时计算，以得出对广告主最有利的价格，从而保证了广告主的利益。同时又因为以impression与媒体结算，也确保了媒体的收益。</p>
+<ol>
+<li><p>eCPM<br>全称earning cost per mille，指的就是每一千次展示可以获得的广告收入，普通广告的展示收入在（3~8块），医药广告会高很多  </p>
+</li>
+<li><p>KOL<br>全称Key Opinion Leader，关键意见领袖。KOL被视为一种比较新的营销手段，它发挥了社交媒体在覆盖面和影响力方面的优势。KOL的粉丝黏性很强，价值观各方面都很认同他们，所以KOL的推荐，是带有光环的，粉丝们真会细读点赞。    </p>
+</li>
+</ol>
 <p><a href="https://www.umeng.com/reports.html" target="_blank" rel="external">https://www.umeng.com/reports.html</a><br>中国移动互联网发展报告 会有说明行业普遍的留存情况</p>
 
           
@@ -852,6 +1109,7 @@ android:tag=&quot;skin:drawableTop:drawableTop|skin:tab_color:textColor&quot;
 </ul>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
 <li><a href="https://www.jianshu.com/p/8a66806588bc" target="_blank" rel="external">https://www.jianshu.com/p/8a66806588bc</a></li>
+<li>Doze模式的详细解释 <a href="https://blog.csdn.net/qq_25804863/article/details/50229437" target="_blank" rel="external">https://blog.csdn.net/qq_25804863/article/details/50229437</a>   和 <a href="https://developer.android.google.cn/training/monitoring-device-state/doze-standby" target="_blank" rel="external">https://developer.android.google.cn/training/monitoring-device-state/doze-standby</a></li>
 </ol>
 
           
@@ -2049,171 +2307,6 @@ if (a.mVisibleFromClient) {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/01/分析UI流畅度/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/01/分析UI流畅度/" itemprop="url">
-                  Android 性能检测
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-01T00:00:00+08:00">
-                2017-06-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="手机端："><a href="#手机端：" class="headerlink" title="手机端："></a>手机端：</h1><h2 id="开发者选项"><a href="#开发者选项" class="headerlink" title="开发者选项"></a>开发者选项</h2><ol>
-<li><p>绘图》 显示布局边界</p>
-</li>
-<li><p>硬件加速渲染 》调试GPU过渡绘制  要打开</p>
-</li>
-</ol>
-<ol>
-<li><p>监控》启用严格模式</p>
-</li>
-<li><p>GPU呈现模式分析  可以对照颜色表找出耗时出在那一部分<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/GPU%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F.jpg?raw=true" alt="image"></p>
-</li>
-</ol>
-<h1 id="电脑端："><a href="#电脑端：" class="headerlink" title="电脑端："></a>电脑端：</h1><ol>
-<li><p>查看MemoryMonitor  ，查看页面内存波动（对于listview ）</p>
-</li>
-<li><p>tools》android》android  device  monistor<br>（其实它就是把android sdk中tools下面的很多功能聚合起来；  如ddms，uiautomatorviewer，monitor等功能聚合起来，但是好像没有集成hierarchyviewer的功能）</p>
-</li>
-<li><p>查看录制页面变化时候的cpu耗时<br>开始录制》选中进程，点击红色方框左边的按钮，然后点击红色方框里右侧的按钮录制正式开始，需要结束时，再点击右侧按钮结束，就会有结果自动生成<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6.png?raw=true" alt="image"></p>
-<p>分析结果》录制实际上是一个采样的过程，可以看图中红色方框里面最耗时的几个方法，基本上可以定位到程序的问题<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%88%86%E6%9E%90%E8%80%97%E6%97%B6_2.png?raw=true" alt="image"></p>
-</li>
-<li>查看布局层次，以及每一层的绘制时间，目的是减小层次<br>入口是在：tools 下面 hierarchyviewer  查看每个层次的绘制时间（这个好像必须在模拟器上看）</li>
-</ol>
-<h1 id="分析卡的原因"><a href="#分析卡的原因" class="headerlink" title="分析卡的原因"></a>分析卡的原因</h1><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="http://www.cnblogs.com/krislight1105/p/5352500.html" target="_blank" rel="external">http://www.cnblogs.com/krislight1105/p/5352500.html</a><br><a href="http://blog.csdn.net/wangbaochu/article/details/50396512" target="_blank" rel="external">http://blog.csdn.net/wangbaochu/article/details/50396512</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2263,7 +2356,7 @@ if (a.mVisibleFromClient) {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2285,7 +2378,7 @@ if (a.mVisibleFromClient) {
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>

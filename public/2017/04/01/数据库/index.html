@@ -91,10 +91,11 @@
 冗余字段设计，表设计要空出2到3个冗余字段  
 不要过多的关联查询，外键约束不要多了  
 设计要优先考虑易用性 ，容易升级，性能方面主要要通过应用层来掌控  
-适当的分库可以有效避免数据库被锁住。（sqlite的文件锁） 
+适当的分库可以有效避免数据库被锁住。（sqlite的文件锁）
 
-Android DB操作技巧
-对于经常要使用的DB不需要关闭，一般全局保存一个静态的SQLiteDatabase（Writable的），而且是">
+database is locked的原因
+同时有两个写操作的时候,后执行的只能先等待,如果等待时间超过5秒,就会产生这种错误
+一个文件正在写入">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据库踩坑和调试">
 <meta property="og:url" content="http://yoursite.com/2017/04/01/数据库/index.html">
@@ -103,23 +104,25 @@ Android DB操作技巧
 冗余字段设计，表设计要空出2到3个冗余字段  
 不要过多的关联查询，外键约束不要多了  
 设计要优先考虑易用性 ，容易升级，性能方面主要要通过应用层来掌控  
-适当的分库可以有效避免数据库被锁住。（sqlite的文件锁） 
+适当的分库可以有效避免数据库被锁住。（sqlite的文件锁）
 
-Android DB操作技巧
-对于经常要使用的DB不需要关闭，一般全局保存一个静态的SQLiteDatabase（Writable的），而且是">
+database is locked的原因
+同时有两个写操作的时候,后执行的只能先等待,如果等待时间超过5秒,就会产生这种错误
+一个文件正在写入">
 <meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9501.png?raw=true">
 <meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9502.png?raw=true">
-<meta property="og:updated_time" content="2018-04-15T16:24:23.000Z">
+<meta property="og:updated_time" content="2018-07-18T03:12:13.162Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库踩坑和调试">
 <meta name="twitter:description" content="数据库Android数据库设计
 冗余字段设计，表设计要空出2到3个冗余字段  
 不要过多的关联查询，外键约束不要多了  
 设计要优先考虑易用性 ，容易升级，性能方面主要要通过应用层来掌控  
-适当的分库可以有效避免数据库被锁住。（sqlite的文件锁） 
+适当的分库可以有效避免数据库被锁住。（sqlite的文件锁）
 
-Android DB操作技巧
-对于经常要使用的DB不需要关闭，一般全局保存一个静态的SQLiteDatabase（Writable的），而且是">
+database is locked的原因
+同时有两个写操作的时候,后执行的只能先等待,如果等待时间超过5秒,就会产生这种错误
+一个文件正在写入">
 <meta name="twitter:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9501.png?raw=true">
 
 
@@ -371,14 +374,32 @@ Android DB操作技巧
 <li>冗余字段设计，表设计要空出2到3个冗余字段  </li>
 <li>不要过多的关联查询，外键约束不要多了  </li>
 <li>设计要优先考虑易用性 ，容易升级，性能方面主要要通过应用层来掌控  </li>
-<li>适当的分库可以有效避免数据库被锁住。（sqlite的文件锁） </li>
+<li>适当的分库可以有效避免数据库被锁住。（sqlite的文件锁）</li>
 </ol>
+<h1 id="database-is-locked的原因"><a href="#database-is-locked的原因" class="headerlink" title="database is locked的原因"></a>database is locked的原因</h1><ul>
+<li>同时有两个写操作的时候,后执行的只能先等待,如果等待时间超过5秒,就会产生这种错误</li>
+<li>一个文件正在写入,重复打开数据库操作也会报错</li>
+</ul>
 <h2 id="Android-DB操作技巧"><a href="#Android-DB操作技巧" class="headerlink" title="Android DB操作技巧"></a>Android DB操作技巧</h2><ol>
-<li>对于经常要使用的DB不需要关闭，一般全局保存一个静态的SQLiteDatabase（Writable的），而且是在Application oncreate 就初始化好.  </li>
+<li>对于经常要使用的DB不需要关闭，一般全局保存一个静态的SQLiteDatabase句柄（Writable的），而且是在Application oncreate 就初始化好.  </li>
 <li>由于Application  没有destroy的回调，这里我们一般会做一个ActivityStack，然后在Activity初始化和destory 时候入栈和出栈来控制界面的显示逻辑,当检测到栈为空的时候就可以认为要退出应用了。</li>
 <li>能一次取完数据，不要分次取（虽然可能取得数据量有一定优化，但是分次太耗时，尽量交给上层做）</li>
-<li>DataBase is locked，导致数据取不出来。 解决方向有以下几点：<br>第1点：在获取databse时候加一个锁<br>第2点：分库，对于相互关联若的数据进行分库处理<br>第3点：数据库不要关闭,并且尝试分开存writeable 和 readable两个静态的DB    <h2 id="数据库调试"><a href="#数据库调试" class="headerlink" title="数据库调试"></a>数据库调试</h2><h3 id="第一步通过AS自带的Android-monitor-把数据库导出来"><a href="#第一步通过AS自带的Android-monitor-把数据库导出来" class="headerlink" title="第一步通过AS自带的Android monitor  把数据库导出来"></a>第一步通过AS自带的Android monitor  把数据库导出来</h3><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9501.png?raw=true" alt="see"><h3 id="第二步通过Sqlite-professional"><a href="#第二步通过Sqlite-professional" class="headerlink" title="第二步通过Sqlite professional"></a>第二步通过Sqlite professional</h3>查看数据库的结构可以具体查看到每一张表的详细信息<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9502.png?raw=true" alt="see"><br>也可以通过query工具栏，执行基本的命令行操作。</li>
+<li>DataBase is locked，导致数据取不出来。 解决方向有以下几点：<br>第1点：在获取databse时候加一个锁<br>第2点：分库，对于相互关联若的数据进行分库处理<br>第3点：数据库不要关闭,并且尝试分开存writeable 和 readable两个静态的DB    </li>
 </ol>
+<p>参考文章：<br><a href="https://segmentfault.com/q/1010000005140824" target="_blank" rel="external">https://segmentfault.com/q/1010000005140824</a></p>
+<h2 id="Android-数据库多线程读写"><a href="#Android-数据库多线程读写" class="headerlink" title="Android 数据库多线程读写"></a>Android 数据库多线程读写</h2><h3 id="SQLiteDatabase源码解析"><a href="#SQLiteDatabase源码解析" class="headerlink" title="SQLiteDatabase源码解析"></a>SQLiteDatabase源码解析</h3><p>可以知道，insert  , update ,  execSQL 都会调用lock()；<br>query 没有调用lock()，but SQLiteCursor保存了查询条件，但是并没有立即执行查询，而是使用了lazy的策略，在需要时加载部分数据时候依然会SQLiteDatabase.lock()  </p>
+<h3 id="多线程读写"><a href="#多线程读写" class="headerlink" title="多线程读写"></a>多线程读写</h3><h5 id="多线程写"><a href="#多线程写" class="headerlink" title="多线程写"></a>多线程写</h5><p>多线程写必须公用一个SqliteHelper,不然会抛出  database is locked的错误   </p>
+<h4 id="多线程读"><a href="#多线程读" class="headerlink" title="多线程读"></a>多线程读</h4><p>多线程读的话可以使用多个SqliteHelper  </p>
+<h4 id="单写多读"><a href="#单写多读" class="headerlink" title="单写多读"></a>单写多读</h4><p>方案： 一个线程写，多个线程同时读，每个线程都用各自SQLiteOpenHelper  </p>
+<p>问题1：有线程读的时候写数据库会抛出异常  database is locked  </p>
+<p>原因：<br>SQLiteOpenHelper.getReadableDatabase() 不见得获得的就是只读SQLiteDatabase</p>
+<p>解决方案：<br>重写getOnlyReadDatabase 来强制只获取只读的Database  </p>
+<p>问题2：在FIX问题1后在有线程读的时候写数据库仍然会出现database is locked  </p>
+<p>原因：SQLiteDataBase有个属性 ENABLE_WRITE_AHEAD_LOGGING的属性（默认是关闭的），在关闭时，不允许读，写同时进行（通过锁来保证的）；<br>当打开时，它允许一个写线程与多个读线程同时在一个SQLiteDatabase上起作用。实现原理是写操作其实是在一个单独的文件，不是原数据库文件。所以写在执行时，不会影响读操作，读操作读的是原数据文件，是写操作开始之前的内容。</p>
+<p>解决方案：<br>SQLiteDataBase enableWriteAheadLogging()打开 ENABLE_WRITE_AHEAD_LOGGING属性。  </p>
+<p>参考文章：<br><a href="http://www.cnblogs.com/javawebsoa/p/3237018.html" target="_blank" rel="external">http://www.cnblogs.com/javawebsoa/p/3237018.html</a><br><a href="https://blog.csdn.net/qq_25412055/article/details/52414420" target="_blank" rel="external">https://blog.csdn.net/qq_25412055/article/details/52414420</a></p>
+<h2 id="数据库调试"><a href="#数据库调试" class="headerlink" title="数据库调试"></a>数据库调试</h2><h3 id="第一步通过AS自带的Android-monitor-把数据库导出来"><a href="#第一步通过AS自带的Android-monitor-把数据库导出来" class="headerlink" title="第一步通过AS自带的Android monitor  把数据库导出来"></a>第一步通过AS自带的Android monitor  把数据库导出来</h3><p><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9501.png?raw=true" alt="see"></p>
+<h3 id="第二步通过Sqlite-professional"><a href="#第二步通过Sqlite-professional" class="headerlink" title="第二步通过Sqlite professional"></a>第二步通过Sqlite professional</h3><p>查看数据库的结构可以具体查看到每一张表的详细信息<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B0%83%E8%AF%9502.png?raw=true" alt="see"><br>也可以通过query工具栏，执行基本的命令行操作。</p>
 <p>Sqlite基本命令：<a href="http://www.runoob.com/sqlite/sqlite-trigger.html" target="_blank" rel="external">http://www.runoob.com/sqlite/sqlite-trigger.html</a></p>
 
       
@@ -508,7 +529,7 @@ Android DB操作技巧
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -530,7 +551,7 @@ Android DB操作技巧
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -565,7 +586,7 @@ Android DB操作技巧
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库"><span class="nav-number">1.</span> <span class="nav-text">数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android数据库设计"><span class="nav-number">1.1.</span> <span class="nav-text">Android数据库设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-DB操作技巧"><span class="nav-number">1.2.</span> <span class="nav-text">Android DB操作技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库调试"><span class="nav-number">1.3.</span> <span class="nav-text">数据库调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步通过AS自带的Android-monitor-把数据库导出来"><span class="nav-number">1.3.1.</span> <span class="nav-text">第一步通过AS自带的Android monitor  把数据库导出来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步通过Sqlite-professional"><span class="nav-number">1.3.2.</span> <span class="nav-text">第二步通过Sqlite professional</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据库"><span class="nav-number">1.</span> <span class="nav-text">数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android数据库设计"><span class="nav-number">1.1.</span> <span class="nav-text">Android数据库设计</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#database-is-locked的原因"><span class="nav-number">2.</span> <span class="nav-text">database is locked的原因</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-DB操作技巧"><span class="nav-number">2.1.</span> <span class="nav-text">Android DB操作技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-数据库多线程读写"><span class="nav-number">2.2.</span> <span class="nav-text">Android 数据库多线程读写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLiteDatabase源码解析"><span class="nav-number">2.2.1.</span> <span class="nav-text">SQLiteDatabase源码解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多线程读写"><span class="nav-number">2.2.2.</span> <span class="nav-text">多线程读写</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#多线程写"><span class="nav-number">2.2.2.0.1.</span> <span class="nav-text">多线程写</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多线程读"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">多线程读</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单写多读"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">单写多读</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库调试"><span class="nav-number">2.3.</span> <span class="nav-text">数据库调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步通过AS自带的Android-monitor-把数据库导出来"><span class="nav-number">2.3.1.</span> <span class="nav-text">第一步通过AS自带的Android monitor  把数据库导出来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步通过Sqlite-professional"><span class="nav-number">2.3.2.</span> <span class="nav-text">第二步通过Sqlite professional</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

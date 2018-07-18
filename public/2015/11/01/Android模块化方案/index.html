@@ -103,7 +103,7 @@
 
 本地jar依赖（主工程很有可能也公用这个jar）；  
 混淆">
-<meta property="og:updated_time" content="2018-04-15T16:24:23.000Z">
+<meta property="og:updated_time" content="2018-07-18T03:12:13.161Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android模块化方案">
 <meta name="twitter:description" content="AAR模块化方案1、首先 按照应用分层（common  view），注意每个module最好配置一下resourcePrefix “mc_”2、上层再按照功能模块比如  信用卡和个人中心
@@ -435,14 +435,21 @@ compile project(&apos;:Module_common&apos;)
 <p>ps：内部类的去混淆  </p>
 <pre><code>    -keepclasseswithmembers  class CommonModuleDataEngine {*;}
 -keepclasseswithmembers  class CommonModuleDataEngine$* {*;}
-</code></pre><h3 id="其它注意事项"><a href="#其它注意事项" class="headerlink" title="其它注意事项"></a>其它注意事项</h3><p>1、主程序和Module里面的Manifest里面的一些配置同名。必须在manifest  中的相应的配置里面 添加  </p>
+</code></pre><h2 id="Android工程拆解"><a href="#Android工程拆解" class="headerlink" title="Android工程拆解"></a>Android工程拆解</h2><p>可以这么抽象：<br>程序入库 壳工程 Project</p>
+<p>程序界面 entry moudle</p>
+<p>（它依赖于兄弟moudle_*,core_moudle）  </p>
+<h3 id="问题1：大家都依赖相同的core-moudle-account-moudle"><a href="#问题1：大家都依赖相同的core-moudle-account-moudle" class="headerlink" title="问题1：大家都依赖相同的core_moudle ,account_moudle"></a>问题1：大家都依赖相同的core_moudle ,account_moudle</h3><p>必须做成gradle 依赖就可以了，注意保持上层moudle的版本号大于下层的    </p>
+<p>compile(“cn.lyc:android-account:${optimus_version}”) {<br>        force true<br>        exclude module: ‘lib-mcbd’<br>    }</p>
+<h3 id="问题2：兄弟moudle的相互跳转"><a href="#问题2：兄弟moudle的相互跳转" class="headerlink" title="问题2：兄弟moudle的相互跳转"></a>问题2：兄弟moudle的相互跳转</h3><p>方案是统一在Application里面注册这个moudle，然后通过scheme跳转  </p>
+<h2 id="问题3：兄弟moudle的数据获取"><a href="#问题3：兄弟moudle的数据获取" class="headerlink" title="问题3：兄弟moudle的数据获取"></a>问题3：兄弟moudle的数据获取</h2><p>不要直接获取尽量都是通过在APPlication 里面启动收注册要公布的信息</p>
+<h3 id="其它注意事项"><a href="#其它注意事项" class="headerlink" title="其它注意事项"></a>其它注意事项</h3><p>1、主程序和Module里面的Manifest里面的一些配置同名。必须在manifest  中的相应的配置里面 添加  </p>
 <pre><code>tools:replace=&quot;android:icon,theme,label&quot;
 </code></pre><p>例如基module和主程序都包含了高德定位，manifest必然也有相同的配置信息</p>
 <pre><code>&lt;meta-data
     tools:replace=&quot;android:value&quot;
     android:name=&quot;com.amap.api.v2.apikey&quot;
     android:value=&quot;*******&quot; /&gt;
-</code></pre><p>App组件化与业务拆分: <a href="http://www.jianshu.com/p/60c1b9ddd8ab" target="_blank" rel="external">http://www.jianshu.com/p/60c1b9ddd8ab</a><br>安卓组件化相关开源方案最全总结：<br><a href="https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww" target="_blank" rel="external">https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww</a><br><a href="https://juejin.im/post/5a7ab8846fb9a0634514a2f5" target="_blank" rel="external">https://juejin.im/post/5a7ab8846fb9a0634514a2f5</a></p>
+</code></pre><p>App组件化与业务拆分: <a href="http://www.jianshu.com/p/60c1b9ddd8ab" target="_blank" rel="external">http://www.jianshu.com/p/60c1b9ddd8ab</a><br>安卓组件化相关开源方案最全总结：<br><a href="https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww" target="_blank" rel="external">https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww</a><br><a href="https://juejin.im/post/5a7ab8846fb9a0634514a2f5" target="_blank" rel="external">https://juejin.im/post/5a7ab8846fb9a0634514a2f5</a><br><a href="https://github.com/JessYanCoding/MVPArms/" target="_blank" rel="external">https://github.com/JessYanCoding/MVPArms/</a></p>
 
       
     </div>
@@ -497,8 +504,8 @@ compile project(&apos;:Module_common&apos;)
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/11/01/Xcode 和Android  studio 快捷键及设置对比/" rel="prev" title="AS和Xcode快捷键">
-                AS和Xcode快捷键 <i class="fa fa-chevron-right"></i>
+              <a href="/2015/11/01/Gradle小结/" rel="prev" title="Gradle配置分析">
+                Gradle配置分析 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -571,7 +578,7 @@ compile project(&apos;:Module_common&apos;)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -593,7 +600,7 @@ compile project(&apos;:Module_common&apos;)
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -628,7 +635,7 @@ compile project(&apos;:Module_common&apos;)
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AAR模块化方案"><span class="nav-number">1.</span> <span class="nav-text">AAR模块化方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1"><span class="nav-number">2.1.</span> <span class="nav-text">问题1:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2"><span class="nav-number">2.2.</span> <span class="nav-text">问题2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3"><span class="nav-number">2.3.</span> <span class="nav-text">问题3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题4"><span class="nav-number">3.</span> <span class="nav-text">问题4</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#其它注意事项"><span class="nav-number">3.1.</span> <span class="nav-text">其它注意事项</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AAR模块化方案"><span class="nav-number">1.</span> <span class="nav-text">AAR模块化方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">2.</span> <span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1"><span class="nav-number">2.1.</span> <span class="nav-text">问题1:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2"><span class="nav-number">2.2.</span> <span class="nav-text">问题2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3"><span class="nav-number">2.3.</span> <span class="nav-text">问题3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题4"><span class="nav-number">3.</span> <span class="nav-text">问题4</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android工程拆解"><span class="nav-number">4.</span> <span class="nav-text">Android工程拆解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1：大家都依赖相同的core-moudle-account-moudle"><span class="nav-number">4.1.</span> <span class="nav-text">问题1：大家都依赖相同的core_moudle ,account_moudle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2：兄弟moudle的相互跳转"><span class="nav-number">4.2.</span> <span class="nav-text">问题2：兄弟moudle的相互跳转</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题3：兄弟moudle的数据获取"><span class="nav-number">5.</span> <span class="nav-text">问题3：兄弟moudle的数据获取</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#其它注意事项"><span class="nav-number">5.1.</span> <span class="nav-text">其它注意事项</span></a></li></ol></li></ol></div>
             
 
           </div>
