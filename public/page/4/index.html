@@ -247,240 +247,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Android模块化方案/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Liuycheng">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Nico随笔">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/01/Android模块化方案/" itemprop="url">
-                  Android模块化方案
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
-                2015-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Android/" itemprop="url" rel="index">
-                    <span itemprop="name">Android</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="AAR模块化方案"><a href="#AAR模块化方案" class="headerlink" title="AAR模块化方案"></a>AAR模块化方案</h2><p>1、首先 按照应用分层（common  view），注意每个module最好配置一下resourcePrefix “mc_”<br>2、上层再按照功能模块比如  信用卡和个人中心</p>
-<p>这样每个都会打出一个aar，府工程引入所有的aar就可以引入这个模块</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>但是这个距离一个可以发布出去的aar还有距离，有以下几个问题需要解决：  </p>
-<ol>
-<li>本地jar依赖（主工程很有可能也公用这个jar）；  </li>
-<li>混淆的问题；  </li>
-<li>多个aar合并；   </li>
-<li>兄弟模块互相调用，基模块调用父模块的方法；</li>
-</ol>
-<h3 id="问题1"><a href="#问题1" class="headerlink" title="问题1:"></a>问题1:</h3><p>Android dependency的几种方法：<br>eg：  </p>
-<pre><code>    testCompile &apos;junit:junit:4.12&apos;
-//compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])  
-provided fileTree(dir: &apos;libs&apos;,include: [&apos;*.jar&apos;])  
-compile &apos;com.android.support:support-v4:23.0.1&apos;  
-compile project(&apos;:Module_common&apos;)   
-</code></pre><ul>
-<li>testCompile ：  debug 会编译  正式打包不会编译</li>
-<li>compile ： 除去”compile jar”会编译进arr，其余的都不会编译进去</li>
-<li>provided：编译时候不会把jar编译进去</li>
-</ul>
-<p>传递依赖的问题<br>（例如 modle A 依赖 Module B，Module B 又依赖Module  C ）   jar  都放在C里面，Module A不引入jar 也能引用到jar。</p>
-<p>但是正式打包时候不需要这些jar，本地的jar必须以provided方式引入，这样aar里面就不会打进去这些jar了。</p>
-<p>这会引入另外一个问题：C改成provide 这些jar后，A和B找不到这些依赖的jar 会编译失败</p>
-<p>解决方案：<br>把jar单独成一个module D，写成provided<br>（也可在module A  和 B里面  把这些jar 都拷贝进去，然后统统写成provided）</p>
-<h3 id="问题2"><a href="#问题2" class="headerlink" title="问题2"></a>问题2</h3><p>首先要明白，我们要去混淆的是A和主工程的接口，而A和B以及C直接的调用都需要混淆，但是不能在B和C里面混淆，因为这样一混淆的话，A与B、C调用的接口也混淆了</p>
-<p>所以混淆只能在A里面打开，A和B都不能打开混淆</p>
-<h3 id="问题3"><a href="#问题3" class="headerlink" title="问题3"></a>问题3</h3><p>默认会打出三个aar，但是我们只能发布一个aar出去，所以必须使用到 <a href="https://github.com/adwiv/android-fat-aar" target="_blank" rel="external">https://github.com/adwiv/android-fat-aar</a> 写的合并aar的gradle</p>
-<p>方法：<br>1、拷贝 fat-aar.gradle到build.gradle 同级目录<br>2、module的build.gradle新增<br>apply from: ‘fat-aar.gradle’  ，</p>
-<p>compile project(‘:Module_common’)<br>改成<br>embedded project(‘:Module_common’)</p>
-<p>这样在打B的aar时候，会把基moduel的aar合并进来</p>
-<p>如果这个模块工程就一个工程，就只需要解决问题1，同时配置一下混淆就行</p>
-<h2 id="问题4"><a href="#问题4" class="headerlink" title="问题4"></a>问题4</h2><p>通过hook调用<br>基模块：</p>
-<pre><code>public class CommonModuleDataEngine {
-
-    private static CommonModuleDataEngine INSTANCE;
-
-    private AppInfo appInfo;//这个必须要父模块或者兄弟模块
-    public static CommonModuleDataEngine getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new CommonModuleDataEngine();
-        }
-        return INSTANCE;
-    }
-
-    private CommonModuleDataEngine() {
-    }
-
-    public String getAppInfo() {
-        return appInfo.getAppInfo();
-    }
-
-    public static class Builder {
-        private AppInfo appInfo;
-
-        public Builder setAppInfo(AppInfo appInfo) {
-            this.appInfo = appInfo;
-            return this;
-        }
-        public void build() {
-            CommonModuleDataEngine engin = CommonModuleDataEngine.getInstance();
-            engin.appInfo = this.appInfo;
-
-        }
-
-    }
-    public interface AppInfo {
-
-        String getAppInfo();
-
-    }
-
-}
-</code></pre><p>主工程  </p>
-<p>在Application初始化的时候初始几个基类CommonModuleDataEngine，</p>
-<p>ps：内部类的去混淆  </p>
-<pre><code>    -keepclasseswithmembers  class CommonModuleDataEngine {*;}
--keepclasseswithmembers  class CommonModuleDataEngine$* {*;}
-</code></pre><h2 id="Android工程拆解"><a href="#Android工程拆解" class="headerlink" title="Android工程拆解"></a>Android工程拆解</h2><p>可以这么抽象：<br>程序入库 壳工程 Project</p>
-<p>程序界面 entry moudle</p>
-<p>（它依赖于兄弟moudle_*,core_moudle）  </p>
-<h3 id="问题1：大家都依赖相同的core-moudle-account-moudle"><a href="#问题1：大家都依赖相同的core-moudle-account-moudle" class="headerlink" title="问题1：大家都依赖相同的core_moudle ,account_moudle"></a>问题1：大家都依赖相同的core_moudle ,account_moudle</h3><p>必须做成gradle 依赖就可以了，注意保持上层moudle的版本号大于下层的    </p>
-<p>compile(“cn.lyc:android-account:${optimus_version}”) {<br>        force true<br>        exclude module: ‘lib-mcbd’<br>    }</p>
-<h3 id="问题2：兄弟moudle的相互跳转"><a href="#问题2：兄弟moudle的相互跳转" class="headerlink" title="问题2：兄弟moudle的相互跳转"></a>问题2：兄弟moudle的相互跳转</h3><p>方案是统一在Application里面注册这个moudle，然后通过scheme跳转  </p>
-<h2 id="问题3：兄弟moudle的数据获取"><a href="#问题3：兄弟moudle的数据获取" class="headerlink" title="问题3：兄弟moudle的数据获取"></a>问题3：兄弟moudle的数据获取</h2><p>不要直接获取尽量都是通过在APPlication 里面启动收注册要公布的信息</p>
-<h3 id="其它注意事项"><a href="#其它注意事项" class="headerlink" title="其它注意事项"></a>其它注意事项</h3><p>1、主程序和Module里面的Manifest里面的一些配置同名。必须在manifest  中的相应的配置里面 添加  </p>
-<pre><code>tools:replace=&quot;android:icon,theme,label&quot;
-</code></pre><p>例如基module和主程序都包含了高德定位，manifest必然也有相同的配置信息</p>
-<pre><code>&lt;meta-data
-    tools:replace=&quot;android:value&quot;
-    android:name=&quot;com.amap.api.v2.apikey&quot;
-    android:value=&quot;*******&quot; /&gt;
-</code></pre><p>App组件化与业务拆分: <a href="http://www.jianshu.com/p/60c1b9ddd8ab" target="_blank" rel="external">http://www.jianshu.com/p/60c1b9ddd8ab</a><br>安卓组件化相关开源方案最全总结：<br><a href="https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww" target="_blank" rel="external">https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww</a><br><a href="https://juejin.im/post/5a7ab8846fb9a0634514a2f5" target="_blank" rel="external">https://juejin.im/post/5a7ab8846fb9a0634514a2f5</a><br><a href="https://github.com/JessYanCoding/MVPArms/" target="_blank" rel="external">https://github.com/JessYanCoding/MVPArms/</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/Android分包/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -949,6 +715,213 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-2.10-all.zip
 <p>改成1.3.0</p>
 <p>项目根目录的gradle的<br>grade.property</p>
 <p>distributionUrl=https\://services.gradle.org/distributions/gradle-2.2-all.zip</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/11/01/git教程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Liuycheng">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/avatar.jpg?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nico随笔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/11/01/git教程/" itemprop="url">
+                  Github 教程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-11-01T20:10:33+08:00">
+                2015-11-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="本地工程上传github"><a href="#本地工程上传github" class="headerlink" title="本地工程上传github"></a>本地工程上传github</h2><ol>
+<li>首先在github上创建一个resp</li>
+<li>在本地工程里面引入 .gitignore<ul>
+<li>在androidstudio 安装一个ignore 插件，可以生成部分ignore</li>
+<li>对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore</li>
+<li>.gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）<a href="https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore" target="_blank" rel="external">原文件</a> </li>
+</ul>
+</li>
+</ol>
+<pre><code>.gradle
+/local.properties
+/gradle.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+bin
+gen
+.settings
+.idea
+target
+*.iml
+*.key
+</code></pre><ol>
+<li><p>touch README.md  》》生成 reamdme文件</p>
+</li>
+<li><p>git init当前工程 》》生成 git信息</p>
+</li>
+<li><p>git add -A 》》把当前工程除了ingore的添加到git里面</p>
+</li>
+<li><p>git commit 》》生成第一次的commit信息</p>
+</li>
+<li><p>git remote add origin git@github.com:liuyicheng3/NewRepo.git   》》设置当前git工程的远程分支</p>
+</li>
+<li><p>git push -u origin master 》》push 到github上去</p>
+</li>
+<li><p>Attention:一般android studio的默认ssh是 androidstudio自己的，所以这时候用android studio会提交不上去<br>需要在settiings&gt;vertion control&gt; git里面吧 SSH excutable 由built-in 改成 native</p>
+</li>
+</ol>
+<p>##维护git文档方法</p>
+<ul>
+<li>可以网页里面直接弄，就不要通本地修改再提交，太麻烦。</li>
+<li>涉及到外部链接的图片文件，git库里面建对应的文件夹统一维护。</li>
+<li>对于图片贴的地址一定要是raw的，不要那个github上显示的地址<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="string">原文件</span>](<span class="link">https://raw.githubusercontent.com/liuyicheng3/learning-summary/master/files/.gitignore</span>)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="一般的git工作流程"><a href="#一般的git工作流程" class="headerlink" title="一般的git工作流程"></a>一般的git工作流程</h2><h3 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h3><h3 id="按featrue-开发"><a href="#按featrue-开发" class="headerlink" title="按featrue 开发"></a>按featrue 开发</h3><h3 id="codereview及合并"><a href="#codereview及合并" class="headerlink" title="codereview及合并"></a>codereview及合并</h3><h2 id="Markdown-快捷键"><a href="#Markdown-快捷键" class="headerlink" title="Markdown 快捷键"></a>Markdown 快捷键</h2><ol>
+<li>空两行，让后代码区域两个TAB</li>
+<li>shift tab  收回一个tab</li>
+</ol>
+<h2 id="Git-常见场景"><a href="#Git-常见场景" class="headerlink" title="Git 常见场景"></a>Git 常见场景</h2><h3 id="1-不小心提交错了分支，把修改直接提交到master里面了"><a href="#1-不小心提交错了分支，把修改直接提交到master里面了" class="headerlink" title="1. 不小心提交错了分支，把修改直接提交到master里面了"></a>1. 不小心提交错了分支，把修改直接提交到master里面了</h3><p>  git log  查到提交前的versioncode<br>  git revert 123dadafa     revert到这个节点<br>    git push –force   强制用本地的版本覆盖git上的版本</p>
+<p>git  reset  和 git revert区别 <a href="http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html" target="_blank" rel="external">http://www.cnblogs.com/wanqieddy/archive/2013/05/14/3077689.html</a></p>
+<h3 id="2-git-舍弃本地的修改"><a href="#2-git-舍弃本地的修改" class="headerlink" title="2. git 舍弃本地的修改"></a>2. git 舍弃本地的修改</h3><pre><code>git checkout . &amp;&amp; git clean -xdf
+</code></pre><h3 id="3-git-合并分支的冲突"><a href="#3-git-合并分支的冲突" class="headerlink" title="3. git 合并分支的冲突"></a>3. git 合并分支的冲突</h3><p>解决冲突后需要   </p>
+<pre><code>git rebase --continue   
+</code></pre><h3 id="4-git-生成patch"><a href="#4-git-生成patch" class="headerlink" title="4. git 生成patch"></a>4. git 生成patch</h3><p>当前还没提交，生成当前修改的patch </p>
+<pre><code>git diff  &gt; 1.patch    
+</code></pre><p>生成已经提交的几次记录的patch   </p>
+<pre><code>git log    //查看需要生成到那个提交日志的patch
+git format-patch -3     // 从master往前3个提交的内容，可修改为你想要的数值
+git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
+</code></pre><h3 id="5-git删除已有的记录"><a href="#5-git删除已有的记录" class="headerlink" title="5. git删除已有的记录"></a>5. git删除已有的记录</h3><p>修改git commit 除了 git commit –amend 还有 git commmit rebase, reset,   </p>
+<p><a href="https://blog.csdn.net/tangkegagalikaiwu/article/details/8542827/" target="_blank" rel="external">https://blog.csdn.net/tangkegagalikaiwu/article/details/8542827/</a></p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a href="http://blog.csdn.net/kevinx_xu/article/details/11660915" target="_blank" rel="external">http://blog.csdn.net/kevinx_xu/article/details/11660915</a></p>
 
           
         
