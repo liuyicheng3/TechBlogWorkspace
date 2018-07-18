@@ -1,16 +1,23 @@
 title: Android版本更新特性 	    
+    
 date: 2017-10-11         
+    
 categories:            
+    
    
     
 - Android           
+    
   
 tags:           
     
+    
    
 - 版本        
+    
   
 - Android        
+    
     
 
            
@@ -66,3 +73,4 @@ JobScheduler使用系统定义要在以后的某个时间或在指定的条件�
 
 ### 参考资料  
 1. https://www.jianshu.com/p/8a66806588bc
+2. Doze模式的详细解释 https://blog.csdn.net/qq_25804863/article/details/50229437   和 https://developer.android.google.cn/training/monitoring-device-state/doze-standby

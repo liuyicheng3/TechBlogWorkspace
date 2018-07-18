@@ -1,0 +1,223 @@
+title: 埋点系统设计    
+date: 2018-7      
+categories:    
+- Android    
+       
+       
+       
+tags:       
+- Android    
+- 埋点       
+    
+    
+---
+
+
+# Peacock埋点 
+
+1. 插件化  
+2. 回调统计  
+3. 支持滚动列表的展示统计  
+4. 支持时长统计
+5. 数据批量打包上传
+6. 完善的统计上传支持,中途断网数据不丢
+
+
+## 1. 整体流程图
+
+![image](https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9F%8B%E7%82%B9_01.jpg?raw=true)
+
+## 2.接口封装 
+
+    /**
+     * @param event_type  事件类型
+     * @param c_id  事件Id（服务器定义）
+     * @param md  moudleId
+     * @param is_anchor  是否立即上传
+     * @param args  附加参数
+     */
+    public static void eventTongji(String event_type, int c_id, int md, int is_anchor, String args) 
+    
+    
+
+
+# 2. 插件 
+
+## 2.1 插件的初始化 
+  
+    public boolean initController(Context initContext)
+        
+
+## 2.2 插件统计入口  
+
+        
+埋点数据在主App里面会把数据转成Json，然后以反射的形式调用插件里面UGCLoader的addUgcEvent方法
+
+
+    public void addEventUGC(final Context context, final String eventData)  
+    
+然后会把把事件解析成 UGCEvent，根据实际情况需要需要回调Url的话会直接开始回调给第三方统计平台.最后事件会封装成LoadEventUGCRequest：  
+    
+    private static class LoadEventUGCRequest implements LoadRequest {
+    		public ADEventBean bean;
+    
+    		public LoadEventUGCRequest(ADEventBean bean) {
+    			this.bean = bean;
+    		}
+    
+    		@Override
+    		public void processRequest(UGCLoader dataLoader) {
+    		   
+    		}
+    	}  
+    	
+
+常见的几种LoadRequest  
+
+
+类名 | 作用
+---|---
+LoadEventUGCRequest| 打点事件
+StoreUGCRequest | 存储事件
+UploadEventUGCRequest| 强制上传事件
+
+
+
+## 2.3 LoaderThread  
+
+事件加入阻塞队列loaderQueue后，负责取出事件，执行其中processEvent   
+
+         while (true) {
+            try {
+            		LoadRequest request = queue.take();
+            		......
+                	request.processRequest(loader);
+            } catch (InterruptedException e) {
+               e.printStackTrace();
+            }
+            
+		}
+    
+    
+## 2.4 数据暂存和上传 
+
+数据取出来后悔有再次加入到等待上传队列eventList 
+当数据达到一定条件后执行上传操作  
+
+     if (bean.is_anchor == 1 || adEventList.size() >= PeacockController.UPLOAD_LIMIT_COUNT) {
+    					//满30条上传或is_anchor立即上传不为0
+    					UgcUploadManager manager = new UgcUploadManager();
+    					ArrayList<ADEventBean> uploadBeans = new ArrayList<ADEventBean>();
+    					uploadBeans.addAll(adEventList);
+    					adEventList.clear();
+    					manager.uploadLogUgc(mContext, uploadBeans);
+    				}
+
+#### 上传流程  
+
+* 先判断EventLogTable是否有未上传的事件，有则加入到eventList，同时清空EventLogTable
+* 再判断UuidDataCache是否有上传失败的报文，有则传  
+* 然后把这条即将上传报文插入UuidDataCache  
+* 加密上传  
+* 上传成功后删除对应的UuidDataCache报文
+
+# 3.2 埋点自查
+    
+新增了一个系统级的浮层
+
+![image](https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9F%8B%E7%82%B9_02.jpg?raw=true)
+    
+
+# 3.高阶封装
+
+# 3.1 页面时长统计   
+    
+在基类的onResume开始计时，在onPause时候停止计时，然后上报，即可统计本次展示时长  
+
+
+## 3.2 列表展示统计  
+
+在ListView Idle时候，递归循环遍历所有的子View，找出所有的ETAdLayout，然后调用其统计方法（统计数据已经预设进去了）   
+
+
+        /**
+         * 获取ViewGroup里所有展现的 ETADLayout（坑位）
+         * @param top    统计区间的顶部坐标
+         * @param bottom 统计区间的底部坐标
+         */
+        public synchronized static void viewAllETADLayouts(ViewGroup group, int top, int bottom) {
+            try {
+                if (group == null) {
+                    return;
+                }
+
+            if (group.getVisibility() == View.VISIBLE && group instanceof ETADLayout) {
+                ETADLayout layout = (ETADLayout) group;
+                layout.tongjiView(top, bottom);
+                return;
+            }
+
+            int count = group.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View child = group.getChildAt(i);
+                if (child.getVisibility() == View.VISIBLE && child instanceof ViewGroup) {
+                    if (child.getTag() != null && child.getTag() instanceof String) {
+                        String tag = (String) child.getTag();
+                        if (tag.equals(ETADUtils_NONE)) {
+                            continue;
+                        }
+                    }
+                    if (child instanceof ETADLayout) {
+                        ETADLayout layout = (ETADLayout) child;
+                        layout.tongjiView(top, bottom);
+                    } else {
+                        viewAllETADLayouts((ViewGroup) child, top, bottom);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+####  3.2.1 PV统计的限制条件   
+* 展示1/2之上   
+
+
+    /**
+     * 检测是否该坑位坐标满足,漏出1/2即满足条件
+     */
+    public boolean checkIsItemLocalRight(int top, int bottom) {
+        try {
+            int[] localtion = new int[2];
+            /**获取该View在屏幕中的位置*/
+            getLocationOnScreen(localtion);
+            //高和宽都显示大于一半则为true
+            return localtion[1] > top - getHeight() / 2 && localtion[1] < bottom - getHeight() / 2
+                    && localtion[0] > -getWidth() / 2 && localtion[0] < MidData.main_screenWidth - getWidth() / 2;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+* 10s内统计一次 
+ 
+
+        String key = ad_item_id + "#" + md + "#" + pos + "#" + args + "#" + card_id;
+        if (ETADUtils.getItemTimeMap().containsKey(key)) {
+            return；
+        }
+
+
+
+
+
+
+
+
+
+
+

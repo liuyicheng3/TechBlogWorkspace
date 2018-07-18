@@ -128,6 +128,28 @@ ps：内部类的去混淆
     -keepclasseswithmembers  class CommonModuleDataEngine$* {*;}
 
 
+## Android工程拆解
+
+可以这么抽象：
+程序入库 壳工程 Project
+
+程序界面 entry moudle
+
+（它依赖于兄弟moudle_*,core_moudle）  
+### 问题1：大家都依赖相同的core_moudle ,account_moudle  
+必须做成gradle 依赖就可以了，注意保持上层moudle的版本号大于下层的    
+
+compile("cn.lyc:android-account:${optimus_version}") {
+        force true
+        exclude module: 'lib-mcbd'
+    }
+### 问题2：兄弟moudle的相互跳转  
+方案是统一在Application里面注册这个moudle，然后通过scheme跳转  
+## 问题3：兄弟moudle的数据获取  
+不要直接获取尽量都是通过在APPlication 里面启动收注册要公布的信息
+
+
+
 
 
 ### 其它注意事项  
@@ -144,6 +166,7 @@ ps：内部类的去混淆
 App组件化与业务拆分: http://www.jianshu.com/p/60c1b9ddd8ab  
 安卓组件化相关开源方案最全总结：  
 https://mp.weixin.qq.com/s/SbIWWj2kYC5kF7GEoRiWww   
-https://juejin.im/post/5a7ab8846fb9a0634514a2f5
+https://juejin.im/post/5a7ab8846fb9a0634514a2f5  
+https://github.com/JessYanCoding/MVPArms/
 
 

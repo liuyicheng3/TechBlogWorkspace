@@ -576,8 +576,64 @@ com.bumptech.glide.manager.RequestManagerRetriever#get(android.content.Context)
 }
 
 
+## 5 Glide预加载  
 
-## 3 参考资料  
+参考文章：https://blog.csdn.net/qq_27429143/article/details/78562477  
+
+Glide Recyclerview 预加载插件,可以显著节约时间  
+
+      compile (“com.github.bumptech.glide:recyclerview-integration:4.3.0”) { 
+        // Excludes the support library because it’s already included by Glide. 
+        transitive = false 
+      } 
+
+原理是监控RecycleView的滚动 提前请求图片数据   
+
+
+        PreloadSizeProvider sizeProvider = 
+            new FixedPreloadSizeProvider(imageWidthPixels, imageHeightPixels);
+        PreloadModelProvider modelProvider = new MyPreloadModelProvider();
+        RecyclerViewPreloader<Photo> preloader = 
+            new RecyclerViewPreloader<>(
+                Glide.with(this), modelProvider, sizeProvider, 10 /*maxPreload*/);
+
+        RecyclerView myRecyclerView = (RecyclerView) result.findViewById(R.id.recycler_view);
+        myRecyclerView.addOnScrollListener(preloader);
+
+        // Finish setting up your RecyclerView etc.
+        myRecylerView.setLayoutManager(...);
+        myRecyclerView.setAdapter(...);     
+
+
+PreLoader：  
+
+      private class MyPreloadModelProvider implements PreloadModelProvider {
+        @Override
+        @NonNull
+        List<U> getPreloadItems(int position) {
+          String url = myUrls.get(position);
+          if (TextUtils.isEmpty(url)) {
+            return Collections.emptyList();
+          }
+          return Collections.singletonList(url);
+        }
+
+        @Override
+        @Nullable
+        RequestBuilder getPreloadRequestBuilder(String url) {
+          return 
+            GlideApp.with(fragment)
+              .load(url) 
+              .override(imageWidthPixels, imageHeightPixels);
+        }
+      }
+
+注意从 getPreloadRequestBuilder 中返回的 RequestBuilder ，必须与你从 onBindViewHolder 里启动的请求使用完全相同的一组选项 (占位符， 变换等) 和完全相同的尺寸。
+
+
+
+
+## 4 参考资料  
 
 Glide整体流程： http://www.cnblogs.com/android-blogs/p/5735655.html   
 
@@ -585,7 +641,9 @@ Glide缓存： http://www.cnblogs.com/android-blogs/p/5737611.html
 
 Glide绑定activity生命周期： http://www.jishux.com/plus/view-662982-1.html   
 
-关于图片所占内存的大小  http://dev.qq.com/topic/591d61f56793d26660901b4e
+关于图片所占内存的大小  http://dev.qq.com/topic/591d61f56793d26660901b4e  
+
+
 
 
 

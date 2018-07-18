@@ -58,5 +58,14 @@ http://www.woshipm.com/pmd/155084.html
 
 DSP普遍采用dCPM作为结算体系，dCPM指的是dynamic CPM，与目前网络广告市场长讲的CPM方式（此CPM相应的成为flat CPM）区别。dCPM基于RTB技术诞生，指的是每一次的impression出价是变化的。其每次出价均依据广告主广告投放的效果(一般是CPS）来实时计算，以得出对广告主最有利的价格，从而保证了广告主的利益。同时又因为以impression与媒体结算，也确保了媒体的收益。
 
+7. eCPM  
+全称earning cost per mille，指的就是每一千次展示可以获得的广告收入，普通广告的展示收入在（3~8块），医药广告会高很多  
+
+8. KOL  
+全称Key Opinion Leader，关键意见领袖。KOL被视为一种比较新的营销手段，它发挥了社交媒体在覆盖面和影响力方面的优势。KOL的粉丝黏性很强，价值观各方面都很认同他们，所以KOL的推荐，是带有光环的，粉丝们真会细读点赞。    
+
+
+
+
 https://www.umeng.com/reports.html  
 中国移动互联网发展报告 会有说明行业普遍的留存情况

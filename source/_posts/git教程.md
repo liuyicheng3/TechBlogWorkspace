@@ -106,6 +106,13 @@ git  reset  和 git revert区别 http://www.cnblogs.com/wanqieddy/archive/2013/0
       git format-patch -3     // 从master往前3个提交的内容，可修改为你想要的数值
       git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
 
+
+### 5. git删除已有的记录    
+
+修改git commit 除了 git commit --amend 还有 git commmit rebase, reset,   
+
+https://blog.csdn.net/tangkegagalikaiwu/article/details/8542827/
+
 #### 参考资料   
 
 http://blog.csdn.net/kevinx_xu/article/details/11660915
