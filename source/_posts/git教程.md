@@ -113,6 +113,26 @@ git  reset  和 git revert区别 http://www.cnblogs.com/wanqieddy/archive/2013/0
 
 https://blog.csdn.net/tangkegagalikaiwu/article/details/8542827/
 
+
+### 6. 打 tag   
+
+git tag   
+git checkout v1.1.8   
+ git push origin --tags   
+
+### 6. review流程常用的命令  
+
+git commit   
+git commit --amend     
+git push origin HEAD:refs/for/master    
+git reset --soft ****    -> 这个地方的"****"要填写需要回滚的id（短的那个，不要长的）    
+![prepare](https://github.com/liuyicheng3/learning-summary/blob/master/history/git_01.jpeg?raw=true) 
+
+git cherry-pick ****************   -> 当前在master分支，要把master分支的一个修改也提到release分支 
+
+1. 先在master上查看这次提交的Change-Id:*************  (这个是长的那个不是短的)  
+2. 切换到release分支，git cherry-pick *************  
+
 #### 参考资料   
 
 http://blog.csdn.net/kevinx_xu/article/details/11660915

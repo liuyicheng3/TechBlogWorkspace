@@ -103,7 +103,8 @@
 在androidstudio 安装一个ignore 插件，可以生成部分ignore
 对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore
 .gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）原文件">
-<meta property="og:updated_time" content="2018-07-18T03:27:03.236Z">
+<meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/history/git_01.jpeg?raw=true">
+<meta property="og:updated_time" content="2018-08-10T12:10:50.688Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Github 教程">
 <meta name="twitter:description" content="本地工程上传github
@@ -112,6 +113,7 @@
 在androidstudio 安装一个ignore 插件，可以生成部分ignore
 对于gradle目录的工程，每一个存在build.gradle目录都需要放一个.gitignore
 .gitignore 内容 （对于android的gradle目录结构最完整的ignore文件）原文件">
+<meta name="twitter:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/history/git_01.jpeg?raw=true">
 
 
 
@@ -422,6 +424,13 @@ git format-patch -3     // 从master往前3个提交的内容，可修改为你�
 git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
 </code></pre><h3 id="5-git删除已有的记录"><a href="#5-git删除已有的记录" class="headerlink" title="5. git删除已有的记录"></a>5. git删除已有的记录</h3><p>修改git commit 除了 git commit –amend 还有 git commmit rebase, reset,   </p>
 <p><a href="https://blog.csdn.net/tangkegagalikaiwu/article/details/8542827/" target="_blank" rel="external">https://blog.csdn.net/tangkegagalikaiwu/article/details/8542827/</a></p>
+<h3 id="6-打-tag"><a href="#6-打-tag" class="headerlink" title="6. 打 tag"></a>6. 打 tag</h3><p>git tag<br>git checkout v1.1.8<br> git push origin –tags   </p>
+<h3 id="6-review流程常用的命令"><a href="#6-review流程常用的命令" class="headerlink" title="6. review流程常用的命令"></a>6. review流程常用的命令</h3><p>git commit<br>git commit –amend<br>git push origin HEAD:refs/for/master<br>git reset –soft <strong><strong>    -&gt; 这个地方的”</strong></strong>“要填写需要回滚的id（短的那个，不要长的）<br><img src="https://github.com/liuyicheng3/learning-summary/blob/master/history/git_01.jpeg?raw=true" alt="prepare"> </p>
+<p>git cherry-pick <strong><strong><strong><em>**</em></strong></strong></strong>   -&gt; 当前在master分支，要把master分支的一个修改也提到release分支 </p>
+<ol>
+<li>先在master上查看这次提交的Change-Id:<strong><strong><strong>*</strong></strong></strong>  (这个是长的那个不是短的)  </li>
+<li>切换到release分支，git cherry-pick <strong><strong><strong>*</strong></strong></strong>  </li>
+</ol>
 <h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p><a href="http://blog.csdn.net/kevinx_xu/article/details/11660915" target="_blank" rel="external">http://blog.csdn.net/kevinx_xu/article/details/11660915</a></p>
 
       
@@ -466,6 +475,10 @@ git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/01/混淆写法/" rel="next" title="混淆写法">
+                <i class="fa fa-chevron-left"></i> 混淆写法
+              </a>
             
           </div>
 
@@ -604,7 +617,7 @@ git format-patch e795fefabc   //生成‘e795fefabc’这次提交的patch
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地工程上传github"><span class="nav-number">1.</span> <span class="nav-text">本地工程上传github</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一般的git工作流程"><span class="nav-number">2.</span> <span class="nav-text">一般的git工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#版本管理"><span class="nav-number">2.1.</span> <span class="nav-text">版本管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按featrue-开发"><span class="nav-number">2.2.</span> <span class="nav-text">按featrue 开发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#codereview及合并"><span class="nav-number">2.3.</span> <span class="nav-text">codereview及合并</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown-快捷键"><span class="nav-number">3.</span> <span class="nav-text">Markdown 快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-常见场景"><span class="nav-number">4.</span> <span class="nav-text">Git 常见场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-不小心提交错了分支，把修改直接提交到master里面了"><span class="nav-number">4.1.</span> <span class="nav-text">1. 不小心提交错了分支，把修改直接提交到master里面了</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-git-舍弃本地的修改"><span class="nav-number">4.2.</span> <span class="nav-text">2. git 舍弃本地的修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-git-合并分支的冲突"><span class="nav-number">4.3.</span> <span class="nav-text">3. git 合并分支的冲突</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-git-生成patch"><span class="nav-number">4.4.</span> <span class="nav-text">4. git 生成patch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-git删除已有的记录"><span class="nav-number">4.5.</span> <span class="nav-text">5. git删除已有的记录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">4.5.1.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#本地工程上传github"><span class="nav-number">1.</span> <span class="nav-text">本地工程上传github</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一般的git工作流程"><span class="nav-number">2.</span> <span class="nav-text">一般的git工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#版本管理"><span class="nav-number">2.1.</span> <span class="nav-text">版本管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#按featrue-开发"><span class="nav-number">2.2.</span> <span class="nav-text">按featrue 开发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#codereview及合并"><span class="nav-number">2.3.</span> <span class="nav-text">codereview及合并</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown-快捷键"><span class="nav-number">3.</span> <span class="nav-text">Markdown 快捷键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-常见场景"><span class="nav-number">4.</span> <span class="nav-text">Git 常见场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-不小心提交错了分支，把修改直接提交到master里面了"><span class="nav-number">4.1.</span> <span class="nav-text">1. 不小心提交错了分支，把修改直接提交到master里面了</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-git-舍弃本地的修改"><span class="nav-number">4.2.</span> <span class="nav-text">2. git 舍弃本地的修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-git-合并分支的冲突"><span class="nav-number">4.3.</span> <span class="nav-text">3. git 合并分支的冲突</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-git-生成patch"><span class="nav-number">4.4.</span> <span class="nav-text">4. git 生成patch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-git删除已有的记录"><span class="nav-number">4.5.</span> <span class="nav-text">5. git删除已有的记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-打-tag"><span class="nav-number">4.6.</span> <span class="nav-text">6. 打 tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-review流程常用的命令"><span class="nav-number">4.7.</span> <span class="nav-text">6. review流程常用的命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">4.7.1.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

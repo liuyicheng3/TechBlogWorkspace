@@ -1,5 +1,5 @@
-title: 埋点系统设计    
-date: 2018-7      
+title: 埋点系统设计     
+date: 2018-4     
 categories:    
 - Android    
        
@@ -27,7 +27,7 @@ tags:
 
 ![image](https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9F%8B%E7%82%B9_01.jpg?raw=true)
 
-## 2.接口封装 
+#### 接口封装 
 
     /**
      * @param event_type  事件类型
@@ -59,18 +59,18 @@ tags:
 然后会把把事件解析成 UGCEvent，根据实际情况需要需要回调Url的话会直接开始回调给第三方统计平台.最后事件会封装成LoadEventUGCRequest：  
     
     private static class LoadEventUGCRequest implements LoadRequest {
-    		public ADEventBean bean;
+            public ADEventBean bean;
     
-    		public LoadEventUGCRequest(ADEventBean bean) {
-    			this.bean = bean;
-    		}
+            public LoadEventUGCRequest(ADEventBean bean) {
+                this.bean = bean;
+            }
     
-    		@Override
-    		public void processRequest(UGCLoader dataLoader) {
-    		   
-    		}
-    	}  
-    	
+            @Override
+            public void processRequest(UGCLoader dataLoader) {
+               
+            }
+        }  
+        
 
 常见的几种LoadRequest  
 
@@ -89,14 +89,14 @@ UploadEventUGCRequest| 强制上传事件
 
          while (true) {
             try {
-            		LoadRequest request = queue.take();
-            		......
-                	request.processRequest(loader);
+                    LoadRequest request = queue.take();
+                    ......
+                    request.processRequest(loader);
             } catch (InterruptedException e) {
                e.printStackTrace();
             }
             
-		}
+        }
     
     
 ## 2.4 数据暂存和上传 
@@ -105,28 +105,43 @@ UploadEventUGCRequest| 强制上传事件
 当数据达到一定条件后执行上传操作  
 
      if (bean.is_anchor == 1 || adEventList.size() >= PeacockController.UPLOAD_LIMIT_COUNT) {
-    					//满30条上传或is_anchor立即上传不为0
-    					UgcUploadManager manager = new UgcUploadManager();
-    					ArrayList<ADEventBean> uploadBeans = new ArrayList<ADEventBean>();
-    					uploadBeans.addAll(adEventList);
-    					adEventList.clear();
-    					manager.uploadLogUgc(mContext, uploadBeans);
-    				}
+                        //满30条上传或is_anchor立即上传不为0
+                        UgcUploadManager manager = new UgcUploadManager();
+                        ArrayList<ADEventBean> uploadBeans = new ArrayList<ADEventBean>();
+                        uploadBeans.addAll(adEventList);
+                        adEventList.clear();
+                        manager.uploadLogUgc(mContext, uploadBeans);
+                    }
 
 #### 上传流程  
 
 * 先判断EventLogTable是否有未上传的事件，有则加入到eventList，同时清空EventLogTable
-* 再判断UuidDataCache是否有上传失败的报文，有则传  
+* 再判断UuidDataCache是否有上传失败的报文，统一放入post参数中  
 * 然后把这条即将上传报文插入UuidDataCache  
-* 加密上传  
-* 上传成功后删除对应的UuidDataCache报文
+
+
+因此最后待上传的报文uploadData包含有：
+
+    [   currentUploadEventData,
+        faliedUploadEventData_0,
+        faliedUploadEventData_1
+    ] 
+    
+ps：最后的本地生成的UUID 其实没有作用
+
+* 加密压缩上传 
+
+ 
+* 上传成功后删除UuidDataCache里面对应的UUID报文
 
 # 3.2 埋点自查
     
-新增了一个系统级的浮层
+* 一个系统级的浮层
 
 ![image](https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9F%8B%E7%82%B9_02.jpg?raw=true)
-    
+ 
+* mock接口自查  
+直接mock这个中间数据解析，统计结果，方便单客户端自查
 
 # 3.高阶封装
 
@@ -180,7 +195,8 @@ UploadEventUGCRequest| 强制上传事件
         }
     }
 
-####  3.2.1 PV统计的限制条件   
+####  3.2.1 PV统计的限制条件 
+
 * 展示1/2之上   
 
 
@@ -193,18 +209,15 @@ UploadEventUGCRequest| 强制上传事件
             /**获取该View在屏幕中的位置*/
             getLocationOnScreen(localtion);
             //高和宽都显示大于一半则为true
-            return localtion[1] > top - getHeight() / 2 && localtion[1] < bottom - getHeight() / 2
-                    && localtion[0] > -getWidth() / 2 && localtion[0] < MidData.main_screenWidth - getWidth() / 2;
+            return localtion[1] > top - getHeight()/2 && localtion[1] < bottom - getHeight() / 2&& localtion[0] > -getWidth() / 2 && localtion[0] < MidData.main_screenWidth - getWidth() / 2;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-
-
 * 10s内统计一次 
- 
+
 
         String key = ad_item_id + "#" + md + "#" + pos + "#" + args + "#" + card_id;
         if (ETADUtils.getItemTimeMap().containsKey(key)) {
@@ -212,10 +225,28 @@ UploadEventUGCRequest| 强制上传事件
         }
 
 
+#### 3.2.2 fragment的生命周期统计   
+参考文章  
+https://blog.csdn.net/tongcpp/article/details/41978751     
+https://www.jianshu.com/p/850556d33f63    
+同时也可以考虑统计View的可见性
 
 
 
+# 参考文档：
 
+Umeng统计设计： https://developer.umeng.com/docs/67953/detail/68140  
+
+
+## 埋点的设计问题 
+必须分模块，因为现在的组件都是相互集成，不知道，有可能在别的App集成了这个模块，这时候需要注意埋点参数必须有至少一个subCat表述所在位置 
+
+Moudle    
+SubMoudle    
+ItemId   
+EventType  
+InstantUpload   
+Properties
 
 
 
