@@ -87,7 +87,7 @@
 
 
 
-<meta name="description" content="Peacock埋点
+<meta name="description" content="埋点系统的设计
 插件化  
 回调统计  
 支持滚动列表的展示统计  
@@ -101,12 +101,12 @@
  * @param c_id  事件Id（服务器定义）
  * @param md  moudleId
  * @param is_anchor  是否立即上传
- * @">
+ * @pa">
 <meta property="og:type" content="article">
 <meta property="og:title" content="埋点系统设计">
-<meta property="og:url" content="http://yoursite.com/2018/04/01/Peacock埋点/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/04/01/埋点系统/index.html">
 <meta property="og:site_name" content="Nico随笔">
-<meta property="og:description" content="Peacock埋点
+<meta property="og:description" content="埋点系统的设计
 插件化  
 回调统计  
 支持滚动列表的展示统计  
@@ -120,13 +120,13 @@
  * @param c_id  事件Id（服务器定义）
  * @param md  moudleId
  * @param is_anchor  是否立即上传
- * @">
+ * @pa">
 <meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9F%8B%E7%82%B9_01.jpg?raw=true">
 <meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9F%8B%E7%82%B9_02.jpg?raw=true">
-<meta property="og:updated_time" content="2018-08-10T12:13:27.452Z">
+<meta property="og:updated_time" content="2018-08-10T12:20:26.879Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="埋点系统设计">
-<meta name="twitter:description" content="Peacock埋点
+<meta name="twitter:description" content="埋点系统的设计
 插件化  
 回调统计  
 支持滚动列表的展示统计  
@@ -140,7 +140,7 @@
  * @param c_id  事件Id（服务器定义）
  * @param md  moudleId
  * @param is_anchor  是否立即上传
- * @">
+ * @pa">
 <meta name="twitter:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9F%8B%E7%82%B9_01.jpg?raw=true">
 
 
@@ -169,7 +169,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/04/01/Peacock埋点/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/04/01/埋点系统/"/>
 
 
 
@@ -294,7 +294,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/01/Peacock埋点/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/01/埋点系统/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -388,7 +388,7 @@
       
 
       
-        <h1 id="Peacock埋点"><a href="#Peacock埋点" class="headerlink" title="Peacock埋点"></a>Peacock埋点</h1><ol>
+        <h1 id="埋点系统的设计"><a href="#埋点系统的设计" class="headerlink" title="埋点系统的设计"></a>埋点系统的设计</h1><ol>
 <li>插件化  </li>
 <li>回调统计  </li>
 <li>支持滚动列表的展示统计  </li>
@@ -410,9 +410,9 @@ public static void eventTongji(String event_type, int c_id, int md, int is_ancho
 <pre><code>public void addEventUGC(final Context context, final String eventData)  
 </code></pre><p>然后会把把事件解析成 UGCEvent，根据实际情况需要需要回调Url的话会直接开始回调给第三方统计平台.最后事件会封装成LoadEventUGCRequest：  </p>
 <pre><code>private static class LoadEventUGCRequest implements LoadRequest {
-        public ADEventBean bean;
+        public TongjiEvent bean;
 
-        public LoadEventUGCRequest(ADEventBean bean) {
+        public LoadEventUGCRequest(TongjiEvent bean) {
             this.bean = bean;
         }
 
@@ -456,12 +456,12 @@ public static void eventTongji(String event_type, int c_id, int md, int is_ancho
 
 }
 </code></pre><h2 id="2-4-数据暂存和上传"><a href="#2-4-数据暂存和上传" class="headerlink" title="2.4 数据暂存和上传"></a>2.4 数据暂存和上传</h2><p>数据取出来后悔有再次加入到等待上传队列eventList<br>当数据达到一定条件后执行上传操作  </p>
-<pre><code>if (bean.is_anchor == 1 || adEventList.size() &gt;= PeacockController.UPLOAD_LIMIT_COUNT) {
+<pre><code>if (bean.is_anchor == 1 || eventList.size() &gt;= PeacockController.UPLOAD_LIMIT_COUNT) {
                    //满30条上传或is_anchor立即上传不为0
                    UgcUploadManager manager = new UgcUploadManager();
-                   ArrayList&lt;ADEventBean&gt; uploadBeans = new ArrayList&lt;ADEventBean&gt;();
-                   uploadBeans.addAll(adEventList);
-                   adEventList.clear();
+                   ArrayList&lt;TongjiEvent&gt; uploadBeans = new ArrayList&lt;TongjiEvent&gt;();
+                   uploadBeans.addAll(eventList);
+                   eventList.clear();
                    manager.uploadLogUgc(mContext, uploadBeans);
                }
 </code></pre><h4 id="上传流程"><a href="#上传流程" class="headerlink" title="上传流程"></a>上传流程</h4><ul>
@@ -489,20 +489,20 @@ public static void eventTongji(String event_type, int c_id, int md, int is_ancho
 <li>mock接口自查<br>直接mock这个中间数据解析，统计结果，方便单客户端自查</li>
 </ul>
 <h1 id="3-高阶封装"><a href="#3-高阶封装" class="headerlink" title="3.高阶封装"></a>3.高阶封装</h1><h1 id="3-1-页面时长统计"><a href="#3-1-页面时长统计" class="headerlink" title="3.1 页面时长统计"></a>3.1 页面时长统计</h1><p>在基类的onResume开始计时，在onPause时候停止计时，然后上报，即可统计本次展示时长  </p>
-<h2 id="3-2-列表展示统计"><a href="#3-2-列表展示统计" class="headerlink" title="3.2 列表展示统计"></a>3.2 列表展示统计</h2><p>在ListView Idle时候，递归循环遍历所有的子View，找出所有的ETAdLayout，然后调用其统计方法（统计数据已经预设进去了）   </p>
+<h2 id="3-2-列表展示统计"><a href="#3-2-列表展示统计" class="headerlink" title="3.2 列表展示统计"></a>3.2 列表展示统计</h2><p>在ListView Idle时候，递归循环遍历所有的子View，找出所有的TongjiLayout，然后调用其统计方法（统计数据已经预设进去了）   </p>
 <pre><code>    /**
-     * 获取ViewGroup里所有展现的 ETADLayout（坑位）
+     * 获取ViewGroup里所有展现的 TongjiLayout（坑位）
      * @param top    统计区间的顶部坐标
      * @param bottom 统计区间的底部坐标
      */
-    public synchronized static void viewAllETADLayouts(ViewGroup group, int top, int bottom) {
+    public synchronized static void viewAllTongjiLayouts(ViewGroup group, int top, int bottom) {
         try {
             if (group == null) {
                 return;
             }
 
-        if (group.getVisibility() == View.VISIBLE &amp;&amp; group instanceof ETADLayout) {
-            ETADLayout layout = (ETADLayout) group;
+        if (group.getVisibility() == View.VISIBLE &amp;&amp; group instanceof TongjiLayout) {
+            TongjiLayout layout = (TongjiLayout) group;
             layout.tongjiView(top, bottom);
             return;
         }
@@ -517,11 +517,11 @@ public static void eventTongji(String event_type, int c_id, int md, int is_ancho
                         continue;
                     }
                 }
-                if (child instanceof ETADLayout) {
-                    ETADLayout layout = (ETADLayout) child;
+                if (child instanceof TongjiLayout) {
+                    TongjiLayout layout = (TongjiLayout) child;
                     layout.tongjiView(top, bottom);
                 } else {
-                    viewAllETADLayouts((ViewGroup) child, top, bottom);
+                    viewAllTongjiLayouts((ViewGroup) child, top, bottom);
                 }
             }
         }
@@ -743,7 +743,7 @@ if (ETADUtils.getItemTimeMap().containsKey(key)) {
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Peacock埋点"><span class="nav-number">1.</span> <span class="nav-text">Peacock埋点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-整体流程图"><span class="nav-number">1.1.</span> <span class="nav-text">1. 整体流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#接口封装"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">接口封装</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-插件"><span class="nav-number">2.</span> <span class="nav-text">2. 插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-插件的初始化"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 插件的初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-插件统计入口"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 插件统计入口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-LoaderThread"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 LoaderThread</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-数据暂存和上传"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 数据暂存和上传</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#上传流程"><span class="nav-number">2.4.0.1.</span> <span class="nav-text">上传流程</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-2-埋点自查"><span class="nav-number">3.</span> <span class="nav-text">3.2 埋点自查</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-高阶封装"><span class="nav-number">4.</span> <span class="nav-text">3.高阶封装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-1-页面时长统计"><span class="nav-number">5.</span> <span class="nav-text">3.1 页面时长统计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-列表展示统计"><span class="nav-number">5.1.</span> <span class="nav-text">3.2 列表展示统计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-PV统计的限制条件"><span class="nav-number">5.1.0.1.</span> <span class="nav-text">3.2.1 PV统计的限制条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-fragment的生命周期统计"><span class="nav-number">5.1.0.2.</span> <span class="nav-text">3.2.2 fragment的生命周期统计</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文档："><span class="nav-number">6.</span> <span class="nav-text">参考文档：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#埋点的设计问题"><span class="nav-number">6.1.</span> <span class="nav-text">埋点的设计问题</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#埋点系统的设计"><span class="nav-number">1.</span> <span class="nav-text">埋点系统的设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-整体流程图"><span class="nav-number">1.1.</span> <span class="nav-text">1. 整体流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#接口封装"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">接口封装</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-插件"><span class="nav-number">2.</span> <span class="nav-text">2. 插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-插件的初始化"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 插件的初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-插件统计入口"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 插件统计入口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-LoaderThread"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 LoaderThread</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-数据暂存和上传"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 数据暂存和上传</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#上传流程"><span class="nav-number">2.4.0.1.</span> <span class="nav-text">上传流程</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-2-埋点自查"><span class="nav-number">3.</span> <span class="nav-text">3.2 埋点自查</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-高阶封装"><span class="nav-number">4.</span> <span class="nav-text">3.高阶封装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-1-页面时长统计"><span class="nav-number">5.</span> <span class="nav-text">3.1 页面时长统计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-列表展示统计"><span class="nav-number">5.1.</span> <span class="nav-text">3.2 列表展示统计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-PV统计的限制条件"><span class="nav-number">5.1.0.1.</span> <span class="nav-text">3.2.1 PV统计的限制条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-fragment的生命周期统计"><span class="nav-number">5.1.0.2.</span> <span class="nav-text">3.2.2 fragment的生命周期统计</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文档："><span class="nav-number">6.</span> <span class="nav-text">参考文档：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#埋点的设计问题"><span class="nav-number">6.1.</span> <span class="nav-text">埋点的设计问题</span></a></li></ol></li></ol></div>
             
 
           </div>

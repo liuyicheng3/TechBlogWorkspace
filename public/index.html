@@ -1070,7 +1070,7 @@ myRecyclerView.setAdapter(...);
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/01/Peacock埋点/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/01/埋点系统/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Liuycheng">
@@ -1092,7 +1092,7 @@ myRecyclerView.setAdapter(...);
             
               
                 
-                <a class="post-title-link" href="/2018/04/01/Peacock埋点/" itemprop="url">
+                <a class="post-title-link" href="/2018/04/01/埋点系统/" itemprop="url">
                   埋点系统设计
                 </a>
               
@@ -1169,7 +1169,7 @@ myRecyclerView.setAdapter(...);
       
         
           
-            <h1 id="Peacock埋点"><a href="#Peacock埋点" class="headerlink" title="Peacock埋点"></a>Peacock埋点</h1><ol>
+            <h1 id="埋点系统的设计"><a href="#埋点系统的设计" class="headerlink" title="埋点系统的设计"></a>埋点系统的设计</h1><ol>
 <li>插件化  </li>
 <li>回调统计  </li>
 <li>支持滚动列表的展示统计  </li>
@@ -1191,9 +1191,9 @@ public static void eventTongji(String event_type, int c_id, int md, int is_ancho
 <pre><code>public void addEventUGC(final Context context, final String eventData)  
 </code></pre><p>然后会把把事件解析成 UGCEvent，根据实际情况需要需要回调Url的话会直接开始回调给第三方统计平台.最后事件会封装成LoadEventUGCRequest：  </p>
 <pre><code>private static class LoadEventUGCRequest implements LoadRequest {
-        public ADEventBean bean;
+        public TongjiEvent bean;
 
-        public LoadEventUGCRequest(ADEventBean bean) {
+        public LoadEventUGCRequest(TongjiEvent bean) {
             this.bean = bean;
         }
 
@@ -1237,12 +1237,12 @@ public static void eventTongji(String event_type, int c_id, int md, int is_ancho
 
 }
 </code></pre><h2 id="2-4-数据暂存和上传"><a href="#2-4-数据暂存和上传" class="headerlink" title="2.4 数据暂存和上传"></a>2.4 数据暂存和上传</h2><p>数据取出来后悔有再次加入到等待上传队列eventList<br>当数据达到一定条件后执行上传操作  </p>
-<pre><code>if (bean.is_anchor == 1 || adEventList.size() &gt;= PeacockController.UPLOAD_LIMIT_COUNT) {
+<pre><code>if (bean.is_anchor == 1 || eventList.size() &gt;= PeacockController.UPLOAD_LIMIT_COUNT) {
                    //满30条上传或is_anchor立即上传不为0
                    UgcUploadManager manager = new UgcUploadManager();
-                   ArrayList&lt;ADEventBean&gt; uploadBeans = new ArrayList&lt;ADEventBean&gt;();
-                   uploadBeans.addAll(adEventList);
-                   adEventList.clear();
+                   ArrayList&lt;TongjiEvent&gt; uploadBeans = new ArrayList&lt;TongjiEvent&gt;();
+                   uploadBeans.addAll(eventList);
+                   eventList.clear();
                    manager.uploadLogUgc(mContext, uploadBeans);
                }
 </code></pre><h4 id="上传流程"><a href="#上传流程" class="headerlink" title="上传流程"></a>上传流程</h4><ul>
@@ -1270,20 +1270,20 @@ public static void eventTongji(String event_type, int c_id, int md, int is_ancho
 <li>mock接口自查<br>直接mock这个中间数据解析，统计结果，方便单客户端自查</li>
 </ul>
 <h1 id="3-高阶封装"><a href="#3-高阶封装" class="headerlink" title="3.高阶封装"></a>3.高阶封装</h1><h1 id="3-1-页面时长统计"><a href="#3-1-页面时长统计" class="headerlink" title="3.1 页面时长统计"></a>3.1 页面时长统计</h1><p>在基类的onResume开始计时，在onPause时候停止计时，然后上报，即可统计本次展示时长  </p>
-<h2 id="3-2-列表展示统计"><a href="#3-2-列表展示统计" class="headerlink" title="3.2 列表展示统计"></a>3.2 列表展示统计</h2><p>在ListView Idle时候，递归循环遍历所有的子View，找出所有的ETAdLayout，然后调用其统计方法（统计数据已经预设进去了）   </p>
+<h2 id="3-2-列表展示统计"><a href="#3-2-列表展示统计" class="headerlink" title="3.2 列表展示统计"></a>3.2 列表展示统计</h2><p>在ListView Idle时候，递归循环遍历所有的子View，找出所有的TongjiLayout，然后调用其统计方法（统计数据已经预设进去了）   </p>
 <pre><code>    /**
-     * 获取ViewGroup里所有展现的 ETADLayout（坑位）
+     * 获取ViewGroup里所有展现的 TongjiLayout（坑位）
      * @param top    统计区间的顶部坐标
      * @param bottom 统计区间的底部坐标
      */
-    public synchronized static void viewAllETADLayouts(ViewGroup group, int top, int bottom) {
+    public synchronized static void viewAllTongjiLayouts(ViewGroup group, int top, int bottom) {
         try {
             if (group == null) {
                 return;
             }
 
-        if (group.getVisibility() == View.VISIBLE &amp;&amp; group instanceof ETADLayout) {
-            ETADLayout layout = (ETADLayout) group;
+        if (group.getVisibility() == View.VISIBLE &amp;&amp; group instanceof TongjiLayout) {
+            TongjiLayout layout = (TongjiLayout) group;
             layout.tongjiView(top, bottom);
             return;
         }
@@ -1298,11 +1298,11 @@ public static void eventTongji(String event_type, int c_id, int md, int is_ancho
                         continue;
                     }
                 }
-                if (child instanceof ETADLayout) {
-                    ETADLayout layout = (ETADLayout) child;
+                if (child instanceof TongjiLayout) {
+                    TongjiLayout layout = (TongjiLayout) child;
                     layout.tongjiView(top, bottom);
                 } else {
-                    viewAllETADLayouts((ViewGroup) child, top, bottom);
+                    viewAllTongjiLayouts((ViewGroup) child, top, bottom);
                 }
             }
         }
