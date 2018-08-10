@@ -123,7 +123,7 @@
  * @pa">
 <meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9F%8B%E7%82%B9_01.jpg?raw=true">
 <meta property="og:image" content="https://github.com/liuyicheng3/learning-summary/blob/master/images/%E5%9F%8B%E7%82%B9_02.jpg?raw=true">
-<meta property="og:updated_time" content="2018-08-10T12:20:26.879Z">
+<meta property="og:updated_time" content="2018-08-10T12:24:55.442Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="埋点系统设计">
 <meta name="twitter:description" content="埋点系统的设计
@@ -511,12 +511,6 @@ public static void eventTongji(String event_type, int c_id, int md, int is_ancho
         for (int i = 0; i &lt; count; i++) {
             View child = group.getChildAt(i);
             if (child.getVisibility() == View.VISIBLE &amp;&amp; child instanceof ViewGroup) {
-                if (child.getTag() != null &amp;&amp; child.getTag() instanceof String) {
-                    String tag = (String) child.getTag();
-                    if (tag.equals(ETADUtils_NONE)) {
-                        continue;
-                    }
-                }
                 if (child instanceof TongjiLayout) {
                     TongjiLayout layout = (TongjiLayout) child;
                     layout.tongjiView(top, bottom);
